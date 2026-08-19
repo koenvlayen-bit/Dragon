@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Choice of the Dragon: The Hoard Eternal</title>
+
+<!-- PWA essentials -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0c0a10">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Dragon Saga">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="icon-192.svg">
+<link rel="icon" type="image/svg+xml" href="icon-512.svg">
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root{
+    --void: #0c0a10;
+    --panel: #17121c;
+    --panel-hi: #211a29;
+    --ember: #c1481f;
+    --ember-bright: #e4682f;
+    --gold: #c9a227;
+    --gold-dim: #7d6a26;
+    --parchment: #ece3d3;
+    --parchment-dim: #a89e8c;
+    --vein: #3a2418;
+    --danger: #8f2323;
+  }
+
+  *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+
+  html,body{
+    margin:0; padding:0; min-height:100%;
+    background:
+      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(193,72,31,0.12), transparent 60%),
+      radial-gradient(ellipse 700px 400px at 90% 100%, rgba(201,162,39,0.06), transparent 60%),
+      var(--void);
+    color: var(--parchment);
+    font-family: 'Spectral', serif;
+    line-height:1.65;
+  }
+
+  #app{
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 18px 16px 60px;
+    min-height:100vh;
+  }
+
+  /* Header / Stat bar */
+  .hud{
+    background: linear-gradient(180deg, var(--panel-hi), var(--panel));
+    border: 1px solid #2c2230;
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 22px;
+    position: relative;
+    overflow:hidden;
+  }
+  .hud::before{
+    content:"";
+    position:absolute; inset:0;
+    background: repeating-linear-gradient(115deg, transparent 0 18px, rgba(193,72,31,0.035) 18px 19px);
+    pointer-events:none;
+  }
+  .hud-title{
+    font-family:'Cinzel', serif;
+    font-weight:700;
+    letter-spacing:0.06em;
+    font-size: 12px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom:10px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .act-tag{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    color: var(--parchment-dim);
+    letter-spacing:0.04em;
+  }
+  .stat-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 16px;
+    margin-bottom:10px;
+  }
+  .stat-row{ font-size:12px; }
+  .stat-label{
+    display:flex; justify-content:space-between;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--parchment-dim);
+    margin-bottom:4px;
+    letter-spacing:0.02em;
+  }
+  .stat-track{
+    height:6px; border-radius:4px;
+    background:#241a1f;
+    overflow:hidden;
+    position:relative;
+    border: 1px solid #2c2230;
+  }
+  .stat-fill{
+    height:100%;
+    border-radius:4px;
+    transition: width 0.5s ease;
+  }
+  .fill-axis1{ background: linear-gradient(90deg, var(--ember), var(--gold)); }
+  .fill-axis2{ background: linear-gradient(90deg, #7d6a26, #8b6fd1); }
+  .fill-axis3{ background: linear-gradient(90deg, #5b5560, #4fa5c9); }
+  .fill-health{ background: linear-gradient(90deg, #8f2323, #d14a1f); }
+
+  .vitals{
+    display:flex; gap: 14px; margin-top: 10px;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--parchment-dim);
+    flex-wrap:wrap;
+  }
+  .vitals b{ color: var(--gold); font-weight:600; }
+
+  /* Story panel */
+  .scene{
+    background: var(--panel);
+    border: 1px solid #2c2230;
+    border-radius: 14px;
+    padding: 22px 20px;
+    margin-bottom: 18px;
+    position:relative;
+  }
+  .scene::before{
+    content:"";
+    position:absolute; left:0; top:14px; bottom:14px; width:3px;
+    background: linear-gradient(180deg, var(--ember), transparent);
+    border-radius:2px;
+  }
+  .node-eyebrow{
+    font-family:'Cinzel', serif;
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 6px;
+  }
+  .node-title{
+    font-family:'Cinzel', serif;
+    font-weight:700;
+    font-size: 22px;
+    color: var(--parchment);
+    margin: 0 0 14px 0;
+    letter-spacing:0.01em;
+  }
+  .scene-text p{
+    margin: 0 0 14px 0;
+    font-size: 16.5px;
+    color: #d9cfc0;
+  }
+  .scene-text p:first-letter{
+    font-family:'Cinzel', serif;
+    font-size: 30px;
+    color: var(--ember-bright);
+    font-weight:700;
+  }
+  .flash{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: #1e1520;
+    border: 1px dashed #3a2a30;
+    border-radius: 8px;
+    padding: 8px 10px;
+    color: var(--gold);
+    margin: 4px 0 16px 0;
+  }
+
+  /* Choices */
+  .choices{ display:flex; flex-direction:column; gap:10px; }
+  .choice-btn{
+    text-align:left;
+    background: linear-gradient(180deg, #1c1520, #150f18);
+    border: 1px solid #35272a;
+    border-radius: 10px;
+    padding: 14px 16px;
+    color: var(--parchment);
+    font-family:'Spectral', serif;
+    font-size: 15px;
+    cursor:pointer;
+    transition: border-color 0.15s, transform 0.1s, background 0.15s;
+    position:relative;
+  }
+  .choice-btn .choice-label{
+    display:block;
+    font-weight:600;
+    margin-bottom:3px;
+  }
+  .choice-btn .choice-flavor{
+    display:block;
+    font-size:12.5px;
+    color: var(--parchment-dim);
+    font-style:italic;
+  }
+  .choice-btn:hover, .choice-btn:focus-visible{
+    border-color: var(--ember);
+    background: linear-gradient(180deg, #241923, #1a1219);
+    transform: translateX(2px);
+    outline: 2px solid transparent;
+  }
+  .choice-btn:focus-visible{ outline: 2px solid var(--gold); outline-offset:2px; }
+  .choice-btn:active{ transform: translateX(2px) scale(0.99); }
+
+  .footer-controls{
+    display:flex; justify-content:center; margin-top: 28px;
+  }
+  .restart-btn{
+    background:none;
+    border: 1px solid #3a2a30;
+    color: var(--parchment-dim);
+    font-family:'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing:0.05em;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor:pointer;
+    text-transform:uppercase;
+  }
+  .restart-btn:hover{ color: var(--gold); border-color: var(--gold-dim); }
+
+  .ending-badge{
+    font-family:'Cinzel', serif;
+    font-weight:900;
+    font-size: 26px;
+    text-align:center;
+    color: var(--gold);
+    margin: 6px 0 18px;
+    text-shadow: 0 0 24px rgba(201,162,39,0.35);
+  }
+
+  @media (max-width: 420px){
+    .stat-grid{ grid-template-columns: 1fr; }
+    .node-title{ font-size: 19px; }
+    .scene-text p{ font-size:15.5px; }
+  }
+
+  ::selection{ background: var(--ember); color: var(--void); }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* =========================================================
+   CHOICE OF THE DRAGON — THE HOARD ETERNAL
+   Full branching narrative engine, single file, no build step.
+   ========================================================= */
+
+const STORY = {
+  start: "1.1",
+  nodes: {
+
+    /* ============ ACT I — THE YOUNG ============ */
+    "1.1": {
+      act: "Act I — The Young", eyebrow:"Node 1.1",
+      title: "The Egg",
+      text: [
+        "Darkness. Warmth. A slow, ancient heartbeat that is not your own but the mountain's, thrums through the calcified shell that has been your entire world. For centuries beyond counting this egg has lain hidden in the deepest chamber of a forgotten cave system, cradled by veins of geothermal fire that snake through the rock like the vessels of some slumbering titan.",
+        "You feel it before you understand it: a pressure building beneath your scales, an instinct older than thought itself, whispering break free. Bones litter the cavern floor beyond your shell — goat, bear, and the rusted husk of a knight's breastplate, half-swallowed by dust. This place has claimed lives before. It has been waiting for you to claim it as your own.",
+        "With a final, thunderous crack, the shell splits. Cold cave air rushes against wet scales for the first time. You spill onto the stone floor in a tangle of wing, tail and talon, and roar your first sound into the world. Three glints of possibility shimmer in your newborn mind, as if your very soul is asking what you will become."
+      ],
+      choices: [
+        { label:"Embrace the Fire", flavor:"Scales flush volcanic red. Raw power floods fresh muscle.",
+          stats:{axis1:-22}, infamy:4, next:"1.2" },
+        { label:"Embrace the Shadow", flavor:"Scales darken to obsidian. Venom glistens along fang and claw.",
+          stats:{axis2:22}, next:"1.2" },
+        { label:"Embrace the Gold", flavor:"Scales shimmer with impossible arcane light.",
+          stats:{axis1:22}, next:"1.2" },
+        { label:"Resist categorization entirely", flavor:"You let instinct remain fluid, and watch the cave instead of yourself.",
+          stats:{axis3:22}, next:"1.2" }
+      ]
+    },
+
+    "1.2": {
+      act:"Act I — The Young", eyebrow:"Node 1.2",
+      title:"The First Hunt",
+      text:[
+        "Hunger arrives before wisdom does. Beyond the cave mouth, a jagged crescent of grey daylight, the mountainside stirs: hooved footsteps on loose scree, the bleat of a herd grazing an exposed outcrop. Your stomach, empty since the instant of your birth, clenches sharper than anything you have felt.",
+        "A dozen mountain goats pick at scrub grass below. One, old and limping, has drifted from the herd's protective knot. Every fibre of your unformed body screams with a single, simple truth: this is the moment you decide what kind of predator you will be, long before anyone is watching to judge you for it."
+      ],
+      choices: [
+        { label:"Tear it apart without hesitation", flavor:"Charge down the slope, claw and fang, no plan but violence.",
+          stats:{axis1:-14}, infamy:6, next:"1.3" },
+        { label:"Stalk and ambush from downwind", flavor:"Use the rocks for cover, strike once, strike clean.",
+          stats:{axis1:14}, next:"1.3" },
+        { label:"Test your fire breath on it", flavor:"Your control is untested — this could go wonderfully or terribly.",
+          stats:{axis1:-10}, health:-5, infamy:8, next:"1.3" },
+        { label:"Watch the herd's patterns first", flavor:"Delay the kill. Learn how prey moves before you decide how you hunt.",
+          stats:{axis3:14}, next:"1.3" }
+      ]
+    },
+
+    "1.3": {
+      act:"Act I — The Young", eyebrow:"Node 1.3",
+      title:"The Rival",
+      text:[
+        "You are three seasons old and already the mountain knows your name in the language of broken bones and burned scrub, when the sky darkens with a shadow far larger than your own. Infernus descends onto the ridge above your claimed den: an elder wyrm the colour of dried blood, scarred wingtips, eyes like furnace doors. He has smelled a rival, and he has come to end the question of territory before it can properly begin.",
+        "'This mountain fed my hatchlings before your egg was ever laid,' he rumbles, smoke curling from a jaw that could take your skull in a single bite. 'Leave, or burn.'",
+        "You are not yet a third of his size. But you are not yet without options, either."
+      ],
+      choices: [
+        { label:"Attack him directly, no fear", flavor:"Meet overwhelming force with your own. Reckless, unforgettable.",
+          stats:{axis1:-16}, health:-18, infamy:10, next:"2.1" },
+        { label:"Lure him into a rockslide trap", flavor:"Use the terrain you already know better than he does.",
+          stats:{axis2:16}, next:"2.1" },
+        { label:"Swear false fealty, and wait", flavor:"Bow your head. Serve him. Learn his weaknesses from within his shadow.",
+          stats:{axis2:20}, infamy:-3, next:"2.1" }
+      ]
+    },
+
+    /* ============ ACT II — THE EMPIRE ============ */
+    "2.1": {
+      act:"Act II — The Empire", eyebrow:"Node 2.1",
+      title:"The Perfect Lair",
+      text:[
+        "Infernus is gone now, by claw or by cunning or by the slow poison of your patience — the mountain no longer questions whose it is. You are grown enough now to think beyond the next meal, toward the shape your reign will take. A dragon is only as powerful as the ground it commands, and three places call to you across these highlands.",
+        "There is an abandoned dwarven mine, its vaults still half-stocked with smelted gold, its tunnels defensible by a single narrow gate. There is a bare, wind-scoured peak, visible for a hundred miles, a throne no army could approach unseen. And there is a black limestone labyrinth beneath the earth, a maze even you have not fully mapped, where enemies could wander lost until they starved."
+      ],
+      choices: [
+        { label:"Claim the dwarven mine and its gold", flavor:"Wealth now. Others will hear of it eventually.",
+          stats:{}, wealth:40, infamy:5, next:"2.2" },
+        { label:"Claim the unassailable mountain peak", flavor:"A fortress of pure intimidation, seen by every kingdom below.",
+          stats:{axis1:10}, infamy:8, next:"2.2" },
+        { label:"Claim the underground labyrinth", flavor:"A lair that rewards patience and punishes pursuit.",
+          stats:{axis2:12}, next:"2.2" }
+      ]
+    },
+
+    "2.2": {
+      act:"Act II — The Empire", eyebrow:"Node 2.2",
+      title:"The Plunder of Oakhaven",
+      text:[
+        "Word of a dragon in the highlands has finally reached the lowlands, and with it, the temptation of the first true human settlement in your reach: Oakhaven, a walled market town of perhaps three thousand souls, its granaries full from a late harvest, its garrison small and poorly paid.",
+        "You circle it once at dusk, low enough that farmers drop their tools and run screaming for the gate bell. The choice of what Oakhaven becomes to you — ash, tribute, or a quiet robbery its own lord never notices until the vaults are empty — will define what kind of legend begins to travel ahead of you on the trade roads."
+      ],
+      choices: [
+        { label:"Burn it to the foundations", flavor:"Total destruction. The world will speak your name in fear.",
+          stats:{axis1:-14}, infamy:28, wealth:10, next:"2.3" },
+        { label:"Demand tribute from the mayor", flavor:"Rule from above. Let them pay you to survive.",
+          stats:{axis2:8}, infamy:14, wealth:25, next:"2.3" },
+        { label:"Rob the banks discreetly by night", flavor:"No one need ever know it was you — until the ledgers are checked.",
+          stats:{axis2:18}, infamy:5, wealth:35, next:"2.3" }
+      ]
+    },
+
+    "2.3": {
+      act:"Act II — The Empire", eyebrow:"Node 2.3",
+      title:"The Royal Hostage",
+      text:[
+        "Your growing infamy has bought you the attention of a kingdom, and a kingdom's attention arrives in the form of an armed convoy: banners, mounted knights, and at its centre, in a gilded carriage, Crown Princess Aurelia, on her way to a wedding alliance that will now never take place.",
+        "You take the carriage apart like a nutshell and the princess with it, carrying her — furious, unbowed, still gripping a jeweled letter-opener like a dagger — back to your lair, while the surviving knights gallop for the capital to report the unthinkable. She sits now across from you in your own den, and stares at you not with the terror you expected, but with cold, assessing curiosity."
+      ],
+      choices: [
+        { label:"Lock her away and demand ransom", flavor:"A pure, profitable transaction. She is worth her weight in gold.",
+          stats:{axis2:10}, infamy:12, wealth:30, next:"3.1" },
+        { label:"Devour her to show your power", flavor:"An unambiguous statement to every throne watching.",
+          stats:{axis1:-20}, infamy:40, next:"3.1" },
+        { label:"Treat her as an intellectual equal", flavor:"Open a conversation instead of a cage. See what she truly is.",
+          stats:{axis3:18, axis2:6}, infamy:-4, next:"3.1" }
+      ]
+    },
+
+    /* ============ ACT III — THE WAR OF MANKIND ============ */
+    "3.1": {
+      act:"Act III — The War of Mankind", eyebrow:"Node 3.1",
+      title:"The Holy Knight",
+      text:[
+        "The kingdom's answer arrives on a white destrier at your cave mouth, alone, which is either supreme confidence or supreme foolishness: Sir Galahad, Paladin of the Sunfire Order, a blade of blessed silver-steel humming with warded light in his gauntleted fist. He does not shout, does not threaten. He simply says, 'Dragon. Your reckoning has come, however it must,' and steps into the dark toward you.",
+        "He is skilled beyond any human you have measured yourself against, and the sword in his hand could cut through scale as if it were parchment. How this ends is entirely a question of what kind of monster — or ruler — you have chosen to become."
+      ],
+      choices: [
+        { label:"Meet him in honorable single combat", flavor:"Sword against fang and claw, no tricks, no advantage taken.",
+          stats:{axis2:-16}, health:-24, infamy:10, next:"3.2" },
+        { label:"Collapse the cavern ceiling on him", flavor:"Use the mountain itself as your weapon. He never draws close.",
+          stats:{axis2:20}, health:-4, infamy:2, next:"3.2" },
+        { label:"Bribe and unsettle him with words", flavor:"Offer him gold, doubt, and the seed of an idea he cannot un-hear.",
+          stats:{axis2:14, axis3:8}, infamy:-2, next:"3.2" }
+      ]
+    },
+
+    "3.2": {
+      act:"Act III — The War of Mankind", eyebrow:"Node 3.2",
+      title:"The Archmage's Battalion",
+      text:[
+        "Galahad's fate — however you sealed it — was only the opening move. Now an entire army crawls up the mountain's flank: siege catapults hauled on ox-carts, ranks of pikemen, and at its heart, the Archmage Ostrovan and his battle-college of war-wizards, their staves crackling with chained lightning. This is no longer a monster hunt. This is a war, and it has your name on its banner.",
+        "The mountain shakes with the first catapult volley before you have even finished deciding how to answer it."
+      ],
+      choices: [
+        { label:"Fly above and destroy their supply lines", flavor:"An aerial campaign of speed and precision, far from their spellfire.",
+          stats:{axis1:12}, health:-10, infamy:16, next:"4.1" },
+        { label:"Rally the mountain's goblin and orc tribes", flavor:"Turn old enemies into an army fighting beside you.",
+          stats:{axis2:18}, infamy:8, next:"4.1" },
+        { label:"Use magic to turn their forces on each other", flavor:"Whisper doubt, illusion and rivalry through their ranks until they break themselves.",
+          stats:{axis3:20, axis2:10}, infamy:6, next:"4.1" }
+      ]
+    },
+
+    /* ============ ACT IV — CLIMAX & EPILOGUE ============ */
+    "4.1": {
+      act:"Act IV — The Endgame", eyebrow:"Node 4.1",
+      title:"The Emperor's Ultimatum",
+      text:[
+        "The war is effectively over, and the Emperor himself — not a general, not an envoy, but the crowned ruler of the realm — rides to the base of your mountain under a truce banner, flanked by every surviving lord who still commands soldiers. He offers you a choice with the flat, exhausted voice of a man who has already lost this war and knows it.",
+        "'Total surrender of your mountain and your submission to my crown,' he says, 'or total annihilation — I will burn every forest and empty every treasury of this empire before I let a dragon sit above me unanswered.' It is, of course, an empty threat and he knows you know it. What you do with that knowledge will become the final line of your legend."
+      ],
+      choices: [
+        { label:"Raze the capital and crown yourself Dragon-King", flavor:"Total conquest. There is no throne now but yours.",
+          stats:{axis1:-18}, infamy:35, wealth:60, next:"4.2" },
+        { label:"Sign a treaty of eternal tribute", flavor:"Rule from the shadows of the throne instead of upon it.",
+          stats:{axis2:16}, infamy:10, wealth:80, next:"4.2" },
+        { label:"Withdraw and become myth, untouchable", flavor:"Vanish from the world of men entirely, and let legend do the rest.",
+          stats:{axis3:22}, infamy:-10, next:"4.2" }
+      ]
+    }
+  }
+};
+
+/* ============ ENDING DEFINITIONS ============ */
+const ENDINGS = {
+  fallenEarly: {
+    badge: "THE FALLEN MYTH",
+    title: "A Legend Cut Short",
+    text: [
+      "Your body gives out before your legend does. Somewhere between the fire of your birth and the throne you never reached, a wound too deep, a battle too reckless, a gamble that did not pay, drains the last heat from your veins. The mountain that raised you receives you back into its stone, and for a generation the shepherds tell your story as a caution rather than a triumph: the dragon who burned twice as bright and half as long.",
+      "Scholars who come after will argue for centuries whether you were unlucky, or simply unwise. Bards will disagree on which battle finally claimed you, embellishing three different deaths into one composite myth. Somewhere in a temple library, a single accurate line survives the retellings: here lay a dragon who mistook fury for strategy, and paid the only price that was ever truly non-negotiable.",
+      "Your hoard, unguarded, is found within the decade. It is melted down, spent, scattered across a hundred human hands who will never know or care whose fire once warmed it."
+    ]
+  },
+  tyrant: {
+    badge: "THE CRUEL TYRANT",
+    title: "The Ash Throne",
+    text: [
+      "You did not merely win the war. You ended the question of whether dragons could be defied at all. The empire that once sent knights against you now sends tribute wagons, their drivers trained not to meet your eyes. Cities you have not yet visited pay taxes to keep it that way. Your name has become a verb parents use to frighten children into obedience, and you have come to prefer it that way.",
+      "Your hoard is, by any human measure, obscene — vaults of gold no single kingdom could match, taken not through patience but through the simple, repeated demonstration that resistance costs more than surrender. History, written by the scribes you allow to survive, will not remember you kindly, and you have stopped caring whether it does. Kindness was never the currency you were trading in.",
+      "In your final centuries, alone atop a mountain of a hundred emptied kingdoms' worth of gold, you will occasionally wonder whether a single living thing in this world loves you, or merely fears you skillfully enough to disguise the difference. You will decide, as you always have, that the distinction was never the point. Power was the point. And by every measure that matters to a dragon of your particular fire, you have it, absolute and unchallenged, until the day something younger and hungrier than you finally comes to test the same terrible arithmetic against your throne."
+    ]
+  },
+  shadow: {
+    badge: "THE UNSEEN SHADOW",
+    title: "The Empire Never Named",
+    text: [
+      "No statue was ever raised to you. No bounty poster ever bore an accurate likeness. And that, precisely, was the design. While the world's histories record wars against louder, cruder dragons, your name appears nowhere in them — yet every treasury short a fortune it cannot explain, every treaty signed with terms strangely favorable to a mountain no army was ever ordered to march on, every noble house quietly indebted to an anonymous creditor, was your doing.",
+      "You built not a kingdom but a network: informants in every court, gold moving through a hundred human hands who never once glimpsed the scales behind the coin, rivals who destroyed each other over grudges you planted years before either side knew there was a game being played at all. The Archmage's battalion that once marched against you now, decades later, guards a border on your unspoken instruction, its officers unaware they answer, three intermediaries removed, to a dragon.",
+      "Your hoard is the largest in the recorded world, and the number of living beings who could confirm that fact is fewer than you have claws. This is precisely how you intended it to remain: a legend that isn't told because the tellers never learned there was a story to tell, an empire that rules by never once being asked to prove it exists."
+    ]
+  },
+  wise: {
+    badge: "THE WISE DRAGON-GOD",
+    title: "Keeper of the High Peaks",
+    text: [
+      "You did not conquer the world of men so much as become something it eventually needed. Pilgrims climb your mountain now, not with siege engines but with questions — about magic, about mortality, about the strange curiosity that once led you to speak with a captive princess as an equal rather than a meal. Some of them you turn away. Most, in time, you answer, in your own unhurried, ancient way.",
+      "Aurelia, if your path once crossed hers with respect rather than cruelty, is remembered by history as the queen who brought a dragon into her council rather than her cage, and the peace between crown and mountain has held for three generations because of it. Knights no longer come to slay you. They come, occasionally, to be tested by you, and a strange kind of order — an order with a dragon quietly holding one corner of its foundation — has settled over a realm that once could not imagine such a thing.",
+      "Your hoard is respectable rather than legendary, because you were never truly hoarding gold. You were hoarding knowledge, patience, and the slow accumulation of a wisdom no human lifetime allows for. When, centuries from now, your enormous age finally catches you, the mountain will not fall to invaders. It will become a shrine, tended by descendants of people who once feared your kind, now certain that something worth calling holy once slept in these stones."
+    ]
+  }
+};
+
+/* ============ GAME STATE & ENGINE ============ */
+
+function freshState(){
+  return {
+    node: STORY.start,
+    axis1: 0,  // negative = Brutality, positive = Finesse
+    axis2: 0,  // negative = Honor, positive = Cunning
+    axis3: 0,  // negative = Disdain, positive = Curiosity
+    health: 100,
+    wealth: 0,
+    infamy: 0,
+    history: []
+  };
+}
+
+let state = freshState();
+
+function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
+
+const SAVE_KEY = 'dragon-saga-save-v1';
+
+async function tryLoad(){
+  try{
+    const raw = window.localStorage.getItem(SAVE_KEY);
+    if(raw){ state = JSON.parse(raw); return true; }
+  }catch(e){ /* no save yet, or storage unavailable — fine, start fresh */ }
+  return false;
+}
+async function trySave(){
+  try{
+    window.localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+  }catch(e){ /* storage full or blocked — game still works, just won't persist */ }
+}
+async function tryClear(){
+  try{
+    window.localStorage.removeItem(SAVE_KEY);
+  }catch(e){ /* ignore */ }
+}
+
+function pct(axisVal){
+  // axisVal ranges roughly -100..100 -> 0..100 for bar width
+  return clamp(((axisVal + 100) / 200) * 100, 0, 100);
+}
+
+function applyChoice(choice){
+  state.axis1 = clamp(state.axis1 + (choice.stats.axis1||0), -100, 100);
+  state.axis2 = clamp(state.axis2 + (choice.stats.axis2||0), -100, 100);
+  state.axis3 = clamp(state.axis3 + (choice.stats.axis3||0), -100, 100);
+  state.health = clamp(state.health + (choice.health||0), 0, 100);
+  state.wealth = Math.max(0, state.wealth + (choice.wealth||0));
+  state.infamy = clamp(state.infamy + (choice.infamy||0), 0, 100);
+  state.history.push(choice.label);
+
+  if(state.health <= 0){
+    state.node = "__ending_fallenEarly";
+  } else {
+    state.node = choice.next;
+    if(state.node === "4.2"){
+      state.node = "__ending_" + computeEnding();
+    }
+  }
+  trySave();
+  render();
+}
+
+function computeEnding(){
+  const {axis1, axis2, axis3, infamy} = state;
+  // Cruel Tyrant: brutal + very infamous
+  if(infamy >= 55 && axis1 <= -5) return "tyrant";
+  // Unseen Shadow: cunning + kept infamy low
+  if(axis2 >= 10 && infamy <= 32) return "shadow";
+  // Wise Dragon-God: curious + honorable/diplomatic
+  if(axis3 >= 8 && axis2 <= 6 && infamy <= 45) return "wise";
+  // Fallback: contradictory / chaotic legacy
+  return "fallenEarly";
+}
+
+function restart(){
+  state = freshState();
+  tryClear();
+  trySave();
+  render();
+}
+
+/* ============ RENDER ============ */
+
+function statLabel(name, val, leftWord, rightWord, fillClass){
+  return `
+    <div class="stat-row">
+      <div class="stat-label"><span>${leftWord}</span><span>${rightWord}</span></div>
+      <div class="stat-track"><div class="stat-fill ${fillClass}" style="width:${pct(val)}%"></div></div>
+    </div>`;
+}
+
+function renderHud(){
+  const currentNode = STORY.nodes[state.node];
+  const actLabel = currentNode ? currentNode.act : "Epilogue";
+  return `
+    <div class="hud">
+      <div class="hud-title"><span>Draconic Ledger</span><span class="act-tag">${actLabel}</span></div>
+      <div class="stat-grid">
+        ${statLabel('axis1', state.axis1, 'Brutality', 'Finesse', 'fill-axis1')}
+        ${statLabel('axis2', state.axis2, 'Honor', 'Cunning', 'fill-axis2')}
+        ${statLabel('axis3', state.axis3, 'Disdain', 'Curiosity', 'fill-axis3')}
+        <div class="stat-row">
+          <div class="stat-label"><span>Health</span><span>${state.health}/100</span></div>
+          <div class="stat-track"><div class="stat-fill fill-health" style="width:${state.health}%"></div></div>
+        </div>
+      </div>
+      <div class="vitals">
+        <span>Hoard: <b>${state.wealth}</b> gold</span>
+        <span>Infamy: <b>${state.infamy}</b>/100</span>
+      </div>
+    </div>`;
+}
+
+function renderScene(node){
+  const paras = node.text.map(p => `<p>${p}</p>`).join("");
+  const choicesHtml = node.choices.map((c, i) => `
+    <button class="choice-btn" data-idx="${i}">
+      <span class="choice-label">${c.label}</span>
+      <span class="choice-flavor">${c.flavor}</span>
+    </button>`).join("");
+
+  return `
+    <div class="scene">
+      <div class="node-eyebrow">${node.eyebrow}</div>
+      <h2 class="node-title">${node.title}</h2>
+      <div class="scene-text">${paras}</div>
+    </div>
+    <div class="choices">${choicesHtml}</div>
+  `;
+}
+
+function renderEnding(ending){
+  const paras = ending.text.map(p => `<p>${p}</p>`).join("");
+  return `
+    <div class="scene">
+      <div class="node-eyebrow">Act IV — Epilogue</div>
+      <div class="ending-badge">${ending.badge}</div>
+      <h2 class="node-title">${ending.title}</h2>
+      <div class="scene-text">${paras}</div>
+    </div>
+    <div class="footer-controls">
+      <button class="restart-btn" id="restart-btn">Begin a New Hatching</button>
+    </div>
+  `;
+}
+
+function render(){
+  const app = document.getElementById('app');
+  let html = renderHud();
+
+  if(state.node.startsWith("__ending_")){
+    const key = state.node.replace("__ending_", "");
+    html += renderEnding(ENDINGS[key]);
+    app.innerHTML = html;
+    document.getElementById('restart-btn').addEventListener('click', restart);
+    window.scrollTo({top:0, behavior:'smooth'});
+    return;
+  }
+
+  const node = STORY.nodes[state.node];
+  html += renderScene(node);
+  app.innerHTML = html;
+
+  app.querySelectorAll('.choice-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.getAttribute('data-idx'), 10);
+      applyChoice(node.choices[idx]);
+    });
+  });
+
+  html += `<div class="footer-controls"><button class="restart-btn" id="restart-btn-mid">Restart Saga</button></div>`;
+  app.innerHTML = html;
+  app.querySelectorAll('.choice-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.getAttribute('data-idx'), 10);
+      applyChoice(node.choices[idx]);
+    });
+  });
+  document.getElementById('restart-btn-mid').addEventListener('click', restart);
+
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ============ INIT ============ */
+(async function init(){
+  await tryLoad();
+  render();
+})();
+
+/* ============ SERVICE WORKER (offline support) ============ */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {
+      /* offline support just won't be available — game still runs fine online */
+    });
+  });
+}
+</script>
+</body>
+</html>
