@@ -380,6 +380,23 @@
    Full branching narrative engine, single file, no build step.
    ========================================================= */
 
+// Computes a rough "how developed is this dragon" power score for the Vexar
+// rematch, factoring in accumulated stat extremity, infamy, wealth, and a
+// bonus if the chosen combat style matches the dragon's physical traits
+// (chosen way back during character creation).
+function vexarPower(state, style){
+  let score = Math.abs(state.axis1) + Math.abs(state.axis2) + Math.abs(state.axis3)
+    + Math.min(state.infamy, 60) * 0.5
+    + Math.min(state.wealth, 150) * 0.1;
+
+  const f = state.flags;
+  if(style === 'brutality' && (f.tailType === 'club' || f.hornType === 'ram' || f.skinTexture === 'armored')) score += 22;
+  if(style === 'cunning' && (f.tailType === 'venom' || f.hornType === 'none' || f.skinTexture === 'ridged')) score += 22;
+  if(style === 'finesse' && (f.tailType === 'whip' || f.hornType === 'spike' || f.skinTexture === 'leathery')) score += 22;
+
+  return score;
+}
+
 const STORY = {
   start: "1.1",
   nodes: {
@@ -395,26 +412,139 @@ const STORY = {
       ],
       choices: [
         { label:"Embrace the Fire", flavor:"Scales flush volcanic red. Raw power floods fresh muscle.",
-          stats:{axis1:-22}, infamy:4, next:"1.2",
+          stats:{axis1:-22}, infamy:4, next:"1.1a",
           outcome:["The transformation completes in a rush of heat and certainty. Your scales harden fast, blackening at each claw-tip like cooling lava, and when you exhale for the first time a thin ribbon of true smoke curls from your nostrils — clumsy, involuntary, but unmistakably yours. The lava vein in the eastern wall seems to brighten in answer, as though the mountain itself recognizes its heir.",
           "You stagger upright on legs still unsure of their own strength, wings unfurling in a trembling stretch that knocks a small avalanche of pebbles loose from the ceiling. Whatever you become from here, the world will feel it before it sees it."] },
         { label:"Embrace the Shadow", flavor:"Scales darken to obsidian. Venom glistens along fang and claw.",
-          stats:{axis2:22}, next:"1.2",
+          stats:{axis2:22}, next:"1.1a",
           outcome:["The transformation settles over you like a held breath. Your scales darken to a deep, light-swallowing black, and a faint venomous sheen gathers along your fangs and claw-tips — not yet lethal, but promising to become so. You notice, with a clarity that feels older than your minutes-old body should allow, how little sound you make when you move.",
           "The cave keeps its secrets, and so, you sense, will you. Patience is already beginning to feel less like a virtue and more like a weapon you were born already holding."] },
         { label:"Embrace the Gold", flavor:"Scales shimmer with impossible arcane light.",
-          stats:{axis1:22}, next:"1.2",
+          stats:{axis1:22}, next:"1.1a",
           outcome:["Light gathers where no light should exist in a sealed cave, catching along your scales as they shift to a burnished, metallic gold. Something hums faintly beneath your skin — not fire, not venom, but potential, raw and unshaped, the way a held note hums before it becomes music. You flex a claw and feel, distantly, the edges of power you do not yet have words for.",
           "The bones littering the cavern floor no longer look like warnings to you. They look like a syllabus."] },
         { label:"Resist categorization entirely", flavor:"You let instinct remain fluid, and watch the cave instead of yourself.",
-          stats:{axis3:22}, next:"1.2",
+          stats:{axis3:22}, next:"1.1a",
           outcome:["You let the moment pass without choosing, and something in the cave itself seems to exhale in response — as if it, too, is relieved not to have you sorted so soon. Your scales settle into a muted, undecided grey, and rather than watching your own body for signs of what you are, you watch the cave: the drip of mineral water, the pulse of distant lava, the old bones arranged like a museum you were never meant to see.",
           "You will decide what you are through action, not instinct. For now, that is enough."] }
       ]
     },
 
-    "1.2": {
+
+    "1.1a": {
       chapterShort:"Chapter One", chapter:"Chapter One — The Young", part:"Part II",
+      title:"A Color to Call Your Own",
+      text:[
+        "The elemental pull that shaped your instincts a moment ago is still settling into your scales, but the exact shade is still, strangely, yours to decide — the way a held breath before a sneeze is technically still under your control, right up until it isn't. You catch a warped, dim reflection of yourself in a pool of mineral water at the cave's edge, and for the first time, actually look."
+      ],
+      choices: [
+        { label:"Deep crimson red", flavor:"Bold. Unmistakable. The color every old story already expects.",
+          stats:{axis1:-4}, next:"1.1b", setFlags:{skinColor:'crimson'},
+          outcome:["The red deepens as you watch, settling from something almost pink and embarrassing into a proper, war-banner crimson. It is, you decide, an extremely difficult color to be subtle in. You are apparently fine with that."] },
+        { label:"Obsidian black", flavor:"Vanishes into shadow. Unsettling in daylight, worse at night.",
+          stats:{axis2:4}, next:"1.1b", setFlags:{skinColor:'obsidian'},
+          outcome:["Black, it turns out, is less a color and more an absence — your reflection in the pool seems to swallow the dim cave-light rather than catch it. You find you rather like being difficult to fully see, even to yourself."] },
+        { label:"Storm-grey", flavor:"Blends with cloud and stone. Easy to underestimate.",
+          stats:{axis3:4}, next:"1.1b", setFlags:{skinColor:'storm-grey'},
+          outcome:["The grey settles in mottled, weather-worn patches, closer to a mountainside after rain than to any other dragon you've heard described. It is not a color anyone will write songs about. You suspect that may be precisely its advantage."] },
+        { label:"Molten gold-and-bronze", flavor:"Catches the light like the treasure you intend to collect.",
+          stats:{axis1:4}, next:"1.1b", setFlags:{skinColor:'gold-bronze'},
+          outcome:["The gold catches even the faint cave-light and throws it back doubled, threaded through with veins of deeper bronze along your spine and wing-joints. Subtlety, you decide, watching yourself glow faintly in the dark water, was never really going to be an option anyway."] }
+      ]
+    },
+
+    "1.1b": {
+      chapterShort:"Chapter One", chapter:"Chapter One — The Young", part:"Part III",
+      title:"Scales, Ridges, or Something Stranger",
+      text:[
+        "Color decided, you notice the texture of your own hide for the first time — and find, with some surprise, that this too is still in motion, hardening into its final form the way a scab sets. You flex a foreleg experimentally and feel the answer arrive."
+      ],
+      choices: [
+        { label:"Overlapping armored scales", flavor:"Classic. Dense. Built to take a hit and keep moving.",
+          stats:{axis1:-4}, next:"1.1c", setFlags:{skinTexture:'armored'},
+          outcome:["Your scales lock into place like the plates of a hauberk forged by something with considerably more patience than any human smith — overlapping, dense, each one individually unremarkable and collectively close to a wall. You suspect you will be very difficult to seriously hurt."] },
+        { label:"Ridged, bony plates", flavor:"Defensive. Intimidating. A living fortification.",
+          stats:{axis2:-4}, next:"1.1c", setFlags:{skinTexture:'ridged'},
+          outcome:["Rather than scales, jagged bone ridges push up along your spine and flanks, less like armor and more like a fortification that happens to also be alive. It is not a subtle silhouette. It is, on the other hand, an extremely good one to be standing behind during an actual fight."] },
+        { label:"Smooth, leathery hide", flavor:"Sleek. Aerodynamic. Built for speed over durability.",
+          stats:{axis1:4}, next:"1.1c", setFlags:{skinTexture:'leathery'},
+          outcome:["Where scales might have hardened, your hide instead smooths into something closer to oiled leather, sleek enough that the cave's updrafts slide across you rather than catching. You will not be the toughest thing in any given room. You will, quite possibly, be the fastest."] },
+        { label:"Strange, faintly bioluminescent hide", flavor:"Unusual. Otherworldly. Nobody's quite sure what to make of you.",
+          stats:{axis3:4}, next:"1.1c", setFlags:{skinTexture:'strange'},
+          outcome:["Faint threads of cold light pulse just beneath your hide, brightening very slightly whenever you're startled or intrigued, an entirely involuntary and mildly inconvenient tell. No elder dragon in living memory looked quite like this. You are, whatever else you become, going to be memorable."] }
+      ]
+    },
+
+    "1.1c": {
+      chapterShort:"Chapter One", chapter:"Chapter One — The Young", part:"Part IV",
+      title:"Horns to Wear Like a Crown",
+      text:[
+        "Two small, tender points above your brow have been aching since the moment you hatched, and as you press a claw gingerly against one, you realize — with the particular clarity of a creature discovering a new part of its own body — that they are still growing, and still, apparently, negotiable."
+      ],
+      choices: [
+        { label:"Curved, ram-like horns", flavor:"Built for headbutting things that deeply deserve it.",
+          stats:{axis1:-4}, next:"1.1d", setFlags:{hornType:'ram'},
+          outcome:["They curl backward in a heavy, deliberate arc, the kind of horns that exist less to look impressive and more to make a specific, blunt point to anyone foolish enough to get within range of your skull."] },
+        { label:"Twin straight spikes", flavor:"Precise. Purpose-built for a single, exact strike.",
+          stats:{axis1:4}, next:"1.1d", setFlags:{hornType:'spike'},
+          outcome:["They grow straight and needle-sharp, angled slightly forward — not horns built for wrestling, but for one precise, committed strike, the kind you only really get to use once per opponent."] },
+        { label:"A branching, antler-like crown", flavor:"Ornate. Impossible to ignore. Faintly ridiculous, faintly regal.",
+          stats:{axis3:4}, next:"1.1d", setFlags:{hornType:'crown'},
+          outcome:["They branch and fork as they grow, more crown than weapon, catching light and throwing strange shadows across the cave wall. You look, you have to admit, less like a predator and more like a king who simply hasn't found his throne yet."] },
+        { label:"No horns at all — a smooth, streamlined skull", flavor:"Nothing to catch. Nothing to grab. Nothing to see coming.",
+          stats:{axis2:4}, next:"1.1d", setFlags:{hornType:'none'},
+          outcome:["Nothing grows. Your skull stays smooth, unadorned, faintly serpentine — nothing for an enemy's claws to catch, nothing announcing your intentions before you've decided what they are. You find you don't miss what you never had."] }
+      ]
+    },
+
+    "1.1d": {
+      chapterShort:"Chapter One", chapter:"Chapter One — The Young", part:"Part V",
+      title:"A Tail That Speaks For Itself",
+      text:[
+        "Last of all, you become aware of the long, restless weight trailing behind you — still unfamiliar, still knocking the occasional stalagmite loose whenever you turn too quickly. It wants, you sense, to become something specific too."
+      ],
+      choices: [
+        { label:"A heavy, mace-like tail", flavor:"Blunt force, delivered from a distance you don't have to think about.",
+          stats:{axis1:-4}, next:"1.1e", setFlags:{tailType:'club'},
+          outcome:["The tip thickens and hardens into something between a club and a boulder, heavy enough that a single careless swing sends a chunk of cave wall skittering across the floor. Noted, and filed away for later."] },
+        { label:"A whip-thin, impossibly fast tail", flavor:"Speed over weight. A strike you don't see coming until it's landed.",
+          stats:{axis1:4}, next:"1.1e", setFlags:{tailType:'whip'},
+          outcome:["It thins and lengthens instead, whip-fast, cracking the air with a sound sharper than anything the rest of your still-clumsy body can currently manage. You suspect it will be lethal, once you actually learn to aim it."] },
+        { label:"A barbed tail tipped with venom", flavor:"A single graze that does considerably more than a graze should.",
+          stats:{axis2:4}, next:"1.1e", setFlags:{tailType:'venom'},
+          outcome:["A hooked barb forms at the very tip, and beneath it, a faint sac you can already feel humming with something that is definitely not blood. You do not test it on yourself. You have a strong feeling you won't need to test it on much else, either."] },
+        { label:"A broad, fin-like tail built for water and air alike", flavor:"Adaptable. Built for a life that won't stay on one mountain.",
+          stats:{axis3:4}, next:"1.1e", setFlags:{tailType:'fin'},
+          outcome:["It broadens instead, webbed and fin-edged, equally at home cutting through a headwind or a fast river current. You have no particular plans to spend much time in water. You have a feeling that won't matter."] }
+      ]
+    },
+
+    "1.1e": {
+      chapterShort:"Chapter One", chapter:"Chapter One — The Young", part:"Part VI",
+      title:"Blood From the Same Shell",
+      text:[
+        "You are still admiring the shape you've become when a second shadow falls across the cave mouth — and your stomach drops before your mind catches up to why. The scent is unmistakable, familiar in a way nothing else in your short life has been: the same clutch, the same mother, the same doomed cave. Your egg was not the only one.",
+        "He is bigger. Not by a little — by the unmistakable margin of a creature who hatched days before you and has already spent those days eating, testing, growing, while you were still deciding on horns. He looks you over once, with the particular contempt only a sibling can manufacture on short notice, and says, without any real anger, 'So. You're the one still finding your legs.'",
+        "His name, you will learn before this is over, is Vexar. This will not be the only time you meet."
+      ],
+      choices: [
+        { label:"Fight him head-on, pride before sense", flavor:"You are young, proud, and catastrophically overmatched.",
+          stats:{axis1:-4}, health:-15, next:"1.2", setFlags:{metVexar:true, vexarFirstApproach:'fight'},
+          outcome:["You do not think. You simply launch yourself at him, and it goes exactly as poorly as a creature with several days less growth than its opponent should probably expect. He does not even seem to be trying particularly hard, pinning you beneath one claw with the mild, faintly bored expression of an older sibling who has done this exact thing before, to someone else, and found it equally unremarkable.",
+          "'Not yet,' he says, releasing you before real damage is done, though the bruises will disagree with that assessment for days. 'Grow first. Then we'll see.' He is gone before you finish coughing the dust out of your lungs."] },
+        { label:"Try to outmaneuver him", flavor:"Clever, at least. It still isn't enough.",
+          stats:{axis1:2, axis2:2}, health:-12, next:"1.2", setFlags:{metVexar:true, vexarFirstApproach:'outmaneuver'},
+          outcome:["You circle, feint, try to use the cave's tight geometry the way you used it against a mountain goat that, in retrospect, was considerably less prepared for the tactic than your brother currently is. He reads every move a half-second before you make it, catching you mid-feint with an ease that stings considerably more than the graze he leaves along your flank.",
+          "'Not bad,' he admits, sounding almost surprised. 'Won't save you today. Might, eventually.' He leaves you with that, and with the distinct, uncomfortable sense of having just been evaluated rather than defeated."] },
+        { label:"Back down, and survive to grow stronger", flavor:"Swallow the pride. Live to have this fight later, on your terms.",
+          stats:{axis3:4}, health:-4, next:"1.2", setFlags:{metVexar:true, vexarFirstApproach:'retreat'},
+          outcome:["You do the arithmetic before your pride can object: he is bigger, faster, and considerably more finished than you currently are, and no version of this fight ends with you walking away undamaged. You yield instead, low and unhurried, and he watches you do it with something that might almost be respect, or might just be mild disappointment at being denied an easy win.",
+          "'Smart,' he says, already turning to leave. 'Boring. But smart.' You watch him go, and promise yourself, privately, that boring is not going to be a permanent condition."] }
+      ]
+    },
+
+    "1.2": {
+      chapterShort:"Chapter One", chapter:"Chapter One — The Young", part:"Part VII",
       title:"The First Hunt",
       text:[
         "Hunger arrives before wisdom does. Beyond the cave mouth, a jagged crescent of grey daylight, the mountainside stirs: hooved footsteps on loose scree, the bleat of a herd grazing an exposed outcrop. Your stomach, empty since the instant of your birth, clenches sharper than anything you have felt.",
@@ -441,7 +571,7 @@ const STORY = {
     },
 
     "1.3": {
-      chapterShort:"Chapter One", chapter:"Chapter One — The Young", part:"Part III",
+      chapterShort:"Chapter One", chapter:"Chapter One — The Young", part:"Part VIII",
       title:"The Goblin Warren",
       text:[
         "A half-day's flight from your den, following a ravine you had never bothered to explore, you find smoke rising from somewhere it has no business rising: cookfires, dozens of them, threaded between rough stone huts built into the cliff face. A goblin warren — some hundred and fifty of the small, wiry creatures, by your rough count — has been living in your mountain's shadow this entire time, apparently unnoticed by, or unimportant to, the elder dragon whose territory this used to be.",
@@ -464,7 +594,7 @@ const STORY = {
     },
 
     "1.4a": {
-      chapterShort:"Chapter One", chapter:"Chapter One — The Young", part:"Part IV",
+      chapterShort:"Chapter One", chapter:"Chapter One — The Young", part:"Part IX",
       title:"Words Before Blood",
       text:[
         "Infernus is still talking, in the unhurried way of something that has never once in two centuries had to consider the possibility of being interrupted. There is, you sense, a brief window here — not to change his mind, exactly, but to decide what kind of impression you leave before whatever happens next actually happens."
@@ -486,7 +616,7 @@ const STORY = {
     },
 
     "1.4": {
-      chapterShort:"Chapter One", chapter:"Chapter One — The Young", part:"Part IV",
+      chapterShort:"Chapter One", chapter:"Chapter One — The Young", part:"Part IX",
       title:"The Rival",
       text:[
         "You are three seasons old and already the mountain knows your name in the language of broken bones and burned scrub, when the sky darkens with a shadow far larger than your own. Infernus descends onto the ridge above your claimed den: an elder wyrm the colour of dried blood, scarred wingtips, eyes like furnace doors. He has smelled a rival, and he has come to end the question of territory before it can properly begin.",
@@ -760,11 +890,11 @@ const STORY = {
       },
       choices: [
         { label:"Fly above and destroy their supply lines", flavor:"An aerial campaign of speed and precision, far from their spellfire.",
-          stats:{axis1:12}, health:-10, infamy:16, next:"4.1",
+          stats:{axis1:12}, health:-10, infamy:16, next:"3.5",
           outcome:["You take to the sky before the second catapult volley even lands, circling wide and low behind their lines to find exactly what every siege depends on and never adequately protects: the supply carts. Three passes and a few careful bursts of flame later, their oxen are scattered, their food is ash, and an army that arrived expecting a straightforward siege is suddenly calculating how many days it has left before starvation does your work for you.",
           "It is not the battle they trained for. It is the only battle you needed to win."] },
         { label:"Rally the mountain's goblin and orc tribes", flavor:"Turn old neighbors — or old subjects — into an army fighting beside you.",
-          stats:{axis2:18}, infamy:8, next:"4.1",
+          stats:{axis2:18}, infamy:8, next:"3.5",
           outcome: (state) => {
             const mode = state.flags.goblinAllies;
             if(mode === 'worship'){
@@ -785,13 +915,95 @@ const STORY = {
             ];
           } },
         { label:"Use magic to turn their forces on each other", flavor:"Whisper doubt, illusion and rivalry through their ranks until they break themselves.",
-          stats:{axis3:20, axis2:10}, infamy:6, next:"4.1",
+          stats:{axis3:20, axis2:10}, infamy:6, next:"3.5",
           outcome:["You do not meet the army at all, not directly. Instead you move through the fog and half-light at its edges, planting illusions of betrayal among the war-wizards, whispered doubts among the pikemen, a single convincing vision of the Archmage abandoning his own troops to save himself. By midnight the siege has not been broken by dragonfire. It has broken itself, companies turning on companies in the confused, paranoid dark, certain they are defending against an enemy that was never where they thought it was.",
           "By dawn, what marches back down the mountain is not an army anymore. It is survivors."] }
       ]
     },
 
     /* ============ CHAPTER FOUR — THE ENDGAME ============ */
+
+    "3.5": {
+      chapterShort:"Chapter Three", chapter:"Chapter Three — The War of Mankind", part:"Part V",
+      title:"Blood Remembers",
+      text: (state) => {
+        let callback = "";
+        if(state.flags.vexarFirstApproach === 'fight'){
+          callback = " You remember every detail of the last time he pinned you without effort — the dust, the bruises, the maddening calm in his voice. You have thought about that morning more often than you'd like to admit.";
+        } else if(state.flags.vexarFirstApproach === 'outmaneuver'){
+          callback = " You remember the grudging almost-respect in his voice the last time — 'might, eventually,' he said. You intend to make eventually arrive considerably sooner than he expects.";
+        } else if(state.flags.vexarFirstApproach === 'retreat'){
+          callback = " You remember calling yourself smart rather than weak, the day you backed down from him. You have spent every season since making sure that was true.";
+        }
+        return [
+          "Word of your war reaches Vexar before the ash from Ostrovan's battalion has even finished settling — and he comes to see it for himself, landing on the same ridge where he once pinned a considerably smaller, considerably less finished version of you without breaking a sweat. He has grown too, these past seasons: broader, scarred along one wing in a way that suggests his own conquests have not been entirely bloodless." + callback,
+          "'You've been busy,' he says, and there is something in his voice this time that wasn't there the first time — not quite respect, not yet, but no longer quite contempt either. 'Let's see if busy translates to anything.'"
+        ];
+      },
+      choices: [
+        { label:"Meet him with raw, overwhelming savagery", flavor:"No more running, no more cleverness. Just everything you've become.",
+          stats:{axis1:-6}, infamy:6, next:"4.1",
+          setFlags: (state) => {
+            const score = vexarPower(state, 'brutality');
+            const tier = score >= 180 ? 'victory' : score >= 120 ? 'draw' : 'defeat';
+            return { vexarOutcome: tier, vexarStyle: 'brutality' };
+          },
+          outcome: (state) => {
+            const tier = state.flags.vexarOutcome;
+            if(tier === 'victory'){
+              return ["You do not out-think him this time. You simply meet him, claw for claw, fire for fire, and somewhere in the middle of it you both realize at the same moment that the fight has stopped being close. Every season of choices you've made since that first humiliating morning — every hard-won scar, every hoard, every enemy you didn't run from — arrives all at once, and it is, finally, enough. You end the fight standing over him, and he does not get up quickly.",
+              "'Enough,' he manages, from the ground, and there is no contempt left in it at all. 'Enough. You've made your point.' You let him leave under his own power. It costs you nothing at all to be generous, this time."];
+            }
+            if(tier === 'draw'){
+              return ["Neither of you breaks first. It is the longest, most evenly matched fight of your life, claw and fire and raw stubbornness on both sides, until you are both too exhausted to continue and simply stop, by mutual and unspoken agreement, staring at each other across a scorched ridge neither of you fully controls.",
+              "'Huh,' Vexar says, breathing hard, something unreadable crossing his face. 'That's new.' He leaves without declaring a winner, because for the first time in either of your lives, there genuinely isn't one."] ;
+            }
+            return ["You throw everything you have at him, and it is, once again, not quite enough — he is still faster to recover, still that crucial half-step ahead, and you end the exchange on your back for the second time in your life. But it takes him considerably longer to put you there this time, and both of you know it.",
+            "'Closer,' he admits, stepping back rather than finishing it. 'Not yet. But closer than I expected.' He leaves you bruised, furious, and — for the first time — genuinely certain that closer is not the same as never."];
+          } },
+        { label:"Outwit him with everything you've learned since", flavor:"You've out-thought elder wyrms and archmages. He's next.",
+          stats:{axis2:6}, next:"4.1",
+          setFlags: (state) => {
+            const score = vexarPower(state, 'cunning');
+            const tier = score >= 180 ? 'victory' : score >= 120 ? 'draw' : 'defeat';
+            return { vexarOutcome: tier, vexarStyle: 'cunning' };
+          },
+          outcome: (state) => {
+            const tier = state.flags.vexarOutcome;
+            if(tier === 'victory'){
+              return ["You do not meet him head-on. You lead him instead, exactly the way you once led an elder wyrm into a rockslide of your own choosing, using terrain and timing and every hard lesson a war has taught you about making an opponent fight the battle you designed rather than the one they arrived for. By the time Vexar realizes the ridge beneath him was never solid ground to begin with, it is considerably too late to matter.",
+              "'You planned this,' he says, half-buried, more impressed than angry. 'The whole approach. You planned this.' You did. It is, you decide, an extremely satisfying thing to confirm out loud."] ;
+            }
+            if(tier === 'draw'){
+              return ["You try every trick a war's worth of enemies has taught you, and he counters more of them than you expected — matching cunning with cunning, feint with feint, until the two of you are more engaged in an increasingly elaborate chess match than an actual fight. Neither of you lands a decisive blow. Both of you, grudgingly, start to enjoy the puzzle of it.",
+              "'You've gotten interesting,' Vexar says, disengaging rather than pressing an advantage neither of you quite has. 'That's new too.' You are not entirely sure it was a compliment. You are fairly sure you'll take it as one anyway."] ;
+            }
+            return ["Your tricks are better than they used to be. They are not, it turns out, quite better than his instincts, which have apparently sharpened just as much as yours have over the same stretch of seasons. He sees through the second feint before you've fully committed to the first, and the fight ends with you outmaneuvered rather than overpowered — a smaller humiliation than last time, but a humiliation nonetheless.",
+            "'Good effort,' he says, and for once doesn't sound like he's mocking you. 'You're not the same hatchling. Just... not quite there yet.'"] ;
+          } },
+        { label:"Let your grown power simply speak for itself", flavor:"No rage, no tricks. Just the calm certainty of what you've become.",
+          stats:{axis3:6}, next:"4.1",
+          setFlags: (state) => {
+            const score = vexarPower(state, 'finesse');
+            const tier = score >= 180 ? 'victory' : score >= 120 ? 'draw' : 'defeat';
+            return { vexarOutcome: tier, vexarStyle: 'finesse' };
+          },
+          outcome: (state) => {
+            const tier = state.flags.vexarOutcome;
+            if(tier === 'victory'){
+              return ["You do not rage, and you do not scheme. You simply fight the way everything you've survived since that first humiliating morning taught you to fight — precise, economical, utterly without wasted motion — and Vexar, for the first time in either of your lives, finds himself on the losing end of a fight he was certain he still controlled. It is over almost before he registers that it's begun.",
+              "He does not get up right away. When he finally does, he looks at you for a long moment with an expression you have genuinely never seen on him before. 'Well,' he says, quietly. 'That settles that, then.'"] ;
+            }
+            if(tier === 'draw'){
+              return ["You fight with a controlled, unhurried precision that visibly unsettles him more than raw aggression would have — no wasted motion, no opening he can predict, every strike exactly as forceful as it needs to be and no more. It is not enough to finish him. It is more than enough to make him take you seriously for the first time in your life, in a way that has nothing to do with fear.",
+              "'You've changed,' he says, retreating to a wary distance rather than closing back in. It is not quite a concession. It is the closest thing to one you have ever heard from him."] ;
+            }
+            return ["You fight well — better than either of you expected, precise where you used to be merely desperate — and it still, in the end, is not quite enough to close the gap he opened between you the day you were both hatched. He wins, again, though it takes him visibly longer, and he does not gloat about it the way he once might have.",
+            "'You're better,' he says, and it costs him something to admit it. 'Not there. But better.' Somehow, this time, that is almost enough to feel like progress."] ;
+          } }
+      ]
+    },
+
     "4.1": {
       chapterShort:"Chapter Four", chapter:"Chapter Four — The Endgame", part:"Part I",
       title:"The Villain's Castle",
@@ -1161,7 +1373,10 @@ function applyChoice(choice){
   state.wealth = Math.max(0, state.wealth + (choice.wealth||0));
   state.infamy = clamp(state.infamy + (choice.infamy||0), 0, 100);
   state.history.push(choice.label);
-  if(choice.setFlags){ Object.assign(state.flags, choice.setFlags); }
+  if(choice.setFlags){
+    const resolvedFlags = typeof choice.setFlags === 'function' ? choice.setFlags(state) : choice.setFlags;
+    Object.assign(state.flags, resolvedFlags);
+  }
 
   const applied = {
     axis1: state.axis1 - before.axis1, axis2: state.axis2 - before.axis2, axis3: state.axis3 - before.axis3,
@@ -1347,6 +1562,14 @@ function endingBonusParagraphs(){
     bonus.push("The council chamber where you once purged the last of the old regime has been rebuilt three times since, each new government a little more careful about what it says in rooms with a clear view of your mountain.");
   } else if(state.flags.capitalFate === 'vassal'){
     bonus.push("The Council of Regents still governs the capital, technically, in your name, in the particular hollow way governments do when everyone involved understands precisely whose permission actually matters.");
+  }
+
+  if(state.flags.vexarOutcome === 'victory'){
+    bonus.push("Vexar visits, now and then, on terms that have nothing left to do with dominance — the closest thing to family either of you has left, and, against every early prediction either of you would have made, something that has quietly come to resemble a friendship.");
+  } else if(state.flags.vexarOutcome === 'draw'){
+    bonus.push("You and Vexar never did settle which of you was stronger, in the end, and have somehow spent the years since deciding they preferred it that way — an unfinished argument neither sibling has ever felt the need to actually finish.");
+  } else if(state.flags.vexarOutcome === 'defeat'){
+    bonus.push("Vexar still holds, technically, that he could take you in a fair fight. You have never quite worked up the nerve to test that claim a third time — though you both privately suspect, these days, that the gap has closed considerably more than either of you says out loud.");
   }
 
   return bonus;
