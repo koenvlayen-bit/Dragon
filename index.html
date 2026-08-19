@@ -232,6 +232,126 @@
   }
   .restart-btn:hover{ color: var(--gold); border-color: var(--gold-dim); }
 
+  .continue-btn{
+    display:block;
+    width:100%;
+    text-align:center;
+    background: linear-gradient(180deg, var(--ember-bright), var(--ember));
+    border: 1px solid #7a2e13;
+    border-radius: 10px;
+    padding: 15px 16px;
+    color: #1a0f08;
+    font-family:'Cinzel', serif;
+    font-weight:700;
+    font-size: 14px;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    cursor:pointer;
+    transition: filter 0.15s, transform 0.1s;
+  }
+  .continue-btn:hover{ filter: brightness(1.08); }
+  .continue-btn:active{ transform: scale(0.99); }
+  .continue-btn:focus-visible{ outline: 2px solid var(--gold); outline-offset:2px; }
+
+  .outcome-tag{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color: var(--parchment-dim);
+    background:#1e1520;
+    border:1px solid #3a2a30;
+    display:inline-block;
+    padding:3px 8px;
+    border-radius: 5px;
+    margin-bottom: 12px;
+  }
+
+  /* Naming screen */
+  .name-input{
+    width:100%;
+    background: #150f18;
+    border: 1px solid #3a2a30;
+    border-radius: 10px;
+    padding: 14px 16px;
+    color: var(--parchment);
+    font-family:'Cinzel', serif;
+    font-size: 17px;
+    letter-spacing:0.02em;
+    margin-bottom: 14px;
+  }
+  .name-input::placeholder{ color: #5c5460; font-family:'Spectral', serif; font-style:italic; }
+  .name-input:focus{ outline: 2px solid var(--gold); outline-offset:1px; border-color: var(--gold-dim); }
+
+  .name-divider{
+    display:flex; align-items:center; gap:10px;
+    margin: 4px 0 14px;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color: var(--parchment-dim);
+  }
+  .name-divider::before, .name-divider::after{
+    content:""; flex:1; height:1px; background:#2c2230;
+  }
+
+  .name-presets{
+    display:flex; flex-wrap:wrap; gap:8px;
+    margin-bottom: 20px;
+  }
+  .name-chip{
+    background: #1c1520;
+    border: 1px solid #35272a;
+    border-radius: 20px;
+    padding: 8px 14px;
+    color: var(--parchment-dim);
+    font-family:'Spectral', serif;
+    font-size: 13.5px;
+    cursor:pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .name-chip:hover{ border-color: var(--gold-dim); color: var(--parchment); }
+  .name-chip.selected{ border-color: var(--gold); color: var(--gold); background: #241c14; }
+
+  .dragon-name-line{
+    text-align:center;
+    font-family:'Cinzel', serif;
+    font-size: 14px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color: var(--parchment-dim);
+    margin-bottom: 2px;
+  }
+
+  /* Impact chips — shown on the aftermath screen after a choice */
+  .impact-strip{
+    display:flex; flex-wrap:wrap; gap:8px;
+    margin-bottom: 18px;
+  }
+  .impact-chip{
+    display:inline-flex; align-items:center; gap:6px;
+    padding: 6px 12px 6px 8px;
+    border-radius: 20px;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight:600;
+    letter-spacing:0.01em;
+    border: 1px solid;
+    background: #150f18;
+  }
+  .chip-icon{ font-size: 14px; line-height:1; }
+  .chip-brutality{ color:#e4682f; border-color:#5a2c17; background:rgba(193,72,31,0.08); }
+  .chip-finesse{   color:#d9bd52; border-color:#5c4c1c; background:rgba(201,162,39,0.08); }
+  .chip-honor{     color:#c9b98f; border-color:#4a4536; background:rgba(201,185,143,0.08); }
+  .chip-cunning{   color:#a893e0; border-color:#3f3660; background:rgba(139,111,209,0.10); }
+  .chip-disdain{   color:#9a94a3; border-color:#3a3640; background:rgba(91,85,96,0.12); }
+  .chip-curiosity{ color:#6fc3e8; border-color:#284a58; background:rgba(79,165,201,0.10); }
+  .chip-health-up{   color:#e8899c; border-color:#5c2530; background:rgba(209,74,31,0.08); }
+  .chip-health-down{ color:#e0596e; border-color:#5c1e26; background:rgba(143,35,35,0.14); }
+  .chip-hoard{     color:#e6c65a; border-color:#5c4c1c; background:rgba(201,162,39,0.12); }
+  .chip-infamy{    color:#d97f7f; border-color:#4a2424; background:rgba(143,35,35,0.10); }
+
   .ending-badge{
     font-family:'Cinzel', serif;
     font-weight:900;
@@ -264,9 +384,9 @@ const STORY = {
   start: "1.1",
   nodes: {
 
-    /* ============ ACT I — THE YOUNG ============ */
+    /* ============ CHAPTER ONE — THE YOUNG ============ */
     "1.1": {
-      act: "Act I — The Young", eyebrow:"Node 1.1",
+      chapterShort:"Chapter One", chapter:"Chapter One — The Young", part:"Part I",
       title: "The Egg",
       text: [
         "Darkness. Warmth. A slow, ancient heartbeat that is not your own but the mountain's, thrums through the calcified shell that has been your entire world. For centuries beyond counting this egg has lain hidden in the deepest chamber of a forgotten cave system, cradled by veins of geothermal fire that snake through the rock like the vessels of some slumbering titan.",
@@ -275,18 +395,26 @@ const STORY = {
       ],
       choices: [
         { label:"Embrace the Fire", flavor:"Scales flush volcanic red. Raw power floods fresh muscle.",
-          stats:{axis1:-22}, infamy:4, next:"1.2" },
+          stats:{axis1:-22}, infamy:4, next:"1.2",
+          outcome:["The transformation completes in a rush of heat and certainty. Your scales harden fast, blackening at each claw-tip like cooling lava, and when you exhale for the first time a thin ribbon of true smoke curls from your nostrils — clumsy, involuntary, but unmistakably yours. The lava vein in the eastern wall seems to brighten in answer, as though the mountain itself recognizes its heir.",
+          "You stagger upright on legs still unsure of their own strength, wings unfurling in a trembling stretch that knocks a small avalanche of pebbles loose from the ceiling. Whatever you become from here, the world will feel it before it sees it."] },
         { label:"Embrace the Shadow", flavor:"Scales darken to obsidian. Venom glistens along fang and claw.",
-          stats:{axis2:22}, next:"1.2" },
+          stats:{axis2:22}, next:"1.2",
+          outcome:["The transformation settles over you like a held breath. Your scales darken to a deep, light-swallowing black, and a faint venomous sheen gathers along your fangs and claw-tips — not yet lethal, but promising to become so. You notice, with a clarity that feels older than your minutes-old body should allow, how little sound you make when you move.",
+          "The cave keeps its secrets, and so, you sense, will you. Patience is already beginning to feel less like a virtue and more like a weapon you were born already holding."] },
         { label:"Embrace the Gold", flavor:"Scales shimmer with impossible arcane light.",
-          stats:{axis1:22}, next:"1.2" },
+          stats:{axis1:22}, next:"1.2",
+          outcome:["Light gathers where no light should exist in a sealed cave, catching along your scales as they shift to a burnished, metallic gold. Something hums faintly beneath your skin — not fire, not venom, but potential, raw and unshaped, the way a held note hums before it becomes music. You flex a claw and feel, distantly, the edges of power you do not yet have words for.",
+          "The bones littering the cavern floor no longer look like warnings to you. They look like a syllabus."] },
         { label:"Resist categorization entirely", flavor:"You let instinct remain fluid, and watch the cave instead of yourself.",
-          stats:{axis3:22}, next:"1.2" }
+          stats:{axis3:22}, next:"1.2",
+          outcome:["You let the moment pass without choosing, and something in the cave itself seems to exhale in response — as if it, too, is relieved not to have you sorted so soon. Your scales settle into a muted, undecided grey, and rather than watching your own body for signs of what you are, you watch the cave: the drip of mineral water, the pulse of distant lava, the old bones arranged like a museum you were never meant to see.",
+          "You will decide what you are through action, not instinct. For now, that is enough."] }
       ]
     },
 
     "1.2": {
-      act:"Act I — The Young", eyebrow:"Node 1.2",
+      chapterShort:"Chapter One", chapter:"Chapter One — The Young", part:"Part II",
       title:"The First Hunt",
       text:[
         "Hunger arrives before wisdom does. Beyond the cave mouth, a jagged crescent of grey daylight, the mountainside stirs: hooved footsteps on loose scree, the bleat of a herd grazing an exposed outcrop. Your stomach, empty since the instant of your birth, clenches sharper than anything you have felt.",
@@ -294,18 +422,71 @@ const STORY = {
       ],
       choices: [
         { label:"Tear it apart without hesitation", flavor:"Charge down the slope, claw and fang, no plan but violence.",
-          stats:{axis1:-14}, infamy:6, next:"1.3" },
+          stats:{axis1:-14}, infamy:6, next:"1.3",
+          outcome:["You do not plan the kill so much as become it. The old goat barely has time to lift its head before you are on it, claws first, momentum doing the work your inexperience cannot yet refine. It is over in seconds — brutal, unglamorous, and utterly effective. Hot blood is the first true meal of your life, and it tastes, to your surprise, like victory.",
+          "The rest of the herd scatters in a panic that echoes down the valley. Somewhere below, a shepherd boy watching from a distant ridge will spend the rest of his life telling people what he saw that morning, and no one will quite believe him. His grandchildren, decades later, will still be rolling their eyes at 'the dragon story' at every single family gathering, right up until the week your name becomes considerably harder to dismiss."] },
         { label:"Stalk and ambush from downwind", flavor:"Use the rocks for cover, strike once, strike clean.",
-          stats:{axis1:14}, next:"1.3" },
+          stats:{axis1:14}, next:"1.3",
+          outcome:["You circle wide through the scree, keeping low, letting the wind carry your scent away from the herd rather than toward it. When you finally strike, it is a single, economical motion — no wasted movement, no panic, no chase. The old goat is dead before the rest of the herd even registers you were there.",
+          "It is, you understand instinctively, a better kill than the alternative would have been: quieter, cleaner, and infinitely more repeatable. Whatever you become, precision will always serve you better than rage."] },
         { label:"Test your fire breath on it", flavor:"Your control is untested — this could go wonderfully or terribly.",
-          stats:{axis1:-10}, health:-5, infamy:8, next:"1.3" },
+          stats:{axis1:-10}, health:-5, infamy:8, next:"1.3",
+          outcome:["You aim your first real breath at the goat and get... something. A cough of grey smoke, a wet crackling heat, and then — briefly, gloriously — a jet of orange flame that catches the goat's flank and sends the whole herd shrieking off the outcrop. Your triumph lasts exactly as long as it takes you to notice your own foreleg is singed where the fire looped back closer than you intended.",
+          "The lesson stings, literally. But you have flame now, however unrefined, and that changes everything about what kind of predator you are about to become."] },
         { label:"Watch the herd's patterns first", flavor:"Delay the kill. Learn how prey moves before you decide how you hunt.",
-          stats:{axis3:14}, next:"1.3" }
+          stats:{axis3:14}, next:"1.3",
+          outcome:["You hold back, folding yourself into the shadow of an outcrop, and simply watch. You learn the herd's rhythm within the hour: which goat leads, which trails, where the blind spots in their vigilance lie. When you finally do move, hours later, it is with the calm certainty of something that has already won the encounter before it began.",
+          "The kill itself is almost anticlimactic. The real hunt happened in your mind, long before your claws ever touched ground."] }
       ]
     },
 
     "1.3": {
-      act:"Act I — The Young", eyebrow:"Node 1.3",
+      chapterShort:"Chapter One", chapter:"Chapter One — The Young", part:"Part III",
+      title:"The Goblin Warren",
+      text:[
+        "A half-day's flight from your den, following a ravine you had never bothered to explore, you find smoke rising from somewhere it has no business rising: cookfires, dozens of them, threaded between rough stone huts built into the cliff face. A goblin warren — some hundred and fifty of the small, wiry creatures, by your rough count — has been living in your mountain's shadow this entire time, apparently unnoticed by, or unimportant to, the elder dragon whose territory this used to be.",
+        "Your first pass over the ravine sends them into screaming chaos, cookfires kicked out, children snatched indoors. But by your second pass, something stranger happens. A handful of the braver ones creep back into the open, and rather than run, they kneel — foreheads pressed to the dirt, hands raised, in a posture you recognize, with some surprise, as worship. Somewhere in this warren, it becomes clear, dragons are already a religion. You have simply arrived to audition for the part of god."
+      ],
+      choices: [
+        { label:"Accept their worship, and rule as a living god", flavor:"Let devotion become your first true system of tribute.",
+          stats:{axis2:16}, infamy:6, wealth:10, next:"1.4a", setFlags:{goblinAllies:'worship'},
+          outcome:["You do not correct their theology. You land in the center of the ravine, fold your wings with what you hope reads as divine patience, and let the goblin elders shuffle forward with the first of what will become a very long series of offerings — gold scraped from streambeds, meat from their own dwindling stores, small crude idols carved in your unmistakable likeness. Within a season, a genuine priesthood has organized itself around your infrequent visits.",
+          "It is, you reflect, watching a goblin child solemnly leave a chicken bone at your feet like an offering to the sun itself, an absurdly efficient form of taxation. Faith, unlike fear, tends to collect itself."] },
+        { label:"Terrorize them into servitude", flavor:"Fear is a simpler contract than faith, and pays in labor.",
+          stats:{axis1:-16}, infamy:14, next:"1.4a", setFlags:{goblinAllies:'fear'},
+          outcome:["You do not accept worship. You demand it — landing hard enough to crack the ravine's central well, torching two empty huts as a demonstration rather than a punishment, making very sure every goblin watching understands exactly what happens to warrens that displease you. By nightfall their chieftain is at your claws, offering labor rather than prayer: miners, scouts, whatever a creature your size might find use for.",
+          "It is not devotion. It is the oldest bargain there is — obedience purchased with the promise of a slightly less terrible alternative — and it will serve your purposes exactly as well as worship would have, for considerably less patience on your part."] },
+        { label:"Leave them in peace, and simply observe", flavor:"Not everything needs to be conquered to be understood.",
+          stats:{axis3:16}, infamy:-2, next:"1.4a", setFlags:{goblinAllies:'trust'},
+          outcome:["You do not land at all, not that first day. You circle once, high enough not to panic them further, and simply watch — their strange, efficient little economy, the way the elders organize the children, the songs they sing to keep the cookfires fed through the mountain's long winters. When you do finally land, weeks later, it is without demands, and the warren's chieftain, more baffled than grateful, offers you something no threat or worship ever could: an honest welcome.",
+          "You do not rule them. You do not need to. Something rarer than tribute grows in that ravine instead — the particular, durable trust of creatures who have decided, against every instinct, that you are not going to hurt them."] }
+      ]
+    },
+
+    "1.4a": {
+      chapterShort:"Chapter One", chapter:"Chapter One — The Young", part:"Part IV",
+      title:"Words Before Blood",
+      text:[
+        "Infernus is still talking, in the unhurried way of something that has never once in two centuries had to consider the possibility of being interrupted. There is, you sense, a brief window here — not to change his mind, exactly, but to decide what kind of impression you leave before whatever happens next actually happens."
+      ],
+      choices: [
+        { label:"\"This mountain has a new landlord. Rent is due.\"", flavor:"Cocky. Reckless. Extremely on brand for a three-season-old dragon.",
+          stats:{axis1:-6}, next:"1.4",
+          outcome:["Infernus stares at you the way a man might stare at a talking sandwich — a long beat of pure bewilderment, followed almost immediately by genuine irritation that the sandwich had the nerve. 'Rent,' he repeats, flatly, smoke curling from both nostrils now. 'From an egg.'",
+          "You are fairly sure this went worse for you rhetorically than you intended. It is, at least, memorable."] },
+        { label:"\"There's room enough for two dragons on one mountain, surely.\"", flavor:"Reasonable. Diplomatic. Probably doomed.",
+          stats:{axis2:-6}, next:"1.4",
+          outcome:["'There is not, in fact, room enough,' Infernus says, with the weary patience of someone who has genuinely checked. 'I measured. Twice. Both times the answer involved considerably less of you existing afterward.'",
+          "It was worth asking. Diplomacy, you are learning, has a somewhat higher failure rate with elder wyrms than you'd hoped."] },
+        { label:"\"You're right, of course. Forgive my trespass, mighty one.\"", flavor:"Fake humility. See how far flattery gets you.",
+          stats:{axis2:8}, next:"1.4",
+          outcome:["Infernus's chest puffs out with an almost audible creak of satisfaction. 'Well,' he says, visibly recalibrating his entire assessment of you. 'At least one hatchling this century has manners.' You note, with some interest, that flattery apparently works on two-hundred-year-old apex predators exactly the same way it works on toddlers and minor nobility.",
+          "This will be useful information going forward."] }
+      ]
+    },
+
+    "1.4": {
+      chapterShort:"Chapter One", chapter:"Chapter One — The Young", part:"Part IV",
       title:"The Rival",
       text:[
         "You are three seasons old and already the mountain knows your name in the language of broken bones and burned scrub, when the sky darkens with a shadow far larger than your own. Infernus descends onto the ridge above your claimed den: an elder wyrm the colour of dried blood, scarred wingtips, eyes like furnace doors. He has smelled a rival, and he has come to end the question of territory before it can properly begin.",
@@ -314,17 +495,23 @@ const STORY = {
       ],
       choices: [
         { label:"Attack him directly, no fear", flavor:"Meet overwhelming force with your own. Reckless, unforgettable.",
-          stats:{axis1:-16}, health:-18, infamy:10, next:"2.1" },
+          stats:{axis1:-16}, health:-18, infamy:10, next:"2.1",
+          outcome:["You do not wait for a better moment because you do not yet know how to recognize one. You launch yourself at Infernus with everything your young body has, and for several long, brutal minutes the ridge becomes a blur of claw, fire and falling stone. He is bigger, older, and far more experienced — and it shows, in the gouges he opens along your flank before you finally manage to sink your teeth into the join of his wing.",
+          "It is enough. Bleeding and furious, Infernus breaks off the fight rather than risk a wound that could ground him permanently, and flies east, cursing your name into the wind. You are alone on the mountain, wounded, exhausted, and undeniably, for the first time, its master."] },
         { label:"Lure him into a rockslide trap", flavor:"Use the terrain you already know better than he does.",
-          stats:{axis2:16}, next:"2.1" },
+          stats:{axis2:16}, next:"2.1",
+          outcome:["You lead Infernus on a chase across terrain you know intimately and he does not — up narrow ledges, through a defile you have already marked as unstable. When he finally corners you against what looks like a dead end, you are already gone, and the roof he was standing beneath comes down in a roar of dust and boulders.",
+          "He claws free eventually, humiliated and bruised rather than seriously hurt, and decides — loudly, and at length — that this particular mountain is not worth the trouble it is clearly going to keep causing him. He does not return."] },
         { label:"Swear false fealty, and wait", flavor:"Bow your head. Serve him. Learn his weaknesses from within his shadow.",
-          stats:{axis2:20}, infamy:-3, next:"2.1" }
+          stats:{axis2:20}, infamy:-3, next:"2.1",
+          outcome:["You bow low, throat exposed in the oldest gesture of submission dragons know, and Infernus accepts your surrender with the lazy satisfaction of a creature who has never once considered that a hatchling might be lying. For a full season you serve him — scouting, fetching, absorbing every habit and blind spot he has never bothered to hide from something he considers beneath notice.",
+          "When the moment finally comes — a night he sleeps too deeply after too rich a feast — you do not hesitate. It is not the fight you would have chosen as a hatchling. It is the only fight you were always going to win."] }
       ]
     },
 
-    /* ============ ACT II — THE EMPIRE ============ */
+    /* ============ CHAPTER TWO — THE EMPIRE ============ */
     "2.1": {
-      act:"Act II — The Empire", eyebrow:"Node 2.1",
+      chapterShort:"Chapter Two", chapter:"Chapter Two — The Empire", part:"Part I",
       title:"The Perfect Lair",
       text:[
         "Infernus is gone now, by claw or by cunning or by the slow poison of your patience — the mountain no longer questions whose it is. You are grown enough now to think beyond the next meal, toward the shape your reign will take. A dragon is only as powerful as the ground it commands, and three places call to you across these highlands.",
@@ -332,16 +519,45 @@ const STORY = {
       ],
       choices: [
         { label:"Claim the dwarven mine and its gold", flavor:"Wealth now. Others will hear of it eventually.",
-          stats:{}, wealth:40, infamy:5, next:"2.2" },
+          stats:{}, wealth:40, infamy:5, next:"2.2",
+          outcome:["You claim the old dwarven halls as your own, and within days the gold reserves the miners left behind — abandoned in some panic or plague centuries past, by the state of the skeletons still curled around their tools — become the foundation of a hoard that will only ever grow from here. The single narrow gate makes the place absurdly defensible; anything foolish enough to come for your gold will have to come through a corridor built for exactly one dwarf at a time.",
+          "It is, you decide, watching gold light flicker off the tunnel walls, an excellent place to become powerful in."] },
         { label:"Claim the unassailable mountain peak", flavor:"A fortress of pure intimidation, seen by every kingdom below.",
-          stats:{axis1:10}, infamy:8, next:"2.2" },
+          stats:{axis1:10}, infamy:8, next:"2.2",
+          outcome:["You claim the bare, wind-scoured summit, and the moment you land atop it you understand why no other creature has bothered to try. There is no cover here, no need for any — the entire point is to be seen, a silhouette against the sky that every farmer, lord and general within a hundred miles will learn to recognize and fear.",
+          "Comfort was never the goal. Intimidation, delivered for free simply by existing where you now exist, was."] },
         { label:"Claim the underground labyrinth", flavor:"A lair that rewards patience and punishes pursuit.",
-          stats:{axis2:12}, next:"2.2" }
+          stats:{axis2:12}, next:"2.2",
+          outcome:["You descend into the black limestone maze beneath the mountain and spend the better part of a month simply learning its geometry — which tunnels loop back on themselves, which end in sheer drops, which lead nowhere at all by design or by collapse. By the time you emerge, you know this labyrinth better than any invader ever could, and that asymmetry of knowledge is, you are beginning to understand, its own kind of weapon.",
+          "Whatever comes looking for you here will get lost long before it gets close."] }
       ]
     },
 
     "2.2": {
-      act:"Act II — The Empire", eyebrow:"Node 2.2",
+      chapterShort:"Chapter Two", chapter:"Chapter Two — The Empire", part:"Part II",
+      title:"The Trade Road Villages",
+      text:[
+        "Before you set your sights on anything as large as a walled city, the merchant road beneath your new lair offers something gentler: three unwalled farming hamlets strung along it like beads — Millbrook, Thistlewick, and Ashford Ford — none of them large enough to warrant a garrison, all of them exactly large enough to notice a dragon's shadow crossing their fields.",
+        "This is, you understand instinctively, where a legend actually begins — not in some decisive, singular battle, but in the accumulated weight of small decisions like this one, repeated across a dozen forgettable villages whose names will nonetheless end up in every account of how you became what you became."
+      ],
+      choices: [
+        { label:"Raid all three without mercy", flavor:"A systematic sweep. Take everything, leave a warning.",
+          stats:{axis1:-14}, infamy:18, wealth:20, next:"2.3",
+          outcome:["You take them in sequence, methodically, granary by granary — Millbrook first, its harvest barely in; then Thistlewick, whose miller tries and fails to bar his own doors against you; then Ashford Ford, whose bridge you leave standing, mostly, because burning it would have taken time you didn't particularly want to spend. By the time you're done, three villages know exactly what you are, and by the time the story reaches the next town over, so does everyone else.",
+          "It is neither elegant nor subtle. It is, however, extremely effective advertising."] },
+        { label:"Impose a toll on the road itself", flavor:"Let merchants pay for safe passage instead of burning the villages.",
+          stats:{axis2:14}, infamy:8, wealth:30, next:"2.3",
+          outcome:["You do not touch the villages at all. Instead you take up a position on the ridge overlooking the road itself, and let every merchant caravan that passes beneath you understand, without needing to be told twice, that continued safe passage now has a price. Word travels along the trade routes faster than any raid could — dragons, it turns out, make excellent toll collectors, precisely because negotiating with one is not something most caravan masters are eager to attempt twice.",
+          "The villages, spared entirely, never quite work out why. The merchants know exactly why, and pay promptly."] },
+        { label:"Hunt the wild herds instead, and let the villages be", flavor:"Restraint, and a growing legend built on mystery rather than ash.",
+          stats:{axis3:10, axis2:-6}, infamy:-2, next:"2.3",
+          outcome:["You turn away from the villages entirely and hunt the hill country instead — wild elk, the occasional bear foolish enough to contest you for a carcass — leaving Millbrook, Thistlewick and Ashford Ford to harvest their fields under your shadow, untouched, for reasons none of them can quite explain to each other. A dragon that could have taken everything and chose not to becomes its own kind of unsettling rumor.",
+          "You have not yet decided whether restraint is a strategy or simply what feels right. Either way, the villages will remember it, and remembering, it turns out, is its own kind of power."] }
+      ]
+    },
+
+    "2.3": {
+      chapterShort:"Chapter Two", chapter:"Chapter Two — The Empire", part:"Part III",
       title:"The Plunder of Oakhaven",
       text:[
         "Word of a dragon in the highlands has finally reached the lowlands, and with it, the temptation of the first true human settlement in your reach: Oakhaven, a walled market town of perhaps three thousand souls, its granaries full from a late harvest, its garrison small and poorly paid.",
@@ -349,16 +565,44 @@ const STORY = {
       ],
       choices: [
         { label:"Burn it to the foundations", flavor:"Total destruction. The world will speak your name in fear.",
-          stats:{axis1:-14}, infamy:28, wealth:10, next:"2.3" },
+          stats:{axis1:-14}, infamy:28, wealth:10, next:"2.4a",
+          outcome:["Oakhaven does not survive the night. You take the granaries first, then the market square, then, methodically, everything a torch can reach — not out of strategy but out of a desire to be unmistakable. By dawn the town is a smoking outline of its former self, and the survivors who fled into the hills will spend the rest of their lives being the ones who saw it happen.",
+          "Word travels faster than you do. By the time you return to your lair, three separate kingdoms already know your name, and none of them are speaking it kindly."] },
         { label:"Demand tribute from the mayor", flavor:"Rule from above. Let them pay you to survive.",
-          stats:{axis2:8}, infamy:14, wealth:25, next:"2.3" },
+          stats:{axis2:8}, infamy:14, wealth:25, next:"2.4a",
+          outcome:["You land in the market square rather than above it, and let the sheer fact of your presence do the negotiating. The mayor, sensible in the particular way of a man who has just watched a dragon land in his town square, agrees to terms before you have finished explaining them. Oakhaven survives, poorer and considerably more frightened, but standing.",
+          "It is, you find, a surprisingly efficient arrangement — and one you intend to repeat on every settlement within reach that has anything worth taking on a schedule."] },
         { label:"Rob the banks discreetly by night", flavor:"No one need ever know it was you — until the ledgers are checked.",
-          stats:{axis2:18}, infamy:5, wealth:35, next:"2.3" }
+          stats:{axis2:18}, infamy:5, wealth:35, next:"2.4a",
+          outcome:["You wait for full dark and slip into the town through the old flood culverts rather than over the walls, and by the time the first vault door creaks open under a claw far more precise than its size should allow, the entire garrison is asleep at their posts. You are gone before the bells even think to ring, gold sacks vanishing into the night sky along with you.",
+          "It will be three full days before anyone in Oakhaven realizes exactly how much is missing — and considerably longer before anyone thinks to blame a dragon for a crime with no fire, no wreckage, and no witnesses."] }
       ]
     },
 
-    "2.3": {
-      act:"Act II — The Empire", eyebrow:"Node 2.3",
+    "2.4a": {
+      chapterShort:"Chapter Two", chapter:"Chapter Two — The Empire", part:"Part IV",
+      title:"The Princess Speaks",
+      text:[
+        "Aurelia has not screamed, has not fainted, and has not, notably, dropped the jeweled letter-opener she is still gripping like it might actually do something against you. She simply glares, waiting, with the specific patience of someone who has clearly been raised to believe that silence is a weapon too."
+      ],
+      choices: [
+        { label:"\"Scream. It's more efficient than talking, and I'm told very cathartic.\"", flavor:"Deadpan. Mildly unhinged.",
+          stats:{axis2:6}, next:"2.4",
+          outcome:["She does not scream. Instead she informs you, with the icy composure of someone raised specifically to insult people who could eat her, that your breath 'smells like a blacksmith's forge had a baby with a dead fish.' You are, despite everything, a little impressed.",
+          "It is not the reaction you expected. It is, you suspect, the reaction she has been saving for exactly this occasion."] },
+        { label:"\"I promise no harm, Princess. For now.\"", flavor:"Honest, with an honest caveat attached.",
+          stats:{axis2:-6}, next:"2.4",
+          outcome:["'\"For now\" is doing a great deal of work in that sentence,' Aurelia observes, not lowering the letter-opener an inch. But something in her posture eases fractionally — not trust, not yet, but the recognition of a threat that at least bothered to be honest about its terms.",
+          "You did not expect honesty to count for much here. It appears to count for slightly more than nothing."] },
+        { label:"\"Drop the letter-opener. It's adorable, but it isn't going to work.\"", flavor:"Amused. Possibly a mistake.",
+          stats:{axis1:-6}, next:"2.4",
+          outcome:["She does not drop it. She throws it, with surprising accuracy, directly at your eye — missing by perhaps two inches, which is considerably closer than 'adorable' generally implies. 'Noted,' she says, already reaching for the second letter-opener you did not know she had.",
+          "You are beginning to suspect this particular hostage situation is not going to go entirely according to plan."] }
+      ]
+    },
+
+    "2.4": {
+      chapterShort:"Chapter Two", chapter:"Chapter Two — The Empire", part:"Part IV",
       title:"The Royal Hostage",
       text:[
         "Your growing infamy has bought you the attention of a kingdom, and a kingdom's attention arrives in the form of an armed convoy: banners, mounted knights, and at its centre, in a gilded carriage, Crown Princess Aurelia, on her way to a wedding alliance that will now never take place.",
@@ -366,70 +610,415 @@ const STORY = {
       ],
       choices: [
         { label:"Lock her away and demand ransom", flavor:"A pure, profitable transaction. She is worth her weight in gold.",
-          stats:{axis2:10}, infamy:12, wealth:30, next:"3.1" },
+          stats:{axis2:10}, infamy:12, wealth:30, next:"3.1", setFlags:{aureliaAlive:true},
+          outcome:["You settle Princess Aurelia into a heavily warded corner of your lair — comfortable enough that no one can later accuse you of cruelty, secure enough that escape is not a realistic option — and send word to the capital through the one surviving knight, in terms specific enough to leave no room for negotiation. The ransom arrives within the fortnight, an absurd sum, delivered by a delegation too frightened to make eye contact with either of you.",
+          "Aurelia, for her part, spends her captivity taking meticulous mental notes on your lair's defenses. You suspect this will matter again someday. You are, as it turns out, entirely correct."] },
         { label:"Devour her to show your power", flavor:"An unambiguous statement to every throne watching.",
-          stats:{axis1:-20}, infamy:40, next:"3.1" },
+          stats:{axis1:-20}, infamy:40, next:"3.1", setFlags:{aureliaAlive:false},
+          outcome:["You do not hesitate, and the message it sends is immediate and unambiguous: every throne within a thousand miles now understands, with total clarity, precisely what kind of dragon they are dealing with. The kingdom's response is fury dressed up as strategy — hastily assembled war councils, a grieving king, a call to arms that will take months to actually mobilize.",
+          "You have bought yourself time with terror. Whether that trade was worth what it cost is a question history, and possibly you, will keep returning to. For what it's worth — and it isn't worth much — she also didn't agree with you, digestively speaking. Royalty, you decide, eating your way through a light stomach ache that night, is entirely too rich a diet for regular consumption."] },
         { label:"Treat her as an intellectual equal", flavor:"Open a conversation instead of a cage. See what she truly is.",
-          stats:{axis3:18, axis2:6}, infamy:-4, next:"3.1" }
+          stats:{axis3:18, axis2:6}, infamy:-4, next:"3.1", setFlags:{aureliaAlive:true},
+          outcome:["You do not lock her away. Instead you talk — awkwardly at first, and then, as the hours stretch into days, with a genuine and mutual curiosity neither of you quite expected. Aurelia turns out to be sharper than any advisor in her father's court, unafraid of you in a way that has nothing to do with recklessness and everything to do with having actually looked at you and decided you were worth understanding rather than simply fearing.",
+          "When you eventually release her — because by then it has become obvious that you will — she leaves with something rarer than ransom: an opinion of dragons that not one person in her kingdom shares, and will not, for a long time, be able to change."] }
       ]
     },
 
-    /* ============ ACT III — THE WAR OF MANKIND ============ */
+    /* ============ CHAPTER THREE — THE WAR OF MANKIND ============ */
     "3.1": {
-      act:"Act III — The War of Mankind", eyebrow:"Node 3.1",
-      title:"The Holy Knight",
+      chapterShort:"Chapter Three", chapter:"Chapter Three — The War of Mankind", part:"Part I",
+      title:"The First Knights",
       text:[
-        "The kingdom's answer arrives on a white destrier at your cave mouth, alone, which is either supreme confidence or supreme foolishness: Sir Galahad, Paladin of the Sunfire Order, a blade of blessed silver-steel humming with warded light in his gauntleted fist. He does not shout, does not threaten. He simply says, 'Dragon. Your reckoning has come, however it must,' and steps into the dark toward you.",
-        "He is skilled beyond any human you have measured yourself against, and the sword in his hand could cut through scale as if it were parchment. How this ends is entirely a question of what kind of monster — or ruler — you have chosen to become."
+        "The kingdom's opening response is not the champion you might have expected, but a hastily assembled band of seven hedge-knights and sellswords under a minor baron too proud, or too indebted, to wait for the crown's official war effort to organize itself. They arrive at dawn, banners a size too grand for their numbers, clearly meant less to defeat you than to be seen trying — a probing test, everyone involved privately understands, to buy the kingdom's real preparations a few more weeks.",
+        "Their captain, a stout man whose armor has clearly seen more ceremonies than battles, calls up toward your den with a voice that cracks only slightly on the second word. 'Dragon! Surrender the mountain, or face the wrath of the crown!' Behind him, several of his men are visibly recalculating their life choices."
       ],
       choices: [
-        { label:"Meet him in honorable single combat", flavor:"Sword against fang and claw, no tricks, no advantage taken.",
-          stats:{axis2:-16}, health:-24, infamy:10, next:"3.2" },
-        { label:"Collapse the cavern ceiling on him", flavor:"Use the mountain itself as your weapon. He never draws close.",
-          stats:{axis2:20}, health:-4, infamy:2, next:"3.2" },
-        { label:"Bribe and unsettle him with words", flavor:"Offer him gold, doubt, and the seed of an idea he cannot un-hear.",
-          stats:{axis2:14, axis3:8}, infamy:-2, next:"3.2" }
+        { label:"Slaughter them on the mountainside", flavor:"Leave none alive. Let the message be unmistakable.",
+          stats:{axis1:-14}, health:-6, infamy:20, next:"3.2a",
+          outcome:["You do not negotiate with an opening move this transparent. You are among them before the captain finishes his second sentence, and it is over in minutes — brutal, thorough, and utterly without survivors to carry the tale back except in the vaguest, most terrified rumors. The baron who sent them will spend the rest of his career explaining, badly, why none of his knights came home.",
+          "The kingdom's real preparations, whatever they were going to be, now have considerably more urgency behind them — and considerably less patience for half-measures."] },
+        { label:"Roar them into a screaming retreat", flavor:"Let them see exactly what they're facing, and decide for themselves.",
+          stats:{axis2:12}, infamy:6, next:"3.2a",
+          outcome:["You do not kill a single one of them. You simply rise to your full height on the ridge above their formation, spread wings that block out a genuinely alarming portion of the morning sky, and let loose a roar that rattles armor plating from half a mile away. It is, you find, considerably more effective than violence — three men break formation and run before the captain even finishes drawing his sword, and the rest are not far behind.",
+          "No blood, no bodies to explain, and a story that will lose nothing at all in the retelling. Sometimes the threat performs better than the act."] },
+        { label:"Spare their leader, and send terms back with him", flavor:"Diplomacy through a survivor. Let the kingdom hear it from a witness.",
+          stats:{axis2:-14}, infamy:-4, wealth:10, next:"3.2a",
+          outcome:["You let the rank and file scatter in their initial panic and go straight for the captain instead, pinning him beneath a single foreleg with enough restraint to make the point without breaking anything essential. 'Tell your crown,' you say, in the calm, unhurried tone of something that has never once needed to shout to be believed, 'that I am willing to discuss terms. I am considerably less willing to discuss them with the next messenger they send in pieces.'",
+          "He rides back down the mountain considerably paler than he arrived, and considerably more useful to you alive than any of his men would have been dead."] }
+      ]
+    },
+
+    "3.2a": {
+      chapterShort:"Chapter Three", chapter:"Chapter Three — The War of Mankind", part:"Part II",
+      title:"Words Before the Blade",
+      text:[
+        "Galahad has said his piece — reckoning, however it must, all very properly ominous. He is still several strides from striking range. There is, you calculate, time for exactly one exchange before this becomes considerably less verbal."
+      ],
+      choices: [
+        { label:"\"'Reckoning' is a big word for someone whose sword hand is shaking.\"", flavor:"A taunt. It's not even true, but it might rattle him.",
+          stats:{axis1:-6}, next:"3.2",
+          outcome:["His hand was not shaking. It is now, slightly, out of sheer indignant spite, which you suppose is a victory of a very small and specific kind. 'It will stop shaking,' he says, 'directly before it stops being attached to my arm, dragon, and not one moment sooner.'",
+          "Performative bravado, you are learning, works on paladins exactly as well as it works on everyone else. Which is to say: somewhat, and briefly."] },
+        { label:"\"I've done worse than reckoning to bigger things than you.\"", flavor:"A quieter, more genuine threat.",
+          stats:{axis1:6}, next:"3.2",
+          outcome:["'So the histories imply,' he says, entirely unfazed, drawing his blade the rest of the way free. 'I brought a bigger sword.' You cannot immediately fault the logic. You can, at least, respect a man who does his homework before volunteering to die.",
+          "This is going to be a genuinely difficult fight, and you both already know it."] },
+        { label:"\"Must you? I only just finished organizing my hoard alphabetically.\"", flavor:"Deadpan absurdity. See if it lands.",
+          stats:{axis3:6}, next:"3.2",
+          outcome:["Something flickers across Galahad's face that is almost, almost a smile, before he visibly remembers his oath, his order, and the general inadvisability of finding a dragon funny mid-confrontation, and scowls twice as hard to compensate. 'I am given to understand,' he says stiffly, 'that dragons are not typically known for their organizational habits.'",
+          "'We contain multitudes,' you inform him, and for one very strange moment, neither of you moves to attack the other."] }
       ]
     },
 
     "3.2": {
-      act:"Act III — The War of Mankind", eyebrow:"Node 3.2",
-      title:"The Archmage's Battalion",
+      chapterShort:"Chapter Three", chapter:"Chapter Three — The War of Mankind", part:"Part II",
+      title:"The Holy Knight",
       text:[
-        "Galahad's fate — however you sealed it — was only the opening move. Now an entire army crawls up the mountain's flank: siege catapults hauled on ox-carts, ranks of pikemen, and at its heart, the Archmage Ostrovan and his battle-college of war-wizards, their staves crackling with chained lightning. This is no longer a monster hunt. This is a war, and it has your name on its banner.",
-        "The mountain shakes with the first catapult volley before you have even finished deciding how to answer it."
+        "The kingdom's real answer arrives on a white destrier at your cave mouth, alone, which is either supreme confidence or supreme foolishness: Sir Galahad, Paladin of the Sunfire Order, a blade of blessed silver-steel humming with warded light in his gauntleted fist. He does not shout, does not threaten. He simply says, 'Dragon. Your reckoning has come, however it must,' and steps into the dark toward you.",
+        "He is skilled beyond any human you have measured yourself against, and the sword in his hand could cut through scale as if it were parchment. How this ends is entirely a question of what kind of monster — or ruler — you have chosen to become."
       ],
       choices: [
-        { label:"Fly above and destroy their supply lines", flavor:"An aerial campaign of speed and precision, far from their spellfire.",
-          stats:{axis1:12}, health:-10, infamy:16, next:"4.1" },
-        { label:"Rally the mountain's goblin and orc tribes", flavor:"Turn old enemies into an army fighting beside you.",
-          stats:{axis2:18}, infamy:8, next:"4.1" },
-        { label:"Use magic to turn their forces on each other", flavor:"Whisper doubt, illusion and rivalry through their ranks until they break themselves.",
-          stats:{axis3:20, axis2:10}, infamy:6, next:"4.1" }
+        { label:"Meet him in honorable single combat", flavor:"Sword against fang and claw, no tricks, no advantage taken.",
+          stats:{axis2:-16}, health:-24, infamy:10, next:"3.3a",
+          outcome:["You meet Galahad in the open cavern floor rather than the shadows, matching his honor with your own, and the fight that follows is the hardest of your life. His blessed sword finds your hide twice before you manage to close the distance properly, and by the time you finally pin him beneath a foreleg, you are both bleeding, both exhausted, and both, in some strange way, satisfied that the fight was fair.",
+          "He yields rather than dies — an outcome neither of you quite planned for, and one that will matter more than either of you yet realizes."] },
+        { label:"Collapse the cavern ceiling on him", flavor:"Use the mountain itself as your weapon. He never draws close.",
+          stats:{axis2:20}, health:-4, infamy:2, next:"3.3a",
+          outcome:["You let him walk deeper into the dark, drawing him past a section of ceiling you have long known to be unstable, and bring the mountain down on him before his blessed sword ever comes within striking distance. It is not glorious. It is not meant to be. Dust and rubble settle over a silence that stretches long enough for you to wonder if it worked.",
+          "It worked. Whatever legend eventually gets told about the paladin who challenged a dragon and vanished, it will not include the detail that he never got a single swing in."] },
+        { label:"Bribe and unsettle him with words", flavor:"Offer him gold, doubt, and the seed of an idea he cannot un-hear.",
+          stats:{axis2:14, axis3:8}, infamy:-2, next:"3.3a",
+          outcome:["You do not fight him at all, not with claw or with flame. Instead you talk — about the kingdom that sent him alone to die for a crown that will not remember his name, about the exact size of the fortune sitting three feet from where he is standing, about the particular kind of doubt that a righteous man cannot un-hear once it has been spoken aloud. Galahad does not accept your gold. But he leaves without drawing his sword, and rides back down the mountain carrying a question about his order he did not have when he arrived.",
+          "Sometimes the deepest wound is the one that never breaks skin."] }
       ]
     },
 
-    /* ============ ACT IV — CLIMAX & EPILOGUE ============ */
-    "4.1": {
-      act:"Act IV — The Endgame", eyebrow:"Node 4.1",
-      title:"The Emperor's Ultimatum",
+    "3.3a": {
+      chapterShort:"Chapter Three", chapter:"Chapter Three — The War of Mankind", part:"Part III",
+      title:"An Uninvited Introduction",
       text:[
-        "The war is effectively over, and the Emperor himself — not a general, not an envoy, but the crowned ruler of the realm — rides to the base of your mountain under a truce banner, flanked by every surviving lord who still commands soldiers. He offers you a choice with the flat, exhausted voice of a man who has already lost this war and knows it.",
-        "'Total surrender of your mountain and your submission to my crown,' he says, 'or total annihilation — I will burn every forest and empty every treasury of this empire before I let a dragon sit above me unanswered.' It is, of course, an empty threat and he knows you know it. What you do with that knowledge will become the final line of your legend."
+        "Mirelle has already said her piece — the wondering how long it would take you, the pointed question about who might have sent you. She is watching you now with the particular patience of someone who has clearly rehearsed several possible versions of this conversation, alone, for years, and is mildly disappointed none of her rehearsals involved quite this much scale."
       ],
       choices: [
-        { label:"Raze the capital and crown yourself Dragon-King", flavor:"Total conquest. There is no throne now but yours.",
-          stats:{axis1:-18}, infamy:35, wealth:60, next:"4.2" },
+        { label:"\"Should I be flattered you expected me, or worried?\"", flavor:"Wry. Curious. Buying time to assess her.",
+          stats:{axis3:6}, next:"3.3",
+          outcome:["'Both, generally, is the correct response to me,' she says, without a trace of humor and without a trace of dishonesty either. 'I find it saves a great deal of time to establish that early.'",
+          "You are beginning to like her, against every instinct that has kept you alive this long."] },
+        { label:"\"Talk fast. I don't often extend this courtesy.\"", flavor:"Intimidating. A little theatrical.",
+          stats:{axis1:6}, next:"3.3",
+          outcome:["'Noted,' she says, entirely unbothered, already turning to retrieve a rolled map from somewhere inside her tower. 'I'll try to be concise about the impending apocalypse, then. Give me a moment to find the right map — I have several, and only one of them is currently relevant.'",
+          "This is, you reflect, an extremely strange way to be threatened back."] },
+        { label:"\"I don't trust hermits who build wards this good. What are you hiding?\"", flavor:"Skeptical. Reasonably so.",
+          stats:{axis2:6}, next:"3.3",
+          outcome:["She raises one eyebrow, slow and deliberate, the universal expression of someone who has been asked this exact question by exactly the wrong people, exactly too many times. 'Everything, dragon,' she says. 'That is rather the point of a hermitage. I would be terrible at it otherwise.'",
+          "You cannot, in fairness, argue with the logic."] }
+      ]
+    },
+
+    "3.3": {
+      chapterShort:"Chapter Three", chapter:"Chapter Three — The War of Mankind", part:"Part III",
+      title:"The Hermit Sorceress",
+      text:[
+        "Scouting the war's approach from higher ground, you find something that has nothing to do with the army you're expecting: a squat stone tower half-swallowed by ivy, deep in a hollow no road actually reaches, humming faintly with wards old enough to have weathered into the stone itself. Whoever lives there has clearly gone to considerable trouble not to be found, which is, in your experience, exactly the kind of trouble worth investigating.",
+        "The tower's occupant does not wait for you to knock, in whatever way a dragon might. A woman steps out onto the threshold before you have fully landed — grey-streaked, sharp-eyed, unarmed except for the staff she is very obviously not using as a walking aid — and regards you with none of the fear you have come to expect and rather more calculation. 'A dragon,' she says, in the flat tone of someone confirming a suspicion rather than making a discovery. 'I wondered how long it would take you to find this place. Or whether you'd already been sent to.'"
+      ],
+      choices: [
+        { label:"Kill her before she can strike first", flavor:"An unknown spellcaster near your war is a risk you cannot afford.",
+          stats:{axis1:-16}, health:-8, infamy:14, next:"3.4", setFlags:{sorceressAlive:false},
+          outcome:["You do not wait to find out what she meant. She fights back harder than her age or her tower suggested she could — a last, desperate lattice of wards flaring blue-white against your claws before they finally give — and by the time it is over, you are bleeding in three places and she is not breathing in any. Her final words, half-swallowed by her own collapsing spellwork, are not a curse. They sound, disturbingly, like a warning.",
+          "It will be some time before you learn what she was trying to tell you, and considerably longer before you can be entirely certain killing her was the right call."] },
+        { label:"Demand she explain herself, claws ready", flavor:"Hear her out first. You can always finish this afterward.",
+          stats:{axis3:14}, health:-2, next:"3.4", setFlags:{sorceressAlive:true},
+          outcome:["You do not strike, not yet — curiosity, for once, outweighing caution. She introduces herself as Mirelle, once court sorceress to a kingdom two rulers removed from this one, and explains, with the clipped economy of someone who has rehearsed this conversation many times in solitude, that the war being waged against you is not entirely what it appears to be. 'Ostrovan is a puppet,' she says. 'A good wizard doing his king's bidding, same as everyone else in this. Someone else is pulling every string in this war, dragon, and it isn't your Emperor.'",
+          "You do not yet know whether to believe her. But you do not kill her either, and that, you sense, is the more consequential decision of the two."] },
+        { label:"Trust your instincts, and lower your guard first", flavor:"Something about her does not read as an enemy. Take the risk.",
+          stats:{axis2:-16}, next:"3.4", setFlags:{sorceressAlive:true},
+          outcome:["Something in the way she stands — unafraid but not aggressive, watchful rather than hostile — convinces you before she has said a full sentence. You fold your wings, settle onto the hillside rather than looming over her tower, and let her speak without the threat of claws hanging over every word. It is, you will later reflect, one of the better instincts you have trusted in your short life. Mirelle, once court sorceress to a kingdom two rulers removed from this one, has spent years quietly working against the true architect of the war now climbing your mountain — and she has been waiting, she admits, for someone with the strength to actually do something about it.",
+          "'I did not expect that someone to have scales,' she says. 'I am adjusting my expectations rapidly.'"] }
+      ]
+    },
+
+    "3.4": {
+      chapterShort:"Chapter Three", chapter:"Chapter Three — The War of Mankind", part:"Part IV",
+      title:"The Archmage's Battalion",
+      text: (state) => {
+        let goblinLine = "";
+        if(state.flags.goblinAllies === 'worship'){
+          goblinLine = " Even your goblin worshippers, warned by their own scouts, spill out of their warren to watch the army pass, chanting your name like a battle-hymn rehearsed for exactly this occasion.";
+        } else if(state.flags.goblinAllies === 'fear'){
+          goblinLine = " Deep in the warren, the goblins you long ago broke to servitude watch the approaching army with an expression you have learned to recognize as opportunity.";
+        } else if(state.flags.goblinAllies === 'trust'){
+          goblinLine = " In the ravine below, the goblin tribe that has quietly trusted you for seasons now watches the approaching army with something that looks remarkably like solidarity.";
+        }
+        const sorceressLine = state.flags.sorceressAlive
+          ? " Mirelle, watching the same army from a rise a half-mile from your den, says only, 'This is Ostrovan's battalion. Whatever you decide to do with it, understand that it is not the war you actually need to win.'"
+          : "";
+        return [
+          "Galahad's fate — however you sealed it — was only the opening move. Now an entire army crawls up the mountain's flank: siege catapults hauled on ox-carts, ranks of pikemen, and at its heart, the Archmage Ostrovan and his battle-college of war-wizards, their staves crackling with chained lightning. This is no longer a monster hunt. This is a war, and it has your name on its banner." + goblinLine + sorceressLine,
+          "The mountain shakes with the first catapult volley before you have even finished deciding how to answer it."
+        ];
+      },
+      choices: [
+        { label:"Fly above and destroy their supply lines", flavor:"An aerial campaign of speed and precision, far from their spellfire.",
+          stats:{axis1:12}, health:-10, infamy:16, next:"4.1",
+          outcome:["You take to the sky before the second catapult volley even lands, circling wide and low behind their lines to find exactly what every siege depends on and never adequately protects: the supply carts. Three passes and a few careful bursts of flame later, their oxen are scattered, their food is ash, and an army that arrived expecting a straightforward siege is suddenly calculating how many days it has left before starvation does your work for you.",
+          "It is not the battle they trained for. It is the only battle you needed to win."] },
+        { label:"Rally the mountain's goblin and orc tribes", flavor:"Turn old neighbors — or old subjects — into an army fighting beside you.",
+          stats:{axis2:18}, infamy:8, next:"4.1",
+          outcome: (state) => {
+            const mode = state.flags.goblinAllies;
+            if(mode === 'worship'){
+              return [
+                "You do not persuade the goblin tribes so much as summon them. To creatures who have spent seasons leaving offerings at the mouth of your den, a call to war from their god is not a request — it is scripture. They arrive not as mercenaries but as zealots, screaming down the mountainside into the army's flank with a fervor no coin could ever have purchased.",
+                "War, you are learning, is rarely won by the strongest single combatant. It is won by whoever has the most reasons fighting on their side — and faith, it turns out, is a remarkably durable one."
+              ];
+            }
+            if(mode === 'fear'){
+              return [
+                "You descend into the warrens you have long kept in chains and offer the goblins there a bargain even they can recognize as an improvement: fight, and the leash loosens. It is not loyalty that answers your call, but the oldest motivation there is — the terrified hope of a lighter chain — and it is enough. They pour down the mountainside into the army's flank, driven less by hatred of the invaders than by fear of what happens if they refuse you.",
+                "War, you are learning, is rarely won by the strongest single combatant. It is won by whoever has the most reasons fighting on their side, however those reasons were acquired."
+              ];
+            }
+            return [
+              "You descend into the goblin warrens beneath the mountain's eastern face — territory whose trust you earned rather than took — and offer the tribes there something no human lord ever has: a share of the coming victory, freely asked for rather than demanded. They arrive in numbers that surprise even you, screaming down the mountainside into the army's flank at exactly the moment the siege lines are most stretched.",
+              "War, you are learning, is rarely won by the strongest single combatant. It is won by whoever has the most reasons fighting on their side."
+            ];
+          } },
+        { label:"Use magic to turn their forces on each other", flavor:"Whisper doubt, illusion and rivalry through their ranks until they break themselves.",
+          stats:{axis3:20, axis2:10}, infamy:6, next:"4.1",
+          outcome:["You do not meet the army at all, not directly. Instead you move through the fog and half-light at its edges, planting illusions of betrayal among the war-wizards, whispered doubts among the pikemen, a single convincing vision of the Archmage abandoning his own troops to save himself. By midnight the siege has not been broken by dragonfire. It has broken itself, companies turning on companies in the confused, paranoid dark, certain they are defending against an enemy that was never where they thought it was.",
+          "By dawn, what marches back down the mountain is not an army anymore. It is survivors."] }
+      ]
+    },
+
+    /* ============ CHAPTER FOUR — THE ENDGAME ============ */
+    "4.1": {
+      chapterShort:"Chapter Four", chapter:"Chapter Four — The Endgame", part:"Part I",
+      title:"The Villain's Castle",
+      text: (state) => {
+        if(state.flags.sorceressAlive){
+          return [
+            "The war above ground has barely finished settling into an uneasy quiet when Mirelle finds you again, exactly as she promised she would. She does not waste time on pleasantries. 'Ostrovan was never the true architect of any of this,' she says, unrolling a hand-inked map across the cavern floor. 'He was a puppet, same as the Emperor, same as half this kingdom's council. The hand behind the war belongs to a man who died two hundred years ago and simply never agreed to stay that way — Malvorath Thorne. His citadel sits three days' flight north, warded against everything except, as it turns out, a dragon he never planned for.'",
+            "She has spent months mapping his defenses from the shadows, and she means to finish what she started. 'I cannot bring him down alone,' she admits, 'and until an hour ago, I was fairly sure you'd have eaten me before agreeing to help.' She is not entirely wrong to have thought so. But she is here now, and so, unmistakably, is the fortress she is pointing you toward."
+          ];
+        }
+        return [
+          "The war above ground has barely finished settling into an uneasy quiet when the truth finally reaches you anyway, pieced together from a captured war-wizard's ravings and the frightened testimony of a goblin scout: Archmage Ostrovan was never the true architect of any of this. He was a puppet, same as the Emperor, same as half the kingdom's council. The hand behind the war belongs to a man who died two hundred years ago and simply never agreed to stay that way — Malvorath Thorne, ruling from a warded black citadel three days' flight to the north.",
+          "There is no ally at your side to hand you a map of his defenses this time, no one who has spent months learning his weaknesses from the shadows. Whatever waits behind those walls, you will be finding out the hard way, alone, exactly as you have been since the day you broke out of your shell."
+        ];
+      },
+      choices: [
+        { label:"Storm the gates in raw fire and fury", flavor:"A frontal assault. Let the walls answer for the man behind them.",
+          stats:{axis1:-16}, health:-18, infamy:10, wealth:50, next:"4.2a",
+          outcome: (state) => state.flags.sorceressAlive ? [
+            "You do not wait for a clever entrance. You put the citadel's gates to the same test you have put every other obstacle in your life, and Mirelle, to her evident surprise, finds herself improvising wards on the fly to keep the answering counter-spells from taking your head off mid-charge. Between her shields and your fire, Malvorath's outer defenses last considerably less time than two hundred years of preparation should have bought him. You find him at the top of his own tower, furious and, in the end, entirely mortal after all.",
+            "His vaults, once you finally breach them, contain two centuries of accumulated hoard — and a great many things Mirelle insists on burning rather than looting, for reasons she does not fully explain and you do not fully press."
+          ] : [
+            "You do not have a map, so you make your own — straight through the front gates, at speed, before the ancient wards have finished registering what kind of threat has just arrived. It is reckless in exactly the way that only works when the enemy has spent two centuries preparing for everything except this. Malvorath meets you at the top of his own tower, furious that two hundred years of careful defense amounted to a dragon simply refusing to be clever about it, and considerably more mortal than he expected to still be.",
+            "His vaults, once breached, contain two centuries of accumulated hoard, and no one left alive to explain what half of it was for."
+          ] },
+        { label:"Slip through hidden passages and strike from within", flavor:"Patience and precision, striking before he even knows you've arrived.",
+          stats:{axis2:18}, health:-6, infamy:4, wealth:60, next:"4.2a",
+          outcome: (state) => state.flags.sorceressAlive ? [
+            "Mirelle's months of scouting pay for themselves in full. She leads you through a servant's postern gate she mapped weeks ago, past ward-lines she long since learned to read like a second language, and by the time Malvorath realizes his citadel has been breached, you are already three floors above his study rather than pounding uselessly at his front door. He is old, and powerful, and utterly unprepared for an attack that skips every defense he actually built.",
+            "'Two hundred years,' Mirelle mutters, stepping over what remains of his wards, 'and it never once occurred to him that patience beats a front door.'"
+          ] : [
+            "Without a guide, you spend three full days simply watching the citadel from a distance — its patrol patterns, the places its ancient wards seem to thin — before finally finding a crack in defenses built to repel armies rather than a single patient predator. The infiltration that follows is slow, careful, and entirely your own work: no map, no ally, just the same instinct for terrain and timing that once let a hatchling outmaneuver a rival twice its size.",
+            "By the time Malvorath realizes his citadel has been breached, you are already standing in his study. Two hundred years of preparation, it turns out, cannot account for patience it never saw coming."
+          ] },
+        { label:"Overwhelm his wards with controlled, precise power", flavor:"Meet two centuries of dark magic with force worthy of the name.",
+          stats:{axis1:16}, health:-10, infamy:6, wealth:55, next:"4.2a",
+          outcome: (state) => state.flags.sorceressAlive ? [
+            "Mirelle identifies the citadel's oldest, deepest ward-stone from half a mile out — the anchor every other layer of defense is built on — and the two of you spend a long, strange hour testing exactly how much combined force it takes to unmake two centuries of careful spellwork at once. The answer, it turns out, is a dragon at the height of its power and a sorceress who knows precisely where to aim it. The wards fail all at once, cascading, and Malvorath's last line of defense collapses before he has finished raising it.",
+            "'I have wanted to do that for eleven years,' Mirelle admits, watching the ward-stone crumble to dust. 'Somehow it is more satisfying with an audience.'"
+          ] : [
+            "Without anyone to point you toward the citadel's weakest ward, you simply test all of them, methodically, until one finally gives — a slow, grinding hour of controlled, precise power thrown against two centuries of accumulated dark magic, patience matched against patience, until the oldest ward-stone finally cracks and the rest of the defenses cascade down with it. It is not elegant. It is, however, exactly as effective as elegance would have been.",
+            "Malvorath's last line of defense collapses in a shower of failing magic, and for the first time in two hundred years, his citadel has nothing left standing between you and him."
+          ] }
+      ]
+    },
+
+    "4.2a": {
+      chapterShort:"Chapter Four", chapter:"Chapter Four — The Endgame", part:"Part II",
+      title:"Terms, Before the Terms",
+      text:[
+        "The Emperor has arrived with considerably more ceremony than the situation strictly requires — banners, a herald, an honor guard standing at attention in front of a mountain that has personally dismantled every army this kingdom has sent against it. There is, you decide, time for one exchange before he gets to the actual point."
+      ],
+      choices: [
+        { label:"\"You brought your whole court to watch you lose. Bold.\"", flavor:"Mocking. He clearly can't do anything about it.",
+          stats:{axis1:-6}, next:"4.2",
+          outcome:["The Emperor does not dignify this with a response, in the specific and very obvious way of a man visibly biting back several responses he has been warned, repeatedly, not to give a dragon. His herald, less disciplined, makes a small strangled noise that might have been a laugh.",
+          "You count it as a win regardless."] },
+        { label:"\"Let's skip the theater. What do you actually want?\"", flavor:"Pragmatic. Cuts through the pageantry.",
+          stats:{axis2:6}, next:"4.2",
+          outcome:["Something in the Emperor's shoulders drops a fraction, almost relieved, as though he too has been waiting for someone to skip the part where they both pretend this meeting is anything but a formality. 'Very well,' he says, and for the first time since arriving, sounds like an actual person rather than a title.",
+          "This, you suspect, is going to go considerably faster than either of you planned for."] },
+        { label:"\"I've eaten kings for less impressive entrances than yours.\"", flavor:"Dark. Threatening. Possibly not even an exaggeration.",
+          stats:{axis1:-6}, infamy:4, next:"4.2",
+          outcome:["Several members of the honor guard go visibly, uniformly pale. The Emperor, to his credit, does not — though his hand finds the pommel of a ceremonial sword that would accomplish precisely nothing against you, and holds it there anyway, for reasons you suspect are entirely about dignity and not remotely about tactics.",
+          "You respect the commitment to the bit, even as everyone around him is quietly recalculating their life choices."] }
+      ]
+    },
+
+    "4.2": {
+      chapterShort:"Chapter Four", chapter:"Chapter Four — The Endgame", part:"Part II",
+      title:"The Emperor's Ultimatum",
+      text: (state) => {
+        const castleLine = " Word of the black citadel's fall has reached the capital ahead of him — the truth of who was really orchestrating this war, and who put an end to it, and it has visibly, uncomfortably reshaped the terms he thought he was arriving to dictate.";
+        return [
+          "The war is effectively over, and the Emperor himself — not a general, not an envoy, but the crowned ruler of the realm — rides to the base of your mountain under a truce banner, flanked by every surviving lord who still commands soldiers." + castleLine + " He offers you a choice with the flat, exhausted voice of a man who has already lost this war and knows it, on terms far less confident than he intended to bring.",
+          "'Total surrender of your mountain and your submission to my crown,' he says, 'or total annihilation — I will burn every forest and empty every treasury of this empire before I let a dragon sit above me unanswered.' It is, of course, an empty threat and he knows you know it, more so now than he'd like to admit. What you do with that knowledge will become the final line of your legend."
+        ];
+      },
+      choices: [
+        { label:"Reject the terms, and march on the capital", flavor:"No treaty. You mean to take the throne itself.",
+          stats:{axis1:-14}, infamy:12, wealth:20, next:"5.1a",
+          outcome:["You do not wait for the Emperor's terms to finish echoing off the mountainside before you have already decided they were never going to be acceptable. He barely clears the treaty ground before you are airborne, angling south toward the one prize that was never actually on the negotiating table: the capital itself, and the throne sitting empty inside it while its ruler wastes time down here bargaining with a dragon who has already made up her mind.",
+          "Behind you, the Emperor's truce banner is still fluttering in the wind by the time the capital's watchtowers spot your shadow on the horizon and begin, far too late, to ring every bell they have."] },
         { label:"Sign a treaty of eternal tribute", flavor:"Rule from the shadows of the throne instead of upon it.",
-          stats:{axis2:16}, infamy:10, wealth:80, next:"4.2" },
+          stats:{axis2:16}, infamy:10, wealth:80, next:"END",
+          outcome:["You do not need the capital to burn to get what you actually want. You meet the Emperor's terms with counter-terms of your own — tribute, permanent and substantial, delivered on a schedule you set, in exchange for a peace he is visibly relieved to be offered. He signs before you have finished speaking, and rides back down the mountain having lost a war without ever quite having to admit, out loud, that he lost it.",
+          "Power, you have learned, does not always need to look like conquest to function exactly like it."] },
         { label:"Withdraw and become myth, untouchable", flavor:"Vanish from the world of men entirely, and let legend do the rest.",
-          stats:{axis3:22}, infamy:-10, next:"4.2" }
+          stats:{axis3:22}, infamy:-10, next:"END",
+          outcome:["You do not answer the Emperor at all — not with fire, not with terms, not with a single word. You simply rise into the high thin air above the treaty banners and climbing lords, and fly, higher and further than any human eye can follow, until the mountain that made you is a rumor even to the people who live in its shadow.",
+          "Let them argue over what it meant. Let them build shrines, or watchtowers, or nothing at all. You are no longer answerable to the question of what a dragon owes the world beneath it."] }
+      ]
+    },
+
+    /* ============ CHAPTER FIVE — THE RECKONING ============ */
+    "5.1a": {
+      chapterShort:"Chapter Five", chapter:"Chapter Five — The Reckoning", part:"Part I",
+      title:"The Captain's Challenge",
+      text:[
+        "Dame Vaneth has delivered her speech — the cost, the throne, the framing of this whole encounter as a matter of principle rather than survival. It was, you have to admit, a genuinely good speech. There is time, before the fighting starts, to say so, or to say something considerably less generous instead."
+      ],
+      choices: [
+        { label:"\"You've clearly rehearsed that speech. I respect the commitment.\"", flavor:"Wry. Weirdly warm, for a battlefield.",
+          stats:{axis3:6}, next:"5.1",
+          outcome:["'Several times,' she admits, entirely without embarrassment. 'In a mirror. This morning, in fact.' It is, you decide, an oddly disarming thing to admit moments before what is about to be the largest fight of your life so far.",
+          "You like her considerably more than you expected to. It does not change what happens next."] },
+        { label:"\"I've survived worse than a Captain with main-character energy.\"", flavor:"Cocky. She does not look impressed.",
+          stats:{axis1:-6}, next:"5.1",
+          outcome:["Dame Vaneth does not so much as blink. 'Everyone says that,' she says, drawing her sword with the unhurried economy of someone who has heard every possible variation of this line from every possible opponent. 'Statistically, most of them were wrong.'",
+          "You are beginning to understand exactly why this woman commands the Royal Guard."] },
+        { label:"\"I'd rather not kill your best people today, Captain.\"", flavor:"An honest offer. It won't change her orders, but it's honest.",
+          stats:{axis2:-6}, next:"5.1",
+          outcome:["Something in her expression shifts — not agreement, not relief, but a flicker of genuine respect she was clearly not expecting to feel today. 'That is, unfortunately, not up to either of us anymore,' she says. 'But I appreciate you saying it before rather than after.'",
+          "Small mercies, apparently, still register, even here."] }
+      ]
+    },
+
+    "5.1": {
+      chapterShort:"Chapter Five", chapter:"Chapter Five — The Reckoning", part:"Part I",
+      title:"The Palace Guard",
+      text:[
+        "The capital does not fall the way Oakhaven did, or the way the trade road villages did, or the way anything has fallen to you so far. Its walls are higher, its streets emptied ahead of you by riders who outran your shadow by minutes rather than hours, and waiting at the palace gates is not a garrison of frightened regulars but the kingdom's actual best: the Royal Guard in full ceremonial-turned-battle plate, a corps of court battle-mages already weaving shield-glyphs into the air, and at their head, Dame Iseult Vaneth, Captain of the Guard, whose reputation you have heard even in the highlands, standing utterly still in your path.",
+        "'You have already won the war,' she calls up to you, sword still sheathed. 'This is not a battle for the war. This is a battle for whether the throne means anything at all once you're sitting on it. I intend to make that cost as high as I can.'"
+      ],
+      choices: [
+        { label:"Cut through the Royal Guard head-on", flavor:"Overwhelming force against the kingdom's finest. No subtlety required.",
+          stats:{axis1:-14}, health:-20, infamy:14, next:(s)=>s.flags.aureliaAlive?'5.2a':'5.2',
+          outcome:["You do not accept her framing. You come down on the gate itself rather than the guard formation, and the battle that follows is the largest, longest fight of your entire life — Dame Vaneth's guard trained specifically, it becomes clear, for exactly this scenario, their shield-glyphs absorbing three separate bursts of flame before the mages finally run dry. It costs you dearly: claw-wounds you will carry scars from for the rest of your existence, a wing membrane torn badly enough to ground you for days once this is over.",
+          "But it costs the Royal Guard considerably more. By the time the gate finally gives, Dame Vaneth is one of perhaps a dozen still standing, and even she is bleeding from wounds that will end her career, if not quite her life."] },
+        { label:"Slip through the old smuggler tunnels beneath the palace", flavor:"Bypass the guard entirely. Let precision do what force would cost too much for.",
+          stats:{axis2:16}, health:-8, infamy:4, next:(s)=>s.flags.aureliaAlive?'5.2a':'5.2',
+          outcome:["You do not meet Dame Vaneth's guard at all. While her formation braces for an assault that never comes at the front gate, you fold yourself — with considerably more effort than dignity — into the old flood tunnels beneath the palace, the same architecture that has smuggled contraband and desperate nobility out of this city for three centuries, now smuggling something considerably larger in. You emerge inside the palace walls, guard formation entirely behind you, before anyone realizes the siege they prepared for was never going to happen.",
+          "Dame Vaneth, to her credit, works this out almost immediately. By the time she reorganizes her guard to intercept you, you are already three courtyards ahead of her."] },
+        { label:"Challenge Dame Vaneth to single combat for the gate", flavor:"Meet her offer of a costly fight with a smaller, fairer one.",
+          stats:{axis2:-14}, health:-16, infamy:6, next:(s)=>s.flags.aureliaAlive?'5.2a':'5.2',
+          outcome:["You take her at her word, and her framing, and land instead of charging — close enough to speak without shouting, far enough that neither of you could call the distance an ambush. 'Winner takes the gate,' you say. 'No guard, no mages. Just us.' She studies you for a long moment, then, to the visible horror of her own lieutenants, sheathes nothing and simply nods. The duel that follows is brutal, honest, and considerably shorter than the battle either of you were braced for — she is extraordinary, and you are still larger, and larger, in the end, is what decides it.",
+          "She yields with her sword still in her hand, guard standing down around her without needing to be told twice. It is, you both privately agree, a better ending than the one either army was prepared to give the other."] }
+      ]
+    },
+
+    "5.2a": {
+      chapterShort:"Chapter Five", chapter:"Chapter Five — The Reckoning", part:"Part II",
+      title:"One Last Conversation",
+      text:[
+        "Aurelia has said she has had a great deal of time to think, and that she still hasn't decided what to say. You suspect she is waiting to see what you say first, the way she has been reading you correctly since the day you first took her captive."
+      ],
+      choices: [
+        { label:"\"You've had 'a great deal of time to think.' And?\"", flavor:"Direct. Give her the opening she's clearly waiting for.",
+          stats:{axis3:6}, next:"5.2",
+          outcome:["'And I still don't fully know,' she admits, and something in the honesty of it lands harder than any prepared speech could have. 'Which is, I think, the single most truthful thing anyone has said in this palace all week — including several sentences I said myself.'",
+          "It is not the answer of someone who has already decided how this ends. That, you suspect, is precisely the point."] },
+        { label:"\"I could have killed you the day we met. I didn't. Remember that.\"", flavor:"A reminder. Not a threat, exactly. Close, though.",
+          stats:{axis2:-6}, next:"5.2",
+          outcome:["'I have thought of little else, dragon,' she says, dry as old parchment. 'It has been a genuinely inconvenient thing to be grateful for, given everything that's happened since. You do not get to keep being the reasonable one indefinitely just because you started that way.'",
+          "Fair, you decide. Uncomfortably fair."] },
+        { label:"\"Careful. Kings have died for less impressive silences than yours.\"", flavor:"An edge. A test, to see if she flinches.",
+          stats:{axis1:-6}, next:"5.2",
+          outcome:["She does not flinch. 'That,' she says, 'is rather the point of standing here unarmed in front of you instead of running. If I were going to flinch, I would have done it three sentences ago.'",
+          "You are, despite the circumstances, thoroughly convinced. It does not make the decision ahead of you any easier."] }
+      ]
+    },
+
+    "5.2": {
+      chapterShort:"Chapter Five", chapter:"Chapter Five — The Reckoning", part:"Part II",
+      title:"The Throne Room",
+      text: (state) => {
+        if(state.flags.aureliaAlive){
+          return [
+            "You find her exactly where the last of the guard reports say she has been for hours: standing before the throne itself, not sitting on it, dressed for a coronation that clearly hasn't happened yet and now, by the sound of things outside, isn't going to happen the way anyone planned. The Emperor is nowhere in the palace — fled, or worse, in the chaos of the last day — and Aurelia has simply stepped into the vacuum rather than let the throne room sit empty while the kingdom burns around it.",
+            "'I wondered if it would be you who finally reached this room,' she says, not moving, not reaching for a weapon she almost certainly has somewhere within reach. 'I have had a great deal of time to think about what I would say to you, if it ever was. I find I still haven't decided.' She is not begging. She is, unmistakably, waiting to see what you actually are, one final time."
+          ];
+        }
+        return [
+          "The throne room, when you finally reach it, is not occupied by the princess you might once have expected to find here. There is no Aurelia left to meet you — that reckoning happened long ago, in your own den, in a choice you made seasons before this war even had a name. Instead the room holds what remains of the Council of Regents, seven old men and women in ceremonial robes far too fine for the terror currently written across all of their faces, gathered around an empty throne none of them have the bloodline or the nerve to actually sit in.",
+          "The eldest of them, a woman whose hands are shaking badly enough to rattle her own ceremonial chain of office, finds her voice first. 'The line ends with us,' she says. 'There is no one else left to put on that throne. Whatever you intend to do with this kingdom, dragon, you will be doing it without an heir to blame for it.'"
+        ];
+      },
+      choices: (state) => {
+        if(state.flags.aureliaAlive){
+          return [
+            { label:"Kill her, and end the bloodline entirely", flavor:"No heirs, no rivals, no future claimants to the throne you now hold.",
+              stats:{axis1:-18}, health:-4, infamy:30, next:"END", setFlags:{aureliaFate:'killed'},
+              outcome:["You do not let the moment stretch any longer than it needs to. Whatever she was waiting to see, she sees it, and it is over before she finishes the sentence she was building toward. The throne room, when the guard finally forces itself back inside, is empty of anyone left to contest what you have just become — no bloodline, no rival claim, no inconvenient reminder of a mercy you once considered showing.",
+              "The kingdom will spend generations arguing over whether the last Crown Princess died bravely, foolishly, or simply too late to matter. You already know the only answer that will ever actually be settled: she died, and you did not."] },
+            { label:"Subjugate her, and rule through her as a puppet queen", flavor:"Let her keep the crown. You keep everything that crown actually controls.",
+              stats:{axis2:16}, infamy:14, wealth:20, next:"END", setFlags:{aureliaFate:'puppet'},
+              outcome:["You do not kill her, and you do not release her either. You let Aurelia keep the throne, the ceremony, the crown itself — every visible trapping of a rule that now, in every particular that actually matters, answers to a mountain rather than a council. She understands the arrangement before you finish explaining it, and accepts it with the flat, furious clarity of someone who has already calculated that the alternative was worse.",
+              "'A puppet queen still needs strings,' she says, taking her seat on the throne for the first time. 'I hope you're prepared to hold them for considerably longer than you think.'"] },
+            { label:"Make her your equal, and rule together", flavor:"Not a hostage, not a puppet. An actual partnership of thrones.",
+              stats:{axis3:12, axis2:-8}, infamy:-6, next:"5.3", setFlags:{aureliaFate:'ally'},
+              outcome:["You do not take the throne, and you do not let her keep it alone either. You offer her something neither the guard outside nor the council once assumed you were capable of offering: a genuine partnership, dragon and crown ruling as equals rather than conqueror and conquered. She studies you for a long moment — the same assessing look she gave you the day you first took her captive, seasons and an entire war ago — and finally, deliberately, extends a hand rather than a plea.",
+              "'Then we had better decide, quickly, what kind of rule this is actually going to be,' she says. 'Because half this kingdom already assumes the worst, and the other half hasn't decided yet.'"] }
+          ];
+        }
+        return [
+          { label:"Purge the council entirely", flavor:"No regents, no council, no one left to challenge what comes next.",
+            stats:{axis1:-14}, infamy:20, next:"END", setFlags:{capitalFate:'purged'},
+            outcome:["You do not see much use for seven frightened old aristocrats clinging to titles that no longer describe anything real. It is quick, and thorough, and by the time it is finished the throne room holds no one at all except you and a crown with no head left in the kingdom qualified to wear it — a problem, you decide, that is considerably easier to solve than the one you just finished solving.",
+            "The kingdom will need a government eventually. For now, it simply has you, and that, it turns out, is enough to keep it functioning in the short term."] },
+            { label:"Let them rule as your terrified vassals", flavor:"A council that governs in name, and answers to you in every particular that matters.",
+              stats:{axis2:14}, infamy:8, wealth:15, next:"END", setFlags:{capitalFate:'vassal'},
+              outcome:["You do not purge the council. You simply make its actual position extremely clear — they may keep their robes, their titles, their empty ceremonial throne, provided every meaningful decision they make is one you would have made yourself, communicated through channels that never quite need to mention your name directly. The eldest regent, still shaking, understands the arrangement with the particular speed of someone who has just realized how close she came to a considerably worse ending.",
+              "'The council will govern,' she says, carefully. 'In your name, if that is what you require.' It is exactly what you require."] }
+          ];
+      }
+    },
+
+    "5.3": {
+      chapterShort:"Chapter Five", chapter:"Chapter Five — The Reckoning", part:"Part III",
+      title:"The Choice of an Empress",
+      text:[
+        "The partnership is announced within the week — dragon and Crown Princess, ruling jointly, an arrangement that has no real precedent anywhere in the kingdom's considerable written history and that half the court is still privately convinced will collapse within a season. Aurelia proves them wrong daily, meeting you each morning with the same sharp, unflinching curiosity she showed you as a captive, now turned toward the considerably larger question both of you now have to answer together.",
+        "'We have more combined power sitting in this throne room right now than any ruler in this kingdom's history has ever had access to,' she says, spreading a map of the wider continent across the table between you — your mountain, her capital, and beyond both of them, a dozen neighboring kingdoms who have spent the entire war watching nervously from a safe distance. 'The only question left is what we actually intend to do with it.'"
+      ],
+      choices: [
+        { label:"Turn your combined might toward conquering the neighboring kingdoms", flavor:"An empire, not just a kingdom. Aurelia's ambition matches your own.",
+          stats:{axis1:-12}, infamy:20, wealth:60, next:"END", setFlags:{empireFate:'conqueror'},
+          outcome:["Aurelia does not hesitate the way you half expected her to. If anything, it is her ambition that sets the pace once the decision is made — she has spent her entire life watching neighboring kingdoms treat her father's realm as a lesser power, and she is, it turns out, considerably more interested in ending that permanently than you anticipated. Together you turn outward: her armies and diplomacy, your fire and unmistakable presence overhead, kingdom after kingdom folding into a single continental power that has not existed in living memory.",
+          "'My father spent his whole reign being polite to people who never once returned the courtesy,' she says, watching another border kingdom's banner lowered in surrender. 'I find I am not interested in continuing that particular tradition.'"] },
+        { label:"Rule together, and defend the realm as its protectors", flavor:"Not conquest. A throne and a dragon that keep the peace, together.",
+          stats:{axis2:-14}, infamy:-10, next:"END", setFlags:{empireFate:'protector'},
+          outcome:["You do not turn outward. Instead, together, you turn the considerable power sitting in that throne room toward something rarer than conquest: an actual, functioning peace, defended rather than expanded. Aurelia handles the court, the treaties, the thousand small mechanisms of actual governance; you handle the border, the raiders who no longer test it twice, the neighboring kingdoms who quickly learn that this particular realm is no longer worth the risk of provoking.",
+          "'Half the histories will call you a monster no matter what we build here,' Aurelia tells you once, watching farmers work fields that haven't burned in a decade. 'I have decided I don't especially care what the other half calls either of us, as long as this lasts.'"] }
       ]
     }
   }
 };
-
-/* ============ ENDING DEFINITIONS ============ */
 const ENDINGS = {
   fallenEarly: {
     badge: "THE FALLEN MYTH",
@@ -474,6 +1063,12 @@ const ENDINGS = {
 function freshState(){
   return {
     node: STORY.start,
+    phase: 'naming',      // 'naming' = choosing a name, 'story' = scene with choices, 'outcome' = aftermath
+    dragonName: null,
+    pendingOutcome: null, // array of paragraphs for the aftermath screen
+    pendingImpacts: null, // array of stat-change chips to show on the aftermath screen
+    pendingNext: null,    // node key (or "END") to move to once Continue is pressed
+    flags: {},   // narrative flags set by earlier choices (e.g. goblinAllies, sorceressAlive) that later text can react to
     axis1: 0,  // negative = Brutality, positive = Finesse
     axis2: 0,  // negative = Honor, positive = Cunning
     axis3: 0,  // negative = Disdain, positive = Curiosity
@@ -482,6 +1077,16 @@ function freshState(){
     infamy: 0,
     history: []
   };
+}
+
+const NAME_PRESETS = [
+  "Emberwake", "Duskfang", "Vaelithra", "Korrathis",
+  "Nyxaria", "Grimwing", "Aurumis", "Skarnoth",
+  "Thalassor", "Obsidianne"
+];
+
+function pickPresetName(){
+  return NAME_PRESETS[Math.floor(Math.random() * NAME_PRESETS.length)];
 }
 
 let state = freshState();
@@ -513,7 +1118,42 @@ function pct(axisVal){
   return clamp(((axisVal + 100) / 200) * 100, 0, 100);
 }
 
+function buildImpactBadges(applied){
+  const badges = [];
+  if(applied.axis1 < 0) badges.push({icon:'🔥', label:'Brutality', value:-applied.axis1, cls:'chip-brutality'});
+  else if(applied.axis1 > 0) badges.push({icon:'✨', label:'Finesse', value:applied.axis1, cls:'chip-finesse'});
+
+  if(applied.axis2 < 0) badges.push({icon:'🛡️', label:'Honor', value:-applied.axis2, cls:'chip-honor'});
+  else if(applied.axis2 > 0) badges.push({icon:'🐍', label:'Cunning', value:applied.axis2, cls:'chip-cunning'});
+
+  if(applied.axis3 < 0) badges.push({icon:'🌑', label:'Disdain', value:-applied.axis3, cls:'chip-disdain'});
+  else if(applied.axis3 > 0) badges.push({icon:'👁️', label:'Curiosity', value:applied.axis3, cls:'chip-curiosity'});
+
+  if(applied.health !== 0){
+    const up = applied.health > 0;
+    badges.push({icon: up ? '❤️' : '💔', label:'Health', value: applied.health, signed:true, cls: up ? 'chip-health-up' : 'chip-health-down'});
+  }
+  if(applied.wealth !== 0){
+    badges.push({icon:'💰', label:'Hoard', value: applied.wealth, signed:true, cls:'chip-hoard'});
+  }
+  if(applied.infamy !== 0){
+    badges.push({icon:'💀', label:'Infamy', value: applied.infamy, signed:true, cls:'chip-infamy'});
+  }
+  return badges;
+}
+
+function resolveText(value){
+  // Story text and outcome text can be a static array, or a function(state) => array
+  // so later scenes can react to earlier choices (e.g. whether an ally survived).
+  return typeof value === 'function' ? value(state) : value;
+}
+
 function applyChoice(choice){
+  const before = {
+    axis1: state.axis1, axis2: state.axis2, axis3: state.axis3,
+    health: state.health, wealth: state.wealth, infamy: state.infamy
+  };
+
   state.axis1 = clamp(state.axis1 + (choice.stats.axis1||0), -100, 100);
   state.axis2 = clamp(state.axis2 + (choice.stats.axis2||0), -100, 100);
   state.axis3 = clamp(state.axis3 + (choice.stats.axis3||0), -100, 100);
@@ -521,15 +1161,34 @@ function applyChoice(choice){
   state.wealth = Math.max(0, state.wealth + (choice.wealth||0));
   state.infamy = clamp(state.infamy + (choice.infamy||0), 0, 100);
   state.history.push(choice.label);
+  if(choice.setFlags){ Object.assign(state.flags, choice.setFlags); }
 
-  if(state.health <= 0){
-    state.node = "__ending_fallenEarly";
-  } else {
-    state.node = choice.next;
-    if(state.node === "4.2"){
-      state.node = "__ending_" + computeEnding();
-    }
+  const applied = {
+    axis1: state.axis1 - before.axis1, axis2: state.axis2 - before.axis2, axis3: state.axis3 - before.axis3,
+    health: state.health - before.health, wealth: state.wealth - before.wealth, infamy: state.infamy - before.infamy
+  };
+
+  // Show the aftermath of this specific choice before moving on.
+  state.phase = 'outcome';
+  state.pendingOutcome = resolveText(choice.outcome) || [];
+  state.pendingImpacts = buildImpactBadges(applied);
+  const resolvedNext = typeof choice.next === 'function' ? choice.next(state) : choice.next;
+  state.pendingNext = (state.health <= 0) ? "__ending_fallenEarly" : resolvedNext;
+
+  trySave();
+  render();
+}
+
+function continueStory(){
+  let next = state.pendingNext;
+  if(next === "END"){
+    next = "__ending_" + computeEnding();
   }
+  state.node = next;
+  state.phase = 'story';
+  state.pendingOutcome = null;
+  state.pendingImpacts = null;
+  state.pendingNext = null;
   trySave();
   render();
 }
@@ -537,13 +1196,21 @@ function applyChoice(choice){
 function computeEnding(){
   const {axis1, axis2, axis3, infamy} = state;
   // Cruel Tyrant: brutal + very infamous
-  if(infamy >= 55 && axis1 <= -5) return "tyrant";
+  if(infamy >= 65 && axis1 <= -5) return "tyrant";
   // Unseen Shadow: cunning + kept infamy low
-  if(axis2 >= 10 && infamy <= 32) return "shadow";
+  if(axis2 >= 10 && infamy <= 40) return "shadow";
   // Wise Dragon-God: curious + honorable/diplomatic
-  if(axis3 >= 8 && axis2 <= 6 && infamy <= 45) return "wise";
+  if(axis3 >= 8 && axis2 <= 6 && infamy <= 55) return "wise";
   // Fallback: contradictory / chaotic legacy
   return "fallenEarly";
+}
+
+function confirmName(rawName){
+  const trimmed = (rawName || "").trim();
+  state.dragonName = trimmed.length > 0 ? trimmed.slice(0, 32) : pickPresetName();
+  state.phase = 'story';
+  trySave();
+  render();
 }
 
 function restart(){
@@ -565,10 +1232,11 @@ function statLabel(name, val, leftWord, rightWord, fillClass){
 
 function renderHud(){
   const currentNode = STORY.nodes[state.node];
-  const actLabel = currentNode ? currentNode.act : "Epilogue";
+  const chapterLabel = currentNode ? currentNode.chapterShort : "Epilogue";
+  const ledgerTitle = state.dragonName ? `${state.dragonName}'s Ledger` : "Draconic Ledger";
   return `
     <div class="hud">
-      <div class="hud-title"><span>Draconic Ledger</span><span class="act-tag">${actLabel}</span></div>
+      <div class="hud-title"><span>${ledgerTitle}</span><span class="act-tag">${chapterLabel}</span></div>
       <div class="stat-grid">
         ${statLabel('axis1', state.axis1, 'Brutality', 'Finesse', 'fill-axis1')}
         ${statLabel('axis2', state.axis2, 'Honor', 'Cunning', 'fill-axis2')}
@@ -585,9 +1253,14 @@ function renderHud(){
     </div>`;
 }
 
+function resolveChoices(node){
+  return typeof node.choices === 'function' ? node.choices(state) : node.choices;
+}
+
 function renderScene(node){
-  const paras = node.text.map(p => `<p>${p}</p>`).join("");
-  const choicesHtml = node.choices.map((c, i) => `
+  const paras = resolveText(node.text).map(p => `<p>${p}</p>`).join("");
+  const choices = resolveChoices(node);
+  const choicesHtml = choices.map((c, i) => `
     <button class="choice-btn" data-idx="${i}">
       <span class="choice-label">${c.label}</span>
       <span class="choice-flavor">${c.flavor}</span>
@@ -595,7 +1268,7 @@ function renderScene(node){
 
   return `
     <div class="scene">
-      <div class="node-eyebrow">${node.eyebrow}</div>
+      <div class="node-eyebrow">${node.chapterShort} · ${node.part}</div>
       <h2 class="node-title">${node.title}</h2>
       <div class="scene-text">${paras}</div>
     </div>
@@ -603,14 +1276,93 @@ function renderScene(node){
   `;
 }
 
-function renderEnding(ending){
-  const paras = ending.text.map(p => `<p>${p}</p>`).join("");
+function renderNaming(){
+  const chips = NAME_PRESETS.map(n => `<button class="name-chip" data-name="${n}">${n}</button>`).join("");
   return `
     <div class="scene">
-      <div class="node-eyebrow">Act IV — Epilogue</div>
+      <div class="node-eyebrow">Before It Begins</div>
+      <h2 class="node-title">What Shall We Call You?</h2>
+      <div class="scene-text">
+        <p>Before the shell cracks, before the first breath of smoke or shadow or gold, the world wants a name to attach to the legend that is about to begin. Choose your own, or let the mountain choose one for you.</p>
+      </div>
+      <input type="text" id="name-field" class="name-input" placeholder="Type your dragon's name…" maxlength="32" autocomplete="off">
+      <div class="name-divider">or pick one</div>
+      <div class="name-presets">${chips}</div>
+    </div>
+    <button class="continue-btn" id="name-begin-btn">Begin the Saga</button>
+  `;
+}
+
+function renderImpactChips(impacts){
+  if(!impacts || impacts.length === 0) return "";
+  const chips = impacts.map(b => {
+    const sign = b.signed ? (b.value >= 0 ? '+' : '') : '+';
+    return `<span class="impact-chip ${b.cls}"><span class="chip-icon">${b.icon}</span><span>${sign}${b.value} ${b.label}</span></span>`;
+  }).join("");
+  return `<div class="impact-strip">${chips}</div>`;
+}
+
+function renderOutcome(){
+  const paras = (state.pendingOutcome || []).map(p => `<p>${p}</p>`).join("");
+  return `
+    <div class="scene">
+      ${renderImpactChips(state.pendingImpacts)}
+      <div class="scene-text">${paras}</div>
+    </div>
+    <button class="continue-btn" id="continue-btn">Continue</button>
+  `;
+}
+
+function endingBonusParagraphs(){
+  const bonus = [];
+  bonus.push("Somewhere to the north, the wreckage of a black citadel that once belonged to a man named Malvorath Thorne has already become a byword for what happens to those who plot against you from the shadows — a warning stone requires no upkeep once it has done its work.");
+
+  if(state.flags.sorceressAlive){
+    bonus.push("Mirelle never did leave the mountain entirely. She keeps her own tower now, three peaks to the west, and visits often enough that the servants at your gate have long since stopped remarking on it.");
+  }
+
+  if(state.flags.goblinAllies === 'worship'){
+    bonus.push("In the ravine below, the goblin priesthood you never quite meant to found still leaves offerings at your door each new moon, their theology having survived — and outlived — several of their own kings.");
+  } else if(state.flags.goblinAllies === 'fear'){
+    bonus.push("Deep in the mountain's eastern warren, the goblins you broke to servitude generations ago still mine gold for a master they have never once tried to overthrow, fear having proven, in your case, a remarkably stable form of government.");
+  } else if(state.flags.goblinAllies === 'trust'){
+    bonus.push("In the ravine below, the goblin tribe you once chose to spare rather than conquer still trades freely at your mountain's foot, the last living creatures who remember you as something closer to a neighbor than a monster.");
+  }
+
+  if(state.flags.aureliaFate === 'killed'){
+    bonus.push("The throne room where you finally killed Aurelia has been sealed and left empty ever since — no regent in the years since has ever quite worked up the nerve to sit in it.");
+  } else if(state.flags.aureliaFate === 'puppet'){
+    bonus.push("Aurelia still sits the throne, technically. The kingdom stopped asking what \"technically\" meant a long time ago, and has been considerably more peaceful for having stopped.");
+  } else if(state.flags.aureliaFate === 'ally'){
+    if(state.flags.empireFate === 'conqueror'){
+      bonus.push("Empress Aurelia rules at your side over a realm considerably larger than the one her father ever left her, and considerably more honest, if nothing else, about how it got that way.");
+    } else if(state.flags.empireFate === 'protector'){
+      bonus.push("Empress Aurelia rules at your side still, and between the two of you, this has become the one realm on the continent that neighboring kingdoms have quietly agreed is simply not worth testing.");
+    } else {
+      bonus.push("Empress Aurelia rules at your side still — an arrangement neither of you fully explained to the histories, and one neither of you has ever felt the need to.");
+    }
+  }
+
+  if(state.flags.capitalFate === 'purged'){
+    bonus.push("The council chamber where you once purged the last of the old regime has been rebuilt three times since, each new government a little more careful about what it says in rooms with a clear view of your mountain.");
+  } else if(state.flags.capitalFate === 'vassal'){
+    bonus.push("The Council of Regents still governs the capital, technically, in your name, in the particular hollow way governments do when everyone involved understands precisely whose permission actually matters.");
+  }
+
+  return bonus;
+}
+
+function renderEnding(ending){
+  const paras = ending.text.map(p => `<p>${p}</p>`).join("");
+  const bonusParas = endingBonusParagraphs().map(p => `<p>${p}</p>`).join("");
+  const nameLine = state.dragonName ? `<div class="dragon-name-line">${state.dragonName}</div>` : "";
+  return `
+    <div class="scene">
+      <div class="node-eyebrow">Chapter Four · Epilogue</div>
+      ${nameLine}
       <div class="ending-badge">${ending.badge}</div>
       <h2 class="node-title">${ending.title}</h2>
-      <div class="scene-text">${paras}</div>
+      <div class="scene-text">${paras}${bonusParas}</div>
     </div>
     <div class="footer-controls">
       <button class="restart-btn" id="restart-btn">Begin a New Hatching</button>
@@ -620,8 +1372,39 @@ function renderEnding(ending){
 
 function render(){
   const app = document.getElementById('app');
+
+  // Phase 0: choosing a name, shown once at the very start of a saga — no stat ledger yet
+  if(state.phase === 'naming'){
+    let html = renderNaming();
+    app.innerHTML = html;
+    const field = document.getElementById('name-field');
+    field.focus();
+    document.querySelectorAll('.name-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        field.value = chip.getAttribute('data-name');
+        document.querySelectorAll('.name-chip').forEach(c => c.classList.remove('selected'));
+        chip.classList.add('selected');
+      });
+    });
+    const begin = () => confirmName(field.value);
+    document.getElementById('name-begin-btn').addEventListener('click', begin);
+    field.addEventListener('keydown', (e) => { if(e.key === 'Enter') begin(); });
+    window.scrollTo({top:0, behavior:'smooth'});
+    return;
+  }
+
   let html = renderHud();
 
+  // Phase 1: showing the aftermath of the choice just made
+  if(state.phase === 'outcome'){
+    html += renderOutcome();
+    app.innerHTML = html;
+    document.getElementById('continue-btn').addEventListener('click', continueStory);
+    window.scrollTo({top:0, behavior:'smooth'});
+    return;
+  }
+
+  // Phase 2: a final ending screen
   if(state.node.startsWith("__ending_")){
     const key = state.node.replace("__ending_", "");
     html += renderEnding(ENDINGS[key]);
@@ -631,23 +1414,17 @@ function render(){
     return;
   }
 
+  // Phase 3: a normal story scene with choices
   const node = STORY.nodes[state.node];
+  const choices = resolveChoices(node);
   html += renderScene(node);
-  app.innerHTML = html;
-
-  app.querySelectorAll('.choice-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const idx = parseInt(btn.getAttribute('data-idx'), 10);
-      applyChoice(node.choices[idx]);
-    });
-  });
-
   html += `<div class="footer-controls"><button class="restart-btn" id="restart-btn-mid">Restart Saga</button></div>`;
   app.innerHTML = html;
+
   app.querySelectorAll('.choice-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const idx = parseInt(btn.getAttribute('data-idx'), 10);
-      applyChoice(node.choices[idx]);
+      applyChoice(choices[idx]);
     });
   });
   document.getElementById('restart-btn-mid').addEventListener('click', restart);
