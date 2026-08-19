@@ -519,8 +519,31 @@ const STORY = {
       ]
     },
 
+
     "1.1e": {
       chapterShort:"Chapter One", chapter:"Chapter One — The Young", part:"Part VI",
+      title:"Words From the Same Shell",
+      text:[
+        "Vexar hasn't moved to attack yet. He's still sizing you up, unhurried, the way something that has never once doubted the outcome of a fight tends to be. There is, you sense, a brief window here to say something before whatever happens next happens."
+      ],
+      choices: [
+        { label:"\"Bold talk, for someone who still smells like eggshell too.\"", flavor:"Deflect with an insult. It's not much of a plan.",
+          stats:{axis1:-4}, next:"1.1f",
+          outcome:["Vexar pauses, genuinely checking his own flank for a moment, as though there's a real chance you're right, before catching himself and looking faintly annoyed at having fallen for it at all. 'There's nothing on me,' he says, with the particular defensiveness of someone who is now, in fact, slightly unsure. 'That was a cheap trick.'",
+          "It cost you nothing and rattled him for half a second. You will take the win where you can find it, given how few of them are coming your way today."] },
+        { label:"\"I didn't know we were sharing a mother. Explains a lot.\"", flavor:"Dry. Slightly reckless, given the size difference.",
+          stats:{axis3:4}, next:"1.1f",
+          outcome:["Something flickers across his face — not quite offense, closer to reluctant acknowledgment that the joke landed. 'Explains why you talk too much for something about to lose,' he says, but there's the faintest curl at the corner of his jaw that might, in a more generous light, be called almost a smile.",
+          "You'll take almost. It's more than you expected to get out of him today."] },
+        { label:"\"We don't have to do this.\"", flavor:"Genuine. See if there's any version of this that isn't a fight.",
+          stats:{axis2:-4}, next:"1.1f",
+          outcome:["For one real, extended moment, he actually seems to consider it — head tilting, some calculation passing behind his eyes that you can't quite read. Then something older and more stubborn than either of you wins out instead. 'No,' he says, almost apologetically. 'We really do.'",
+          "It was worth asking. You suspect it will not be the last time you ask, either."] }
+      ]
+    },
+
+    "1.1f": {
+      chapterShort:"Chapter One", chapter:"Chapter One — The Young", part:"Part VII",
       title:"Blood From the Same Shell",
       text:[
         "You are still admiring the shape you've become when a second shadow falls across the cave mouth — and your stomach drops before your mind catches up to why. The scent is unmistakable, familiar in a way nothing else in your short life has been: the same clutch, the same mother, the same doomed cave. Your egg was not the only one.",
@@ -544,7 +567,7 @@ const STORY = {
     },
 
     "1.2": {
-      chapterShort:"Chapter One", chapter:"Chapter One — The Young", part:"Part VII",
+      chapterShort:"Chapter One", chapter:"Chapter One — The Young", part:"Part VIII",
       title:"The First Hunt",
       text:[
         "Hunger arrives before wisdom does. Beyond the cave mouth, a jagged crescent of grey daylight, the mountainside stirs: hooved footsteps on loose scree, the bleat of a herd grazing an exposed outcrop. Your stomach, empty since the instant of your birth, clenches sharper than anything you have felt.",
@@ -571,7 +594,29 @@ const STORY = {
     },
 
     "1.3": {
-      chapterShort:"Chapter One", chapter:"Chapter One — The Young", part:"Part VIII",
+      chapterShort:"Chapter One", chapter:"Chapter One — The Young", part:"Part IX",
+      title:"Words to a Kneeling Warren",
+      text:[
+        "The bravest of the goblins — an old, wiry one with more scars than teeth, evidently the closest thing this warren has to a chieftain — has crept forward ahead of the others, forehead still pressed low to the dirt. There is, apparently, an established protocol for addressing a dragon that has just discovered your existence, and he seems to be following it with the practiced ease of someone who has rehearsed this exact moment for years."
+      ],
+      choices: [
+        { label:"\"Get up. I haven't decided if I like being worshipped yet.\"", flavor:"Dry. Genuinely undecided, which is its own kind of power.",
+          stats:{axis3:4}, next:"1.3b",
+          outcome:["The chieftain freezes, clearly uncertain whether standing counts as disobedience, and compromises by kneeling somehow lower instead — a physical feat you would not have thought possible before watching him attempt it. 'Wise dragon takes time,' he offers, muffled against the dirt. 'Warren can wait. Warren is very patient.'",
+          "You are beginning to suspect the warren has had considerable practice at waiting for things to make sense."] },
+        { label:"\"Your god routine won't save you if I'm hungry.\"", flavor:"A threat, mostly to see how quickly he adapts.",
+          stats:{axis1:-4}, next:"1.3b",
+          outcome:["He does not flinch, or beg, or scatter. He simply straightens slightly and gestures, unbothered, toward a nearby pen of goats with the calm efficiency of a creature who has clearly anticipated this exact negotiation many times before. 'Warren feeds god,' he says, simply. 'Was always the arrangement. Ask any of the old bones in the ravine what happens to dragons who go hungry near shrines instead of at them.'",
+          "You are not entirely sure whether that was an offer or a warning. You decide, on balance, it was probably both."] },
+        { label:"\"Who taught you to worship dragons? That seems like a very specific tradition.\"", flavor:"Genuinely curious. This didn't happen by accident.",
+          stats:{axis3:4}, next:"1.3b",
+          outcome:["He seems almost delighted to be asked, launching into an account involving his grandmother's grandmother and a bargain with a dragon whose exact terms have apparently been lost, garbled, and re-embellished across at least four generations of retelling. 'Details not important,' he concludes, with the total confidence of someone who has never once let inconvenient facts slow down a good tradition. 'Kneeling is important. Kneeling we remembered.'",
+          "You find you have no real argument against a religion that survived purely on the strength of consistent knees."] }
+      ]
+    },
+
+    "1.3b": {
+      chapterShort:"Chapter One", chapter:"Chapter One — The Young", part:"Part X",
       title:"The Goblin Warren",
       text:[
         "A half-day's flight from your den, following a ravine you had never bothered to explore, you find smoke rising from somewhere it has no business rising: cookfires, dozens of them, threaded between rough stone huts built into the cliff face. A goblin warren — some hundred and fifty of the small, wiry creatures, by your rough count — has been living in your mountain's shadow this entire time, apparently unnoticed by, or unimportant to, the elder dragon whose territory this used to be.",
@@ -594,7 +639,7 @@ const STORY = {
     },
 
     "1.4a": {
-      chapterShort:"Chapter One", chapter:"Chapter One — The Young", part:"Part IX",
+      chapterShort:"Chapter One", chapter:"Chapter One — The Young", part:"Part XI",
       title:"Words Before Blood",
       text:[
         "Infernus is still talking, in the unhurried way of something that has never once in two centuries had to consider the possibility of being interrupted. There is, you sense, a brief window here — not to change his mind, exactly, but to decide what kind of impression you leave before whatever happens next actually happens."
@@ -616,7 +661,7 @@ const STORY = {
     },
 
     "1.4": {
-      chapterShort:"Chapter One", chapter:"Chapter One — The Young", part:"Part IX",
+      chapterShort:"Chapter One", chapter:"Chapter One — The Young", part:"Part XI",
       title:"The Rival",
       text:[
         "You are three seasons old and already the mountain knows your name in the language of broken bones and burned scrub, when the sky darkens with a shadow far larger than your own. Infernus descends onto the ridge above your claimed den: an elder wyrm the colour of dried blood, scarred wingtips, eyes like furnace doors. He has smelled a rival, and he has come to end the question of territory before it can properly begin.",
@@ -755,8 +800,30 @@ const STORY = {
     },
 
     /* ============ CHAPTER THREE — THE WAR OF MANKIND ============ */
+
     "3.1": {
       chapterShort:"Chapter Three", chapter:"Chapter Three — The War of Mankind", part:"Part I",
+      title:"Words at the Mountain's Foot",
+      text:[
+        "The captain has just finished delivering his line about the wrath of the crown, and is visibly hoping you won't notice how much his voice shook on the word 'wrath.' There is a brief pause here, the kind that exists specifically for someone to fill it before the swords come out."
+      ],
+      choices: [
+        { label:"\"Surrender the mountain? I don't believe we've been introduced.\"", flavor:"Mocking. Let him hear how thin his script sounds out loud.",
+          stats:{axis1:-4}, next:"3.1b",
+          outcome:["The captain blinks, visibly recalculating, and attempts to re-deliver the line with slightly more conviction — 'I said, surrender the—' before trailing off, aware even to himself that the second attempt landed considerably worse than the first. Behind him, one of his knights makes a small, poorly disguised noise that might have been a laugh."] },
+        { label:"\"Turn back now. I'm giving you exactly one warning.\"", flavor:"A real offer. He'd be smart to take it.",
+          stats:{axis2:-4}, next:"3.1b",
+          outcome:["Something in his shoulders eases, just fractionally — real relief, quickly suppressed, at being handed a way out he clearly wasn't expecting. He glances back at his seven men, weighs it for one long moment, and then, to your genuine surprise, squares his shoulders instead of turning around. 'Can't,' he says, quieter now. 'Wouldn't be able to live with it if I did.'",
+          "Pride, you are learning, kills considerably more knights than dragons do."] },
+        { label:"\"Does your baron know how this usually goes?\"", flavor:"Cutting. Make him say the quiet part out loud.",
+          stats:{axis2:4}, next:"3.1b",
+          outcome:["He does not answer directly, which is itself the most honest answer he could have given. Two of the men behind him shift their weight, exchanging a look that suggests this thought has already occurred to them, repeatedly, in the days leading up to this particular morning.",
+          "You almost feel bad for what's about to happen. Almost."] }
+      ]
+    },
+
+    "3.1b": {
+      chapterShort:"Chapter Three", chapter:"Chapter Three — The War of Mankind", part:"Part II",
       title:"The First Knights",
       text:[
         "The kingdom's opening response is not the champion you might have expected, but a hastily assembled band of seven hedge-knights and sellswords under a minor baron too proud, or too indebted, to wait for the crown's official war effort to organize itself. They arrive at dawn, banners a size too grand for their numbers, clearly meant less to defeat you than to be seen trying — a probing test, everyone involved privately understands, to buy the kingdom's real preparations a few more weeks.",
@@ -779,7 +846,7 @@ const STORY = {
     },
 
     "3.2a": {
-      chapterShort:"Chapter Three", chapter:"Chapter Three — The War of Mankind", part:"Part II",
+      chapterShort:"Chapter Three", chapter:"Chapter Three — The War of Mankind", part:"Part III",
       title:"Words Before the Blade",
       text:[
         "Galahad has said his piece — reckoning, however it must, all very properly ominous. He is still several strides from striking range. There is, you calculate, time for exactly one exchange before this becomes considerably less verbal."
@@ -801,7 +868,7 @@ const STORY = {
     },
 
     "3.2": {
-      chapterShort:"Chapter Three", chapter:"Chapter Three — The War of Mankind", part:"Part II",
+      chapterShort:"Chapter Three", chapter:"Chapter Three — The War of Mankind", part:"Part III",
       title:"The Holy Knight",
       text:[
         "The kingdom's real answer arrives on a white destrier at your cave mouth, alone, which is either supreme confidence or supreme foolishness: Sir Galahad, Paladin of the Sunfire Order, a blade of blessed silver-steel humming with warded light in his gauntleted fist. He does not shout, does not threaten. He simply says, 'Dragon. Your reckoning has come, however it must,' and steps into the dark toward you.",
@@ -824,7 +891,7 @@ const STORY = {
     },
 
     "3.3a": {
-      chapterShort:"Chapter Three", chapter:"Chapter Three — The War of Mankind", part:"Part III",
+      chapterShort:"Chapter Three", chapter:"Chapter Three — The War of Mankind", part:"Part IV",
       title:"An Uninvited Introduction",
       text:[
         "Mirelle has already said her piece — the wondering how long it would take you, the pointed question about who might have sent you. She is watching you now with the particular patience of someone who has clearly rehearsed several possible versions of this conversation, alone, for years, and is mildly disappointed none of her rehearsals involved quite this much scale."
@@ -846,7 +913,7 @@ const STORY = {
     },
 
     "3.3": {
-      chapterShort:"Chapter Three", chapter:"Chapter Three — The War of Mankind", part:"Part III",
+      chapterShort:"Chapter Three", chapter:"Chapter Three — The War of Mankind", part:"Part IV",
       title:"The Hermit Sorceress",
       text:[
         "Scouting the war's approach from higher ground, you find something that has nothing to do with the army you're expecting: a squat stone tower half-swallowed by ivy, deep in a hollow no road actually reaches, humming faintly with wards old enough to have weathered into the stone itself. Whoever lives there has clearly gone to considerable trouble not to be found, which is, in your experience, exactly the kind of trouble worth investigating.",
@@ -869,7 +936,7 @@ const STORY = {
     },
 
     "3.4": {
-      chapterShort:"Chapter Three", chapter:"Chapter Three — The War of Mankind", part:"Part IV",
+      chapterShort:"Chapter Three", chapter:"Chapter Three — The War of Mankind", part:"Part V",
       title:"The Archmage's Battalion",
       text: (state) => {
         let goblinLine = "";
@@ -924,7 +991,26 @@ const STORY = {
     /* ============ CHAPTER FOUR — THE ENDGAME ============ */
 
     "3.5": {
-      chapterShort:"Chapter Three", chapter:"Chapter Three — The War of Mankind", part:"Part V",
+      chapterShort:"Chapter Three", chapter:"Chapter Three — The War of Mankind", part:"Part VI",
+      title:"Old Scores",
+      text:[
+        "Vexar has just finished his opening line — 'Let's see if busy translates to anything' — and is watching you with an expression that is trying very hard to look bored and not quite managing it. There is a beat here, same as the last time, before the fighting starts."
+      ],
+      choices: [
+        { label:"\"Careful. Last time cost you more than you're letting on.\"", flavor:"A callback. See if the old wound still bothers him.",
+          stats:{axis1:-4}, next:"3.6",
+          outcome:["His claw drifts, involuntarily, to the old scar along his wing before he catches himself and forces it still. It is a small, honest tell, and you both know he knows you saw it. 'That,' he says, flatly, 'was a long time ago.' It clearly wasn't, not really. Not to him."] },
+        { label:"\"You didn't come all this way just to lose again.\"", flavor:"Calm. Let your confidence do the talking.",
+          stats:{axis3:4}, next:"3.6",
+          outcome:["'No,' he agrees, and for once there's no mockery in it at all — just a kind of tired honesty you haven't heard from him before. 'I came to find out which one of us has been wasting the last few seasons.' It is, you realize, the closest thing to a genuine question he has ever asked you."] },
+        { label:"\"Let's skip the posturing this time.\"", flavor:"Direct. No games, no theater, just the fight itself.",
+          stats:{axis2:4}, next:"3.6",
+          outcome:["Something in his posture sharpens at that — not offense, but a kind of grudging recalibration, as though he's just been handed a more serious opponent than the one he arrived expecting. 'Fine,' he says, all the easy contempt gone from his voice now. 'No posturing.' You suspect that was, in its own way, more dangerous than anything either of you has said so far."] }
+      ]
+    },
+
+    "3.6": {
+      chapterShort:"Chapter Three", chapter:"Chapter Three — The War of Mankind", part:"Part VII",
       title:"Blood Remembers",
       text: (state) => {
         let callback = "";
