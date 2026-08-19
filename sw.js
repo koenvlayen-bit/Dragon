@@ -1,12 +1,15 @@
 // Choice of the Dragon — offline app-shell cache
 // Bump CACHE_NAME on every release so old, stale caches get thrown out automatically.
-const CACHE_NAME = 'dragon-saga-v2';
+const CACHE_NAME = 'dragon-saga-v3';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  './icon-192.svg',
-  './icon-512.svg'
+  './icon-192.png',
+  './icon-512.png',
+  './icon-192-maskable.png',
+  './icon-512-maskable.png',
+  './apple-touch-icon.png'
 ];
 
 self.addEventListener('install', (event) => {

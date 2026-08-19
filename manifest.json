@@ -1,5 +1,5 @@
 {
-  "name": "Choice of the Dragon: The Hoard Eternal",
+  "name": "Dragon Saga: The Hoard Eternal",
   "short_name": "Dragon Saga",
   "description": "A branching text RPG. Hatch, hunt, conquer, and choose the legend your dragon becomes.",
   "start_url": "./index.html",
@@ -10,16 +10,28 @@
   "theme_color": "#0c0a10",
   "icons": [
     {
-      "src": "icon-192.svg",
+      "src": "icon-192.png",
       "sizes": "192x192",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icon-512.svg",
+      "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
