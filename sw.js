@@ -1,5 +1,6 @@
 // Choice of the Dragon — offline app-shell cache
-const CACHE_NAME = 'dragon-saga-v1';
+// Bump CACHE_NAME on every release so old, stale caches get thrown out automatically.
+const CACHE_NAME = 'dragon-saga-v2';
 const ASSETS = [
   './',
   './index.html',
@@ -10,7 +11,11 @@ const ASSETS = [
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+    caches.open(CACHE_NAME).then((cache) =>
+      // {cache: 'reload'} forces a real network fetch here, bypassing the
+      // browser's own HTTP cache, so a fresh deploy is never pre-stale.
+      Promise.all(ASSETS.map((url) => fetch(url, { cache: 'reload' }).then((res) => cache.put(url, res))))
+    )
   );
   self.skipWaiting();
 });
@@ -24,15 +29,30 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Cache-first for app shell, falling back to network, so the game
-// still opens with no connection once it has been visited once.
+// Network-first for the page itself (HTML), so the person always gets the
+// latest version when online, with the cached copy only as an offline fallback.
+// Cache-first for everything else (icons, manifest), since those change rarely.
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
+
+  const isHTML = event.request.mode === 'navigate' ||
+    (event.request.headers.get('accept') || '').includes('text/html');
+
+  if (isHTML) {
+    event.respondWith(
+      fetch(event.request).then((response) => {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+        return response;
+      }).catch(() => caches.match(event.request).then((cached) => cached || caches.match('./index.html')))
+    );
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then((cached) => {
       if (cached) return cached;
       return fetch(event.request).then((response) => {
-        // Don't try to cache cross-origin (e.g. Google Fonts) failures/opaque weirdly
         if (response && response.status === 200 && event.request.url.startsWith(self.location.origin)) {
           const clone = response.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
