@@ -1703,8 +1703,6 @@ const ICONS = {
   coins:'<circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18M7 6h1v4M16.71 13.88l.7.71-2.82 2.82"/>',
   skull:'<path d="m12.5 17-.5-1-.5 1h1z"/><path d="M15 22a1 1 0 0 0 1-1v-1a2 2 0 0 0 1.56-3.25 8 8 0 1 0-11.12 0A2 2 0 0 0 8 20v1a1 1 0 0 0 1 1z"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="12" r="1"/>',
   book:'<path d="M12 7v14M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/>',
-  sound:'<path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z"/><path d="M16 9a5 5 0 0 1 0 6M19.36 18.36a9 9 0 0 0 0-12.73"/>',
-  mute:'<path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z"/><path d="m22 9-6 6M16 9l6 6"/>',
   gear:'<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>',
   rewind:'<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
   share:'<path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13"/>',
@@ -1881,10 +1879,6 @@ const SCENE_FX = {
   cave:'embers', plains:'fireflies', warren:'smoke', peaks:'snow', lair:'glitter', road:'fireflies', town:'ash', foothills:'dust',
   tower:'motes', battle:'ash', citadel:'void', court:'dust', palace:'embers', throne:'dust', ashsky:'ash', night:'stars', dawn:'motes', sky:'snow'
 };
-const SCENE_AUDIO = {
-  cave:'cave', plains:'wind', warren:'fire', peaks:'wind', lair:'cave', road:'wind', town:'fire', foothills:'wind',
-  tower:'magic', battle:'battle', citadel:'magic', court:'hall', palace:'hall', throne:'hall', ashsky:'fire', night:'wind', dawn:'magic', sky:'wind'
-};
 
 function sky(id, a, b, c){ return `<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset=".6" stop-color="${b}"/><stop offset="1" stop-color="${c}"/></linearGradient>`; }
 function ridge(seed, y, amp, color, n = 10){
@@ -2011,82 +2005,12 @@ const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V'];
 const CREATION = new Set(['1.1','1.1a','1.1b','1.1c','1.1d']);
 
 /* ── settings ── */
-const SETTINGS = (() => { try{ return Object.assign({sound:true, volume:.7, textSize:'m', reduce:false, hints:false, ledger:'open'}, JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}')); }catch(e){ return {sound:true, volume:.7, textSize:'m', reduce:false, hints:false, ledger:'open'}; } })();
+const SETTINGS = (() => { try{ return Object.assign({textSize:'m', reduce:false, hints:false, ledger:'open'}, JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}')); }catch(e){ return {textSize:'m', reduce:false, hints:false, ledger:'open'}; } })();
 function saveSettings(){ try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(SETTINGS)); }catch(e){} applySettings(); }
 function applySettings(){
   document.documentElement.style.setProperty('--fs', {s:'16px', m:'18px', l:'20.5px'}[SETTINGS.textSize] || '18px');
   document.body.classList.toggle('reduce', !!SETTINGS.reduce);
-  SND.setVolume();
 }
-
-/* ════════════ SOUND (generated, no files) ════════════ */
-const SND = {
-  ctx:null, master:null, noise:null, amb:null, ambType:null, timers:[],
-  init(){
-    if(this.ctx) { if(this.ctx.state === 'suspended') this.ctx.resume(); return; }
-    const AC = window.AudioContext || window.webkitAudioContext; if(!AC) return;
-    this.ctx = new AC();
-    this.master = this.ctx.createGain(); this.master.connect(this.ctx.destination);
-    this.setVolume();
-    const len = this.ctx.sampleRate * 3, buf = this.ctx.createBuffer(1, len, this.ctx.sampleRate), d = buf.getChannelData(0);
-    let last = 0; for(let i = 0; i < len; i++){ const w = Math.random()*2-1; last = (last + 0.02*w) / 1.02; d[i] = last * 3.5; }
-    this.noise = buf;
-    if(this.pending){ const t = this.pending; this.pending = null; this.ambience(t); }
-  },
-  setVolume(){ if(this.master) this.master.gain.setTargetAtTime(SETTINGS.sound ? SETTINGS.volume * 0.9 : 0, this.ctx.currentTime, 0.1); },
-  src(){ const s = this.ctx.createBufferSource(); s.buffer = this.noise; s.loop = true; return s; },
-  env(g, t0, a, peak, dec){ g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(peak, t0 + a); g.gain.exponentialRampToValueAtTime(0.0001, t0 + a + dec); },
-  tone(freq, type, peak, dec, delay = 0, slideTo){
-    if(!this.ctx) return; const t = this.ctx.currentTime + delay, o = this.ctx.createOscillator(), g = this.ctx.createGain();
-    o.type = type; o.frequency.setValueAtTime(freq, t); if(slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t + dec);
-    this.env(g, t, 0.01, peak, dec); o.connect(g); g.connect(this.master); o.start(t); o.stop(t + dec + 0.05);
-  },
-  burst(freq, q, peak, dec, delay = 0, type = 'bandpass', sweepTo){
-    if(!this.ctx) return; const t = this.ctx.currentTime + delay, s = this.src(), f = this.ctx.createBiquadFilter(), g = this.ctx.createGain();
-    f.type = type; f.frequency.setValueAtTime(freq, t); f.Q.value = q; if(sweepTo) f.frequency.exponentialRampToValueAtTime(sweepTo, t + dec);
-    this.env(g, t, 0.01, peak, dec); s.connect(f); f.connect(g); g.connect(this.master); s.start(t, Math.random()*2); s.stop(t + dec + 0.05);
-  },
-  sfx(name){
-    if(!this.ctx || !SETTINGS.sound) return;
-    switch(name){
-      case 'choose': this.burst(700, 1.2, .18, .3, 0, 'bandpass', 2200); break;
-      case 'page': this.burst(2500, .8, .05, .12, 0, 'highpass'); break;
-      case 'coin': [1900, 2450, 3000, 2200].forEach((f, i) => this.tone(f, 'triangle', .09, .28, i*.07)); break;
-      case 'hurt': this.tone(95, 'sine', .55, .4, 0, 38); this.burst(260, .7, .4, .25, 0, 'lowpass'); break;
-      case 'heal': this.tone(392, 'sine', .12, .5, 0, 587); this.tone(587, 'sine', .08, .6, .12, 784); break;
-      case 'roar': {
-        const t = this.ctx.currentTime, o = this.ctx.createOscillator(), f = this.ctx.createBiquadFilter(), g = this.ctx.createGain();
-        o.type = 'sawtooth'; o.frequency.setValueAtTime(150, t); o.frequency.exponentialRampToValueAtTime(52, t + 1.1);
-        f.type = 'lowpass'; f.frequency.value = 650; this.env(g, t, .08, .22, 1.1);
-        o.connect(f); f.connect(g); g.connect(this.master); o.start(t); o.stop(t + 1.3);
-        this.burst(400, .6, .3, 1, 0, 'lowpass', 120); break; }
-      case 'gong': [98, 196, 293.7, 392, 523].forEach((f, i) => this.tone(f, 'sine', [.22,.12,.08,.05,.03][i], 3.2 - i*.3)); break;
-      case 'unlock': [660, 880, 1320].forEach((f, i) => this.tone(f, 'triangle', .1, .35, i*.09)); break;
-      case 'end': [196, 247, 294, 392].forEach((f, i) => this.tone(f, 'sine', .12, 2.6, i*.22)); break;
-    }
-  },
-  ambience(type){
-    if(!this.ctx){ this.pending = type; return; }
-    if(type === this.ambType) return; this.ambType = type;
-    const t = this.ctx.currentTime;
-    if(this.amb){ const old = this.amb; old.g.gain.setTargetAtTime(0.0001, t, .6); setTimeout(() => old.nodes.forEach(n => { try{ n.stop(); }catch(e){} }), 2500); }
-    this.timers.forEach(clearInterval); this.timers = [];
-    const g = this.ctx.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.setTargetAtTime(1, t, 1.2); g.connect(this.master);
-    const nodes = [];
-    const bed = (freq, ftype, level, q = .7) => { const s = this.src(), f = this.ctx.createBiquadFilter(), gg = this.ctx.createGain(); f.type = ftype; f.frequency.value = freq; f.Q.value = q; gg.gain.value = level; s.connect(f); f.connect(gg); gg.connect(g); s.start(t, Math.random()*2); nodes.push(s); return f; };
-    const drone = (freq, level) => { const o = this.ctx.createOscillator(), gg = this.ctx.createGain(); o.type = 'sine'; o.frequency.value = freq; gg.gain.value = level; o.connect(gg); gg.connect(g); o.start(t); nodes.push(o); };
-    const every = (ms, fn) => this.timers.push(setInterval(() => { if(SETTINGS.sound && document.visibilityState === 'visible') fn(); }, ms));
-    switch(type){
-      case 'cave': bed(170, 'lowpass', .34); drone(46, .05); every(2300, () => Math.random() < .6 && this.tone(900 + Math.random()*700, 'sine', .05, .22, 0, 500)); break;
-      case 'wind': { const f = bed(500, 'bandpass', .22, 1.4); const l = this.ctx.createOscillator(), lg = this.ctx.createGain(); l.frequency.value = .08; lg.gain.value = 280; l.connect(lg); lg.connect(f.frequency); l.start(t); nodes.push(l); break; }
-      case 'fire': bed(400, 'lowpass', .22); every(260, () => Math.random() < .5 && this.burst(2500 + Math.random()*3000, 3, .05 + Math.random()*.05, .05, 0, 'bandpass')); break;
-      case 'hall': bed(120, 'lowpass', .25); drone(55, .05); drone(82.4, .03); break;
-      case 'magic': bed(900, 'bandpass', .06, 2); drone(220, .025); drone(331, .018); every(1800, () => this.tone([880, 990, 1175, 1320][Math.floor(Math.random()*4)], 'sine', .03, 1.2)); break;
-      case 'battle': bed(140, 'lowpass', .34); every(1400, () => Math.random() < .55 && this.tone(62, 'sine', .3, .5, 0, 40)); break;
-    }
-    this.amb = { g, nodes };
-  }
-};
 
 /* ════════════ PARTICLES ════════════ */
 const FX = {
@@ -2196,13 +2120,11 @@ function topbar(){
   return `<div class="topbar">
     <div class="tb-name"><div class="tb-title">${state.dragonName ? esc(state.dragonName) : 'Dragon Saga'}</div><div class="tb-sub">${esc(sub)}</div></div>
     <button class="tbtn" onclick="openJournal()" aria-label="Journal">${icon('book')}</button>
-    <button class="tbtn ${SETTINGS.sound?'on':''}" onclick="toggleSound()" aria-label="Sound">${icon(SETTINGS.sound ? 'sound' : 'mute')}</button>
     <button class="tbtn" onclick="openSettings()" aria-label="Settings">${icon('gear')}</button>
   </div>`;
 }
 function banner(sceneKey, eyebrow, title, opts = {}){
   const fx = SCENE_FX[sceneKey] || 'dust';
-  SND.ambience(SCENE_AUDIO[sceneKey] || 'cave');
   return `<div class="banner ${opts.creation ? 'creation' : ''}">${sceneSVG(sceneKey)}<canvas data-fx="${fx}"></canvas>
     ${opts.dragon ? `<div class="hero-dragon" id="hero-dragon">${opts.dragon}</div>` : ''}
     <div class="shade"></div><div class="cap"><div class="eyebrow">${eyebrow}</div><h2 class="ntitle">${title}</h2></div></div>`;
@@ -2217,7 +2139,7 @@ function toast(title, sub, ic = 'trophy'){
     const t = toastQ.shift(); if(!t){ toastBusy = false; return; } toastBusy = true;
     const el = document.createElement('div'); el.className = 'toast';
     el.innerHTML = `<div class="t-ic">${icon(t.ic)}</div><div><b>${esc(t.title)}</b><small>${esc(t.sub)}</small></div>`;
-    document.body.appendChild(el); SND.sfx('unlock');
+    document.body.appendChild(el);
     setTimeout(() => { el.remove(); next(); }, 3000);
   };
   next();
@@ -2227,13 +2149,11 @@ function announce(list){ (list||[]).forEach(a => toast('Achievement: ' + a.title
 /* ════════════ FLOW ════════════ */
 const UI = { screen:null, preview:null, lastPointer:'mouse' };
 const TOUCH = () => UI.lastPointer === 'touch' || (window.matchMedia && matchMedia('(hover: none)').matches);
-document.addEventListener('pointerdown', (e) => { UI.lastPointer = e.pointerType || 'mouse'; SND.init(); }, true);
-document.addEventListener('keydown', () => SND.init(), {once:true});
+document.addEventListener('pointerdown', (e) => { UI.lastPointer = e.pointerType || 'mouse'; }, true);
 
 function choose(choice){
   if(isLocked(choice)) return;
   state.undo = JSON.stringify(Object.assign({}, state, {undo:null}));
-  SND.sfx('choose');
   applyChoiceCore(state, choice);
   saveGame();
   announce(checkAchievements(state));
@@ -2247,7 +2167,6 @@ function continueStory(){
   saveGame();
   const n = STORY.nodes[state.node];
   if(n && prev && n.chapterShort !== prev.chapterShort) showChapterCard(n, state.chapterHeal);
-  SND.sfx('page');
   render();
 }
 function rewind(){
@@ -2280,7 +2199,6 @@ function showChapterCard(node, heal){
     ${heal ? `<div class="heal">${icon('heart','sm')} Seasons pass. Your wounds close: +${heal} health.</div>` : ''}<div class="tap">Tap to continue</div>`;
   const close = () => { if(!el.isConnected) return; el.classList.add('out'); setTimeout(() => el.remove(), 450); };
   el.onclick = close; document.body.appendChild(el); setTimeout(close, SETTINGS.reduce ? 1400 : 3200);
-  SND.sfx('gong');
 }
 
 /* ════════════ RENDER ════════════ */
@@ -2309,7 +2227,6 @@ function renderTitle(){
   const s = state, n = STORY.nodes[s.node];
   const where = s.node.startsWith('__ending_') ? 'Saga complete' : n ? `${n.chapterShort} · ${esc(resolveTitle(n))}` : '';
   const found = ENDING_ORDER.filter(k => META.endings[k]).length;
-  SND.ambience('cave');
   return `<div class="title-hero"><h1>Dragon Saga</h1><div class="sub">The Hoard Eternal</div></div>
     <div class="banner">${sceneSVG('cave')}<canvas data-fx="embers"></canvas><div class="hero-dragon" style="right:50%;transform:translateX(50%);width:70%">${dragonSVG(dragonLook(s))}</div></div>
     ${s.dragonName ? `<div class="continue-card"><div class="p">${dragonSVG(dragonLook(s), {still:true})}</div><div><b>${esc(s.dragonName)}</b><small>${where}</small><small>${s.wealth} gold · ${s.infamy} infamy · ${s.health} health</small></div></div>
@@ -2363,12 +2280,9 @@ function renderOutcome(){
 function outcomeEffects(impacts){
   const has = (k) => impacts.find(b => b.k === k);
   const v = $('vignette');
-  if(has('hurt')){ SND.sfx('hurt'); if(!SETTINGS.reduce){ v.classList.add('hit'); $('app').classList.add('shake'); setTimeout(() => { v.classList.remove('hit'); $('app').classList.remove('shake'); }, 450); } try{ navigator.vibrate && navigator.vibrate([30, 40, 60]); }catch(e){} }
-  else if(has('heal')) SND.sfx('heal');
+  if(has('hurt')){ if(!SETTINGS.reduce){ v.classList.add('hit'); $('app').classList.add('shake'); setTimeout(() => { v.classList.remove('hit'); $('app').classList.remove('shake'); }, 450); } try{ navigator.vibrate && navigator.vibrate([30, 40, 60]); }catch(e){} }
   const h = has('hoard');
-  if(h && h.v > 0){ setTimeout(() => SND.sfx('coin'), 200); if(!SETTINGS.reduce) flyCoins(Math.min(14, 3 + Math.round(h.v / 5))); }
-  const inf = has('infamy');
-  if(inf && inf.v >= 10) setTimeout(() => SND.sfx('roar'), 450);
+  if(h && h.v > 0){ if(!SETTINGS.reduce) flyCoins(Math.min(14, 3 + Math.round(h.v / 5))); }
 }
 function flyCoins(n){
   const target = document.querySelector('.hoard-svg'); if(!target) return;
@@ -2413,7 +2327,7 @@ function renderEnding(){
     const first = recordEnding(key);
     state.endingFirst = first;
     saveGame();
-    setTimeout(() => { SND.sfx('end'); announce(checkAchievements(state, key)); }, 400);
+    setTimeout(() => announce(checkAchievements(state, key)), 400);
   }
   const found = ENDING_ORDER.filter(k => META.endings[k]).length;
   const early = key === 'fallenEarly';
@@ -2508,8 +2422,6 @@ function openSettings(){
   const seg = (key, opts) => `<div class="seg">${opts.map(([v, l]) => `<button class="${SETTINGS[key]===v?'on':''}" onclick="setSetting('${key}','${v}')">${l}</button>`).join('')}</div>`;
   const sw = (key) => `<button class="sw ${SETTINGS[key]?'on':''}" onclick="setSetting('${key}',${!SETTINGS[key]})" aria-label="${key}"></button>`;
   sheet('Settings', '', `
-    <div class="set-row"><div><b>Sound</b><small>Ambience and effects, generated live.</small></div>${sw('sound')}</div>
-    <div class="set-row"><div><b>Volume</b></div><input type="range" min="0" max="1" step="0.05" value="${SETTINGS.volume}" oninput="SETTINGS.volume=+this.value;saveSettings()"></div>
     <div class="set-row"><div><b>Text size</b></div>${seg('textSize', [['s','S'],['m','M'],['l','L']])}</div>
     <div class="set-row"><div><b>Show stat hints</b><small>Reveal which way each choice pulls you. Spoils a little.</small></div>${sw('hints')}</div>
     <div class="set-row"><div><b>Reduce motion</b><small>No particles, shakes or animations.</small></div>${sw('reduce')}</div>
@@ -2518,8 +2430,7 @@ function openSettings(){
     <div class="btn-row"><button class="btn ghost" style="color:#d98a8a" onclick="resetProgress()">${icon('x')}Erase endings &amp; feats</button></div>
     <p class="progress-line" style="margin-top:18px">Dragon Saga 2.0 · works offline · your saga saves automatically</p>`);
 }
-function setSetting(k, v){ SETTINGS[k] = v; saveSettings(); if(k === 'sound'){ SND.init(); } openSettings(); if(k === 'hints' || k === 'reduce' || k === 'textSize') render(); }
-function toggleSound(){ SETTINGS.sound = !SETTINGS.sound; saveSettings(); SND.init(); render(); }
+function setSetting(k, v){ SETTINGS[k] = v; saveSettings(); openSettings(); if(k === 'hints' || k === 'reduce' || k === 'textSize') render(); }
 function resetProgress(){ if(!confirm('Erase all discovered endings and feats? Your current saga is kept.')) return; META = {endings:{}, ach:{}, runs:0}; saveMeta(); openSettings(); }
 
 /* ════════════ SHARE CARD ════════════ */
