@@ -1,6 +1,6 @@
 // Choice of the Dragon — offline app-shell cache
 // Bump CACHE_NAME on every release so old, stale caches get thrown out automatically.
-const CACHE_NAME = 'dragon-saga-v3';
+const CACHE_NAME = 'dragon-saga-v4';
 const ASSETS = [
   './',
   './index.html',

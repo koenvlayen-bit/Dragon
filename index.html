@@ -2,384 +2,239 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Choice of the Dragon: The Hoard Eternal</title>
-
-<!-- PWA essentials -->
-<link rel="manifest" href="manifest.json">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Dragon Saga: The Hoard Eternal</title>
+<meta name="description" content="A branching text RPG. Hatch, hunt, conquer, and choose the legend your dragon becomes.">
 <meta name="theme-color" content="#0c0a10">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Dragon Saga">
-<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
-
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap');
+:root{
+  --void:#0c0a10; --panel:#17121c; --panel-hi:#211a29; --line:#2e2434;
+  --ember:#c1481f; --ember-bright:#e4682f; --gold:#c9a227; --gold-hi:#f0c44a; --gold-dim:#7d6a26;
+  --parchment:#ece3d3; --parchment-dim:#a89e8c; --danger:#c43a3a; --ok:#5fbf7a;
+  --c-brutality:#e4682f; --c-finesse:#f0c44a; --c-honor:#6ab7ff; --c-cunning:#7ddc8a; --c-disdain:#9a8fb0; --c-curiosity:#b47cff;
+  --safe-top:env(safe-area-inset-top,0px); --safe-bot:env(safe-area-inset-bottom,0px);
+  --fs:18px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;min-height:100%;background:radial-gradient(ellipse 900px 500px at 50% -10%,rgba(193,72,31,.13),transparent 60%),radial-gradient(ellipse 700px 400px at 90% 100%,rgba(201,162,39,.06),transparent 60%),var(--void);color:var(--parchment);font-family:'Spectral',Georgia,serif;line-height:1.65}
+body{overscroll-behavior-y:none}
+button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:none}
+.ic{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;display:inline-block;vertical-align:middle}
+.ic.lg{width:24px;height:24px}.ic.sm{width:14px;height:14px}
+.hidden{display:none!important}
+#app{max-width:680px;margin:0 auto;padding:calc(8px + var(--safe-top)) 14px calc(70px + var(--safe-bot));min-height:100vh}
 
-  :root{
-    --void: #0c0a10;
-    --panel: #17121c;
-    --panel-hi: #211a29;
-    --ember: #c1481f;
-    --ember-bright: #e4682f;
-    --gold: #c9a227;
-    --gold-dim: #7d6a26;
-    --parchment: #ece3d3;
-    --parchment-dim: #a89e8c;
-    --vein: #3a2418;
-    --danger: #8f2323;
-  }
+/* ── top bar ── */
+.topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;padding:10px 4px 10px;margin:0 -4px 6px;background:linear-gradient(180deg,rgba(12,10,16,.97) 70%,rgba(12,10,16,0));backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.tb-name{flex:1;min-width:0}
+.tb-title{font-family:'Cinzel',serif;font-weight:700;font-size:15px;letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--gold-hi)}
+.tb-sub{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--parchment-dim)}
+.tbtn{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);background:var(--panel);color:var(--parchment-dim)}
+.tbtn:active{transform:scale(.93)}
+.tbtn.on{color:var(--gold-hi)}
 
-  *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+/* ── banner ── */
+.banner{position:relative;height:210px;border-radius:18px;overflow:hidden;border:1px solid var(--line);box-shadow:0 18px 40px rgba(0,0,0,.45);margin-bottom:14px;background:#120d10}
+.banner .scene-svg,.banner canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.banner .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,10,16,0) 35%,rgba(12,10,16,.88) 100%)}
+.banner .cap{position:absolute;left:18px;right:18px;bottom:14px}
+.eyebrow{font-family:'Cinzel',serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold)}
+.ntitle{font-family:'Cinzel',serif;font-weight:700;font-size:25px;line-height:1.2;margin:2px 0 0;text-shadow:0 2px 12px rgba(0,0,0,.8)}
+.banner .hero-dragon{position:absolute;right:4%;bottom:6px;width:58%;max-width:320px;height:92%}
+.banner.creation{height:280px}
+.banner.creation .hero-dragon{right:50%;transform:translateX(50%);width:78%;max-width:360px;bottom:30px}
+.banner.creation .cap{text-align:center}
+.dragon-svg{width:100%;height:100%;display:block;overflow:visible}
+.breathe{animation:breathe 4.5s ease-in-out infinite;transform-origin:120px 188px}
+@keyframes breathe{50%{transform:scale(1.012,1.022)}}
+.eyeglow{animation:eye 3.2s ease-in-out infinite}@keyframes eye{50%{opacity:.55}}
+.runes{animation:runes 2.6s ease-in-out infinite}@keyframes runes{50%{opacity:.25}}
+.drip{animation:drip 2.4s ease-in infinite}@keyframes drip{0%{transform:translateY(0);opacity:1}100%{transform:translateY(18px);opacity:0}}
+.smoke{animation:smoke 3s ease-out infinite}@keyframes smoke{0%{transform:translate(0,0);opacity:0}30%{opacity:1}100%{transform:translate(8px,-14px);opacity:0}}
+.crack{animation:crack 1.6s ease-in-out infinite}@keyframes crack{50%{stroke:#fff1c2;filter:drop-shadow(0 0 4px #ff8a3d)}}
+.pulse{animation:pulse 2.4s ease-in-out infinite}@keyframes pulse{50%{opacity:.4}}
+.lava{animation:lava 3s ease-in-out infinite}@keyframes lava{50%{opacity:.45}}
+.flick{animation:flick 1.3s steps(2) infinite}@keyframes flick{50%{opacity:.55}}
+.ward{animation:ward 6s ease-in-out infinite}@keyframes ward{50%{opacity:.35}}
+.flash{animation:flash 9s linear infinite}@keyframes flash{0%,92%,100%{opacity:0}93%{opacity:.35}94%{opacity:0}95%{opacity:.2}}
+.ray{animation:ray 5s ease-in-out infinite}@keyframes ray{50%{opacity:.04}}
 
-  html,body{
-    margin:0; padding:0; min-height:100%;
-    background:
-      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(193,72,31,0.12), transparent 60%),
-      radial-gradient(ellipse 700px 400px at 90% 100%, rgba(201,162,39,0.06), transparent 60%),
-      var(--void);
-    color: var(--parchment);
-    font-family: 'Spectral', serif;
-    line-height:1.65;
-  }
+/* ── ledger ── */
+.ledger{display:grid;grid-template-columns:104px 1fr;gap:12px;background:linear-gradient(180deg,var(--panel-hi),var(--panel));border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:16px;position:relative}
+.ledger.collapsed{grid-template-columns:56px 1fr;padding:8px 12px}
+.ledger .portrait{position:relative;cursor:pointer}
+.ledger.collapsed .portrait{height:48px}
+.ledger .portrait .dragon-svg{height:96px}
+.ledger.collapsed .portrait .dragon-svg{height:48px}
+.ledger .hoard{margin-top:2px}
+.hoard-svg{width:100%;height:auto;display:block}
+.hoard-n{text-align:center;font-size:12px;color:var(--gold-hi);font-weight:600;margin-top:-2px}
+.ledger.collapsed .hoard,.ledger.collapsed .hoard-n{display:none}
+.bars{display:flex;flex-direction:column;gap:7px;justify-content:center;min-width:0}
+.ledger.collapsed .bars{gap:3px}
+.bar-lbl{display:flex;justify-content:space-between;font-size:11.5px;letter-spacing:.4px;color:var(--parchment-dim);margin-bottom:3px}
+.bar-lbl span{display:inline-flex;align-items:center;gap:4px}
+.ledger.collapsed .bar-lbl{display:none}
+.axis{position:relative;height:7px;border-radius:99px;background:#0f0b13;border:1px solid #2a2030;overflow:hidden}
+.ledger.collapsed .axis{height:5px}
+.axis .mid{position:absolute;left:50%;top:0;bottom:0;width:1px;background:#4a3d52}
+.axis .fill{position:absolute;top:0;bottom:0;border-radius:99px;transition:all .6s cubic-bezier(.3,1.4,.6,1)}
+.axis .knob{position:absolute;top:50%;width:11px;height:11px;margin:-5.5px 0 0 -5.5px;border-radius:50%;background:var(--parchment);box-shadow:0 0 8px rgba(255,255,255,.4);transition:left .6s cubic-bezier(.3,1.4,.6,1)}
+.ledger.collapsed .axis .knob{width:7px;height:7px;margin:-3.5px 0 0 -3.5px}
+.vitals{display:flex;gap:10px;font-size:12px;color:var(--parchment-dim);flex-wrap:wrap}
+.vitals b{color:var(--parchment)}
+.vitals span{display:inline-flex;align-items:center;gap:4px}
+.ledger.collapsed .vitals{display:none}
+.lg-toggle{position:absolute;right:8px;top:6px;color:var(--parchment-dim);opacity:.6;padding:4px}
 
-  #app{
-    max-width: 680px;
-    margin: 0 auto;
-    padding: 18px 16px 60px;
-    min-height:100vh;
-  }
+/* ── text & choices ── */
+.text{font-size:var(--fs);line-height:1.72}
+.text p{margin:0 0 1em}
+.text p:first-child::first-letter{font-family:'Cinzel',serif;font-size:2.6em;float:left;line-height:.9;margin:.06em .1em 0 0;color:var(--gold-hi)}
+.reveal p{opacity:0;transform:translateY(6px);animation:rv .7s ease forwards}
+@keyframes rv{to{opacity:1;transform:none}}
+.choices{display:flex;flex-direction:column;gap:10px;margin:22px 0 10px}
+.choice{position:relative;text-align:left;width:100%;padding:14px 16px 14px 18px;border-radius:14px;border:1px solid #3a2c40;background:linear-gradient(180deg,#1f1826,#18131d);transition:transform .12s,border-color .2s,background .2s;opacity:0;animation:rv .5s ease forwards}
+.choice::before{content:'';position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:3px;background:linear-gradient(180deg,var(--ember-bright),var(--gold))}
+.choice:hover,.choice:focus-visible{border-color:var(--ember);outline:none}
+.choice:active{transform:scale(.985)}
+.choice.preview{border-color:var(--gold);background:linear-gradient(180deg,#2a2131,#1d1722);box-shadow:0 0 0 2px rgba(201,162,39,.25)}
+.c-label{display:block;font-weight:600;font-size:16.5px;line-height:1.35}
+.c-flavor{display:block;font-style:italic;color:var(--parchment-dim);font-size:14.5px;margin-top:3px}
+.c-hints{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.c-hint{display:inline-flex;align-items:center;gap:3px;font-size:11px;padding:2px 7px;border-radius:99px;background:#120e16;border:1px solid #2e2434}
+.choice.locked{opacity:.55!important;cursor:not-allowed;border-style:dashed}
+.choice.locked::before{background:#4a3d52}
+.lock-hint{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--gold);margin-top:6px;font-style:normal}
+.choice.special::before{background:linear-gradient(180deg,#b47cff,#6ab7ff)}
+.special-tag{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:#c9a9ff;margin-bottom:3px}
+.tap-again{display:block;font-size:12px;color:var(--gold-hi);margin-top:6px;font-style:normal}
 
-  /* Header / Stat bar */
-  .hud{
-    background: linear-gradient(180deg, var(--panel-hi), var(--panel));
-    border: 1px solid #2c2230;
-    border-radius: 14px;
-    padding: 14px 16px;
-    margin-bottom: 22px;
-    position: relative;
-    overflow:hidden;
-  }
-  .hud::before{
-    content:"";
-    position:absolute; inset:0;
-    background: repeating-linear-gradient(115deg, transparent 0 18px, rgba(193,72,31,0.035) 18px 19px);
-    pointer-events:none;
-  }
-  .hud-title{
-    font-family:'Cinzel', serif;
-    font-weight:700;
-    letter-spacing:0.06em;
-    font-size: 12px;
-    color: var(--gold);
-    text-transform: uppercase;
-    margin-bottom:10px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-  }
-  .act-tag{
-    font-family:'JetBrains Mono', monospace;
-    font-size:10px;
-    color: var(--parchment-dim);
-    letter-spacing:0.04em;
-  }
-  .stat-grid{
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px 16px;
-    margin-bottom:10px;
-  }
-  .stat-row{ font-size:12px; }
-  .stat-label{
-    display:flex; justify-content:space-between;
-    font-family:'JetBrains Mono', monospace;
-    font-size: 10px;
-    color: var(--parchment-dim);
-    margin-bottom:4px;
-    letter-spacing:0.02em;
-  }
-  .stat-track{
-    height:6px; border-radius:4px;
-    background:#241a1f;
-    overflow:hidden;
-    position:relative;
-    border: 1px solid #2c2230;
-  }
-  .stat-fill{
-    height:100%;
-    border-radius:4px;
-    transition: width 0.5s ease;
-  }
-  .fill-axis1{ background: linear-gradient(90deg, var(--ember), var(--gold)); }
-  .fill-axis2{ background: linear-gradient(90deg, #7d6a26, #8b6fd1); }
-  .fill-axis3{ background: linear-gradient(90deg, #5b5560, #4fa5c9); }
-  .fill-health{ background: linear-gradient(90deg, #8f2323, #d14a1f); }
+/* ── outcome ── */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 16px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:6px 11px;border-radius:99px;border:1px solid;opacity:0;animation:chip .45s cubic-bezier(.3,1.6,.6,1) forwards}
+@keyframes chip{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+.btn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:15px;border-radius:14px;font-family:'Cinzel',serif;font-weight:700;font-size:15px;letter-spacing:1.5px;text-transform:uppercase;background:linear-gradient(135deg,var(--ember),#8f2e14);color:#fff3e6;border:1px solid #e4682f55;box-shadow:0 8px 24px rgba(193,72,31,.3)}
+.btn:active{transform:scale(.98)}
+.btn.ghost{background:var(--panel);border-color:var(--line);color:var(--parchment-dim);box-shadow:none}
+.btn.gold{background:linear-gradient(135deg,#c9a227,#8a6a12);border-color:#f0c44a66;color:#1b1406;box-shadow:0 8px 24px rgba(201,162,39,.25)}
+.btn-row{display:flex;gap:10px;margin-top:14px}
+.btn-row .btn{flex:1}
+.small-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--parchment-dim);padding:8px 4px}
 
-  .vitals{
-    display:flex; gap: 14px; margin-top: 10px;
-    font-family:'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--parchment-dim);
-    flex-wrap:wrap;
-  }
-  .vitals b{ color: var(--gold); font-weight:600; }
+/* ── ending ── */
+.badge{display:inline-flex;align-items:center;gap:8px;font-family:'Cinzel',serif;font-weight:900;letter-spacing:3px;font-size:13px;color:#1b1406;background:linear-gradient(135deg,#f0c44a,#a77d1a);padding:7px 14px;border-radius:99px;margin:6px 0 4px;box-shadow:0 0 30px rgba(240,196,74,.35)}
+.end-card{text-align:center;margin:10px 0 18px}
+.end-card .name{font-family:'Cinzel',serif;font-size:14px;letter-spacing:4px;text-transform:uppercase;color:var(--parchment-dim)}
+.end-portrait{width:220px;height:180px;margin:0 auto}
+.end-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0}
+.stat-tile{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+.stat-tile b{display:block;font-size:20px;font-family:'Cinzel',serif}
+.stat-tile small{font-size:11px;color:var(--parchment-dim);letter-spacing:1px;text-transform:uppercase}
+.progress-line{font-size:13px;color:var(--parchment-dim);text-align:center;margin:8px 0}
 
-  /* Story panel */
-  .scene{
-    background: var(--panel);
-    border: 1px solid #2c2230;
-    border-radius: 14px;
-    padding: 22px 20px;
-    margin-bottom: 18px;
-    position:relative;
-  }
-  .scene::before{
-    content:"";
-    position:absolute; left:0; top:14px; bottom:14px; width:3px;
-    background: linear-gradient(180deg, var(--ember), transparent);
-    border-radius:2px;
-  }
-  .node-eyebrow{
-    font-family:'Cinzel', serif;
-    font-size:11px;
-    letter-spacing:0.14em;
-    text-transform:uppercase;
-    color: var(--gold-dim);
-    margin-bottom: 6px;
-  }
-  .node-title{
-    font-family:'Cinzel', serif;
-    font-weight:700;
-    font-size: 22px;
-    color: var(--parchment);
-    margin: 0 0 14px 0;
-    letter-spacing:0.01em;
-  }
-  .scene-text p{
-    margin: 0 0 14px 0;
-    font-size: 16.5px;
-    color: #d9cfc0;
-  }
-  .scene-text p:first-letter{
-    font-family:'Cinzel', serif;
-    font-size: 30px;
-    color: var(--ember-bright);
-    font-weight:700;
-  }
-  .flash{
-    font-family:'JetBrains Mono', monospace;
-    font-size: 11px;
-    background: #1e1520;
-    border: 1px dashed #3a2a30;
-    border-radius: 8px;
-    padding: 8px 10px;
-    color: var(--gold);
-    margin: 4px 0 16px 0;
-  }
+/* ── title / naming ── */
+.title-hero{text-align:center;padding:24px 0 6px}
+.title-hero h1{font-family:'Cinzel',serif;font-weight:900;font-size:40px;letter-spacing:1px;margin:0;line-height:1.05;background:linear-gradient(180deg,#ffe7a0,#c9a227 60%,#7d5a12);-webkit-background-clip:text;background-clip:text;color:transparent}
+.title-hero .sub{font-family:'Cinzel',serif;letter-spacing:5px;font-size:12px;text-transform:uppercase;color:var(--ember-bright);margin-top:6px}
+.title-egg{width:220px;height:190px;margin:8px auto}
+.name-input{width:100%;padding:14px 16px;border-radius:14px;background:#120e16;border:1px solid #3a2c40;color:var(--parchment);font-family:'Cinzel',serif;font-size:18px;letter-spacing:1px;text-align:center;outline:none}
+.name-input:focus{border-color:var(--gold)}
+.presets{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin:12px 0 18px}
+.preset{padding:6px 12px;border-radius:99px;border:1px solid #3a2c40;background:#17121c;font-size:14px;color:var(--parchment-dim)}
+.preset.on{border-color:var(--gold);color:var(--gold-hi)}
+.divider{text-align:center;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--parchment-dim);margin:14px 0 4px}
+.continue-card{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:10px 14px;margin:14px 0}
+.continue-card .p{width:84px;height:70px;flex-shrink:0}
+.continue-card b{font-family:'Cinzel',serif;color:var(--gold-hi)}
+.continue-card small{display:block;color:var(--parchment-dim);font-size:13px}
 
-  /* Choices */
-  .choices{ display:flex; flex-direction:column; gap:10px; }
-  .choice-btn{
-    text-align:left;
-    background: linear-gradient(180deg, #1c1520, #150f18);
-    border: 1px solid #35272a;
-    border-radius: 10px;
-    padding: 14px 16px;
-    color: var(--parchment);
-    font-family:'Spectral', serif;
-    font-size: 15px;
-    cursor:pointer;
-    transition: border-color 0.15s, transform 0.1s, background 0.15s;
-    position:relative;
-  }
-  .choice-btn .choice-label{
-    display:block;
-    font-weight:600;
-    margin-bottom:3px;
-  }
-  .choice-btn .choice-flavor{
-    display:block;
-    font-size:12.5px;
-    color: var(--parchment-dim);
-    font-style:italic;
-  }
-  .choice-btn:hover, .choice-btn:focus-visible{
-    border-color: var(--ember);
-    background: linear-gradient(180deg, #241923, #1a1219);
-    transform: translateX(2px);
-    outline: 2px solid transparent;
-  }
-  .choice-btn:focus-visible{ outline: 2px solid var(--gold); outline-offset:2px; }
-  .choice-btn:active{ transform: translateX(2px) scale(0.99); }
+/* ── overlays ── */
+.overlay{position:fixed;inset:0;z-index:100;display:flex;align-items:flex-end;justify-content:center;background:rgba(6,4,8,.72);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);animation:fade .2s}
+@keyframes fade{from{opacity:0}}
+.sheet{width:100%;max-width:680px;max-height:90vh;background:#141018;border:1px solid var(--line);border-bottom:none;border-radius:24px 24px 0 0;display:flex;flex-direction:column;animation:up .3s cubic-bezier(.3,1.3,.6,1)}
+@keyframes up{from{transform:translateY(60px);opacity:0}}
+.sheet-h{display:flex;align-items:center;gap:10px;padding:16px 18px 10px}
+.sheet-h h2{flex:1;margin:0;font-family:'Cinzel',serif;font-size:19px;color:var(--gold-hi)}
+.sheet-b{padding:4px 18px calc(24px + var(--safe-bot));overflow-y:auto}
+.tabs{display:flex;gap:4px;background:#0f0b13;border-radius:12px;padding:4px;margin:0 18px 10px}
+.tab{flex:1;padding:8px 4px;border-radius:9px;font-size:12.5px;color:var(--parchment-dim);display:flex;align-items:center;justify-content:center;gap:5px}
+.tab.on{background:var(--panel-hi);color:var(--gold-hi)}
+.cast{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #221a28}
+.cast:last-child{border-bottom:none}
+.sigil{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 30% 30%,#3a2c40,#1a1420);border:1px solid #3a2c40;color:var(--gold-hi);flex-shrink:0}
+.cast.unknown .sigil{color:#4a3d52}
+.cast b{font-family:'Cinzel',serif;font-size:15px}
+.cast p{margin:2px 0 0;font-size:14px;color:var(--parchment-dim)}
+.cast .st{color:var(--gold);font-style:italic;font-size:13.5px;margin-top:3px}
+.tl{position:relative;padding-left:18px}
+.tl::before{content:'';position:absolute;left:5px;top:6px;bottom:6px;width:2px;background:#2e2434}
+.tl-i{position:relative;padding:6px 0 10px}
+.tl-i::before{content:'';position:absolute;left:-17px;top:12px;width:10px;height:10px;border-radius:50%;background:var(--ember);box-shadow:0 0 8px var(--ember)}
+.tl-i small{display:block;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--parchment-dim)}
+.tl-i span{font-size:15px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;min-height:96px}
+.tile.locked{opacity:.45}
+.tile .t-ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:#241b2b;color:var(--gold-hi);margin-bottom:6px}
+.tile.locked .t-ic{color:#5a4d62}
+.tile b{display:block;font-family:'Cinzel',serif;font-size:13.5px;line-height:1.3}
+.tile small{display:block;font-size:12.5px;color:var(--parchment-dim);margin-top:3px;line-height:1.4}
+.set-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid #221a28}
+.set-row b{font-weight:600}
+.set-row small{display:block;color:var(--parchment-dim);font-size:13px}
+.seg{display:flex;gap:3px;background:#0f0b13;border-radius:10px;padding:3px}
+.seg button{padding:6px 11px;border-radius:8px;font-size:13px;color:var(--parchment-dim)}
+.seg button.on{background:var(--panel-hi);color:var(--gold-hi)}
+.sw{width:46px;height:27px;border-radius:99px;background:#2a2030;position:relative;transition:background .2s;flex-shrink:0}
+.sw::after{content:'';position:absolute;top:3px;left:3px;width:21px;height:21px;border-radius:50%;background:#d8cfc0;transition:left .2s}
+.sw.on{background:var(--ember)}.sw.on::after{left:22px}
+input[type=range]{accent-color:var(--ember);width:120px}
 
-  .footer-controls{
-    display:flex; justify-content:center; margin-top: 28px;
-  }
-  .restart-btn{
-    background:none;
-    border: 1px solid #3a2a30;
-    color: var(--parchment-dim);
-    font-family:'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing:0.05em;
-    padding: 8px 16px;
-    border-radius: 20px;
-    cursor:pointer;
-    text-transform:uppercase;
-  }
-  .restart-btn:hover{ color: var(--gold); border-color: var(--gold-dim); }
+.chapter-card{position:fixed;inset:0;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:radial-gradient(ellipse at center,#24121a,#070508 70%);animation:fade .5s;padding:30px}
+.chapter-card .num{font-family:'Cinzel',serif;font-weight:900;font-size:84px;line-height:1;background:linear-gradient(180deg,#ffe7a0,#c9a227 55%,#6b4a0e);-webkit-background-clip:text;background-clip:text;color:transparent;animation:rise 1.2s ease}
+.chapter-card .lab{font-family:'Cinzel',serif;letter-spacing:6px;text-transform:uppercase;font-size:12px;color:var(--ember-bright);margin-top:10px}
+.chapter-card .nm{font-family:'Cinzel',serif;font-size:30px;margin-top:6px;animation:rise 1.4s ease}
+.chapter-card .heal{margin-top:22px;font-size:14px;color:var(--ok);display:inline-flex;gap:6px;align-items:center;font-style:italic}
+.chapter-card .tap{position:absolute;bottom:calc(30px + var(--safe-bot));font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#6a5d72}
+@keyframes rise{from{opacity:0;transform:translateY(14px);letter-spacing:12px}}
+.chapter-card.out{animation:fadeout .45s forwards}@keyframes fadeout{to{opacity:0}}
 
-  .continue-btn{
-    display:block;
-    width:100%;
-    text-align:center;
-    background: linear-gradient(180deg, var(--ember-bright), var(--ember));
-    border: 1px solid #7a2e13;
-    border-radius: 10px;
-    padding: 15px 16px;
-    color: #1a0f08;
-    font-family:'Cinzel', serif;
-    font-weight:700;
-    font-size: 14px;
-    letter-spacing:0.04em;
-    text-transform:uppercase;
-    cursor:pointer;
-    transition: filter 0.15s, transform 0.1s;
-  }
-  .continue-btn:hover{ filter: brightness(1.08); }
-  .continue-btn:active{ transform: scale(0.99); }
-  .continue-btn:focus-visible{ outline: 2px solid var(--gold); outline-offset:2px; }
+.toast{position:fixed;left:50%;top:calc(14px + var(--safe-top));transform:translateX(-50%);z-index:300;display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#2a2131,#1a141f);border:1px solid var(--gold-dim);border-radius:14px;padding:10px 16px;box-shadow:0 14px 40px rgba(0,0,0,.6);max-width:calc(100% - 28px);animation:drop .4s cubic-bezier(.3,1.5,.6,1)}
+.toast .t-ic{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#f0c44a,#a77d1a);color:#1b1406;flex-shrink:0}
+.toast b{display:block;font-family:'Cinzel',serif;font-size:13.5px;color:var(--gold-hi)}
+.toast small{font-size:12.5px;color:var(--parchment-dim)}
+@keyframes drop{from{transform:translate(-50%,-30px);opacity:0}}
+.vignette{position:fixed;inset:0;pointer-events:none;z-index:250;box-shadow:inset 0 0 120px 40px rgba(196,58,58,.0);transition:box-shadow .15s}
+.vignette.hit{box-shadow:inset 0 0 140px 50px rgba(196,58,58,.55)}
+.vignette.gold{box-shadow:inset 0 0 140px 40px rgba(240,196,74,.28)}
+.shake{animation:shake .45s}@keyframes shake{20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(2px)}}
+.coin-fly{position:fixed;z-index:260;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff2b3,#d9a441 60%,#8a5d18);pointer-events:none;animation:coin 1s cubic-bezier(.2,.7,.4,1) forwards}
+@keyframes coin{to{transform:translate(var(--dx),var(--dy)) scale(.5);opacity:0}}
+.footer{display:flex;justify-content:center;margin-top:18px}
+.pv-bubble{position:fixed;right:12px;top:calc(62px + var(--safe-top));width:150px;height:126px;pointer-events:none;z-index:40;border-radius:22px;padding:6px;background:radial-gradient(circle at 50% 80%,#3a1a14,#120d10 70%);border:1px solid var(--gold-dim);box-shadow:0 16px 40px rgba(0,0,0,.7),0 0 30px rgba(228,104,47,.2);animation:fade .25s}
 
-  .outcome-tag{
-    font-family:'JetBrains Mono', monospace;
-    font-size: 10px;
-    letter-spacing:0.08em;
-    text-transform:uppercase;
-    color: var(--parchment-dim);
-    background:#1e1520;
-    border:1px solid #3a2a30;
-    display:inline-block;
-    padding:3px 8px;
-    border-radius: 5px;
-    margin-bottom: 12px;
-  }
-
-  /* Naming screen */
-  .name-input{
-    width:100%;
-    background: #150f18;
-    border: 1px solid #3a2a30;
-    border-radius: 10px;
-    padding: 14px 16px;
-    color: var(--parchment);
-    font-family:'Cinzel', serif;
-    font-size: 17px;
-    letter-spacing:0.02em;
-    margin-bottom: 14px;
-  }
-  .name-input::placeholder{ color: #5c5460; font-family:'Spectral', serif; font-style:italic; }
-  .name-input:focus{ outline: 2px solid var(--gold); outline-offset:1px; border-color: var(--gold-dim); }
-
-  .name-divider{
-    display:flex; align-items:center; gap:10px;
-    margin: 4px 0 14px;
-    font-family:'JetBrains Mono', monospace;
-    font-size: 10px;
-    letter-spacing:0.08em;
-    text-transform:uppercase;
-    color: var(--parchment-dim);
-  }
-  .name-divider::before, .name-divider::after{
-    content:""; flex:1; height:1px; background:#2c2230;
-  }
-
-  .name-presets{
-    display:flex; flex-wrap:wrap; gap:8px;
-    margin-bottom: 20px;
-  }
-  .name-chip{
-    background: #1c1520;
-    border: 1px solid #35272a;
-    border-radius: 20px;
-    padding: 8px 14px;
-    color: var(--parchment-dim);
-    font-family:'Spectral', serif;
-    font-size: 13.5px;
-    cursor:pointer;
-    transition: border-color 0.15s, color 0.15s;
-  }
-  .name-chip:hover{ border-color: var(--gold-dim); color: var(--parchment); }
-  .name-chip.selected{ border-color: var(--gold); color: var(--gold); background: #241c14; }
-
-  .dragon-name-line{
-    text-align:center;
-    font-family:'Cinzel', serif;
-    font-size: 14px;
-    letter-spacing:0.1em;
-    text-transform:uppercase;
-    color: var(--parchment-dim);
-    margin-bottom: 2px;
-  }
-
-  /* Impact chips — shown on the aftermath screen after a choice */
-  .impact-strip{
-    display:flex; flex-wrap:wrap; gap:8px;
-    margin-bottom: 18px;
-  }
-  .impact-chip{
-    display:inline-flex; align-items:center; gap:6px;
-    padding: 6px 12px 6px 8px;
-    border-radius: 20px;
-    font-family:'JetBrains Mono', monospace;
-    font-size: 12px;
-    font-weight:600;
-    letter-spacing:0.01em;
-    border: 1px solid;
-    background: #150f18;
-  }
-  .chip-icon{ font-size: 14px; line-height:1; }
-  .chip-brutality{ color:#e4682f; border-color:#5a2c17; background:rgba(193,72,31,0.08); }
-  .chip-finesse{   color:#d9bd52; border-color:#5c4c1c; background:rgba(201,162,39,0.08); }
-  .chip-honor{     color:#c9b98f; border-color:#4a4536; background:rgba(201,185,143,0.08); }
-  .chip-cunning{   color:#a893e0; border-color:#3f3660; background:rgba(139,111,209,0.10); }
-  .chip-disdain{   color:#9a94a3; border-color:#3a3640; background:rgba(91,85,96,0.12); }
-  .chip-curiosity{ color:#6fc3e8; border-color:#284a58; background:rgba(79,165,201,0.10); }
-  .chip-health-up{   color:#e8899c; border-color:#5c2530; background:rgba(209,74,31,0.08); }
-  .chip-health-down{ color:#e0596e; border-color:#5c1e26; background:rgba(143,35,35,0.14); }
-  .chip-hoard{     color:#e6c65a; border-color:#5c4c1c; background:rgba(201,162,39,0.12); }
-  .chip-infamy{    color:#d97f7f; border-color:#4a2424; background:rgba(143,35,35,0.10); }
-
-  .ending-badge{
-    font-family:'Cinzel', serif;
-    font-weight:900;
-    font-size: 26px;
-    text-align:center;
-    color: var(--gold);
-    margin: 6px 0 18px;
-    text-shadow: 0 0 24px rgba(201,162,39,0.35);
-  }
-
-  @media (max-width: 420px){
-    .stat-grid{ grid-template-columns: 1fr; }
-    .node-title{ font-size: 19px; }
-    .scene-text p{ font-size:15.5px; }
-  }
-
-  ::selection{ background: var(--ember); color: var(--void); }
+body.reduce *{animation:none!important;transition:none!important}
+body.reduce .reveal p,body.reduce .choice,body.reduce .chip{opacity:1}
+@media (max-width:420px){ .ntitle{font-size:22px} .banner{height:190px} .banner.creation{height:250px} }
 </style>
 </head>
 <body>
 <div id="app"></div>
-
+<div class="vignette" id="vignette"></div>
 <script>
-/* =========================================================
-   CHOICE OF THE DRAGON — THE HOARD ETERNAL
-   Full branching narrative engine, single file, no build step.
-   ========================================================= */
-
+/* Dragon Saga: The Hoard Eternal — v2. Single file, no build step needed to run. */
+'use strict';
 // Computes a rough "how developed is this dragon" power score for the Vexar
 // rematch, factoring in accumulated stat extremity, infamy, wealth, and a
 // bonus if the chosen combat style matches the dragon's physical traits
@@ -393,6 +248,10 @@ function vexarPower(state, style){
   if(style === 'brutality' && (f.tailType === 'club' || f.hornType === 'ram' || f.skinTexture === 'armored')) score += 22;
   if(style === 'cunning' && (f.tailType === 'venom' || f.hornType === 'none' || f.skinTexture === 'ridged')) score += 22;
   if(style === 'finesse' && (f.tailType === 'whip' || f.hornType === 'spike' || f.skinTexture === 'leathery')) score += 22;
+
+  // v2: preparation between wars now pays off in the rematch
+  if(f.mirelleGift === 'sight') score += 25;   // Mirelle showed you his weakness
+  if(f.trained) score += 18;                   // a season spent training against the mountain
 
   return score;
 }
@@ -1355,25 +1214,342 @@ const ENDINGS = {
     ]
   }
 };
+/* =========================================================
+   STORY EXPANSION (v2)
+   New scenes, trait-locked choices, new endings and epilogue
+   lines. The original chapters above are left untouched; this
+   block splices new material into them.
+   ========================================================= */
 
-/* ============ GAME STATE & ENGINE ============ */
+const DN = (s) => s.dragonName || 'the dragon';
+
+Object.assign(STORY.nodes, {
+
+  /* ── Chapter Two: the goblin envoy ── */
+  "2.1b": {
+    chapterShort:"Chapter Two", chapter:"Chapter Two — The Empire", part:"Part I½",
+    title:"The Envoy From the Warren",
+    text: (s) => {
+      const lair = {
+        mine: "It has come up the dwarven gate's single narrow corridor, which, you note with some irritation, it fits through considerably better than any invader you had planned for.",
+        peak: "It has climbed the entire wind-scoured face of your peak to get here, and is still visibly reconsidering every decision that led to the climb.",
+        labyrinth: "It has found its way through the limestone maze to your inner chamber, which nothing should be able to do, and which it explains, unprompted, by holding up a ball of string roughly the length of a small river."
+      }[s.flags.lairType] || "";
+      const greet = {
+        worship: "'Snikkit,' it announces, bowing so low its nose scrapes stone. 'Acolyte, Third Grade, Bringer of Offerings. The priesthood has sent me to serve the Great Scaled One in all things. I have also been told,' it adds, with the careful neutrality of someone repeating instructions word for word, 'to ask whether you prefer goats or sheep. There has been a schism.'",
+        fear: "'Snikkit,' it squeaks, holding out a sack of ore with arms that will not stop trembling. 'Tribute. From the warren. The chieftain says it is all of it. The chieftain says please. The chieftain also says,' it adds, very quietly, 'that if you eat me he would understand, but he would prefer you didn't, as I am the only one who can count.'",
+        trust: "'Snikkit,' it says, offering a small, slightly bent paw in a gesture it has evidently seen humans use and is not entirely sure about. 'The warren sends greetings, neighbor. Also a cheese. The cheese was my idea,' it adds. 'Opinions in the warren were divided on whether dragons eat cheese. I said we'd find out.'"
+      }[s.flags.goblinAllies] || "'Snikkit,' it says. 'From the warren.' It does not elaborate, as if the rest should be obvious.";
+      return [
+        "You have barely finished arranging the first of your gold to your satisfaction — a task that turns out to involve considerably more nudging of individual coins than any song about dragons has ever admitted — when something small, green and visibly terrified clears its throat at the edge of your lair. " + lair,
+        greet,
+        "Whatever else it is, it is the first creature in your short life to walk into your lair on purpose. That alone, you decide, earns it the length of one conversation."
+      ];
+    },
+    choices: [
+      { label:"Make him steward of your hoard", flavor:"Someone has to count it. You would rather it weren't you.",
+        stats:{axis2:6}, wealth:15, next:"2.2", setFlags:{snikkit:'steward'},
+        outcome: (s) => ["Snikkit accepts the post with an alarming, almost religious seriousness. Within a week he has a slate, three colors of chalk, a filing system you do not understand and are not invited to, and a ledger whose first entry reads, in careful goblin script, GOLD (VARIOUS). LARGE.",
+          "He also finds fifteen gold worth of coins that had rolled into cracks in the floor and been forgotten. 'You were losing money to the floor,' he tells you, genuinely scandalized. 'To the floor, " + DN(s) + ".' You make a mental note never to let him see how you eat."] },
+      { label:"Send him home as your herald", flavor:"Let the warren carry your name further than you could fly it.",
+        stats:{axis1:-6}, infamy:8, next:"2.2", setFlags:{snikkit:'herald'},
+        outcome: (s) => ["You give him a message for every creature in the valley — short, ominous, and in your opinion rather well phrased — and Snikkit delivers it with a theatrical commitment that exceeds anything you could have asked for. He tells it in markets. He tells it at crossroads. At least once, he tells it standing on a barrel.",
+          "By the end of the month your name has travelled further than you have, picking up embellishments along the way that you never approved, including one popular version in which " + DN(s) + " is forty feet taller and has eaten the moon. You decide not to correct it."] },
+      { label:"Ask him everything about the world below", flavor:"A goblin who can count probably knows a great deal else.",
+        stats:{axis3:10}, next:"2.2", setFlags:{snikkit:'scholar'},
+        outcome:["It turns out a goblin who can count has also, quietly, been listening. You talk until dawn: which human villages pay taxes to which baron, which baron owes money to which bank, which bank is secretly owned by the Emperor's cousin, and how the Emperor's gout has been getting worse every winter. You learn more about the kingdom below in one night than you did in a season of circling it.",
+        "When Snikkit finally falls asleep mid-sentence on a pile of silver, you let him. He has earned it, and, more importantly, you have more questions for tomorrow."] },
+      { label:"Eat him", flavor:"You are a dragon. He is, technically, a snack.",
+        stats:{axis1:-10}, health:5, infamy:10, next:"2.2", setFlags:{snikkit:'eaten'},
+        outcome:["He was right about the counting, as it turns out. Nobody in the warren ever manages it quite as well again, and the ledgers of your hoard, for the rest of your long life, remain a little more approximate than they might otherwise have been.",
+        "The cheese, for the record, was excellent."] }
+    ]
+  },
+
+  /* ── Chapter Two: the bard ── */
+  "2.3b": {
+    chapterShort:"Chapter Two", chapter:"Chapter Two — The Empire", part:"Part III½",
+    title:"A Song in Want of a Dragon",
+    text: (s) => [
+      "Oakhaven is still settling into whatever you have made of it when a lone figure comes climbing toward your lair, unarmed except for a lute and an expression of the purest professional enthusiasm you have ever seen on a human face. 'Pell Quillane!' he calls up, from a distance he has clearly calculated as just outside fire range and then, visibly, decided not to trust. 'Balladeer, chronicler, occasional liar for hire. Every tavern from here to the coast is singing about you, great one, and I regret to inform you that the songs are terrible.'",
+      "He produces a sheaf of parchment, clears his throat and reads a verse of the current tavern favorite with real pain in his voice. It rhymes '" + DN(s) + "' with 'lizard' in a way that should not be linguistically possible. 'Let me write the real one,' he says. 'The one they'll still be singing when every one of us is dust. All I need is the truth — or,' he adds, more carefully, 'whatever you would like the truth to have been.'"
+    ],
+    choices: [
+      { label:"Demand a ballad of pure terror", flavor:"Every verse a warning. Every chorus a scream.",
+        stats:{axis1:-6}, infamy:12, next:"2.4a", setFlags:{bard:'terror'},
+        outcome: (s) => ["Pell writes it in a single, sweating night, glancing up at you between verses the way a man glances at weather. 'The Ashen Hymn of " + DN(s) + "' is short, brutal and catchy in the particular way of songs nobody actually wants stuck in their head. Within the season it is sung low in every tavern on the trade road, usually with the doors shut.",
+          "Mothers across three provinces begin using the chorus to get children to bed on time. Pell, finishing the last line, asks very politely whether he may now leave. You let him. A herald who survives is worth more than one who doesn't."] },
+      { label:"Pay him never to sing of you at all", flavor:"The best legend is the one nobody can quite confirm.",
+        stats:{axis2:10}, wealth:-15, infamy:-8, next:"2.4a", setFlags:{bard:'silence'},
+        outcome:["Pell is offended for one full minute, which you suspect is the longest he has ever been offended by anything. Then he sees the size of the purse, and his artistic principles undergo a rapid and graceful renegotiation.",
+        "He keeps his word for the rest of his life, deflecting every question about you with a smile and a change of subject. Inevitably, 'the one song Pell Quillane refuses to sing' becomes a rumor in its own right, and then a mystery, and then a kind of legend. You decide this still counts as getting your money's worth."] },
+      { label:"Tell him the truth, and let him write what he will", flavor:"The egg, the sibling, the fear. All of it.",
+        stats:{axis3:10, axis2:-6}, next:"2.4a", setFlags:{bard:'truth'},
+        outcome:["You tell him everything: the egg, the dark, the brother who hatched first, the first hunt, the first time you were afraid. Pell does not write a single word while you talk. He just listens, lute in his lap, with an attention you did not know humans were capable of.",
+        "The song he finally writes is quieter and stranger than the one he came for. It does not make you sound kind. It does not make you sound cruel. It makes you sound real, which turns out to unsettle people far more than either. The taverns do not know what to do with it. The scholars, a generation later, will not stop arguing about it."] },
+      { label:"Fix his meter, line by line", flavor:"Your name deserves better scansion than this.",
+        requires:(s) => s.axis3 >= 25, lockHint:"Requires Curiosity 25",
+        stats:{axis3:8, axis1:6}, infamy:4, next:"2.4a", setFlags:{bard:'cowrite'},
+        outcome:["What follows is the strangest collaboration in the history of the trade road: a terrified bard and a dragon arguing about anapests until dawn. You discover you have strong opinions about internal rhyme. Pell discovers that losing an argument about poetry to something with that many teeth is, oddly, the most fun he has had in years.",
+        "The finished ballad becomes the most famous song in the realm, credited on every copy to 'Pell Quillane and an Anonymous Collaborator of Considerable Size'. Pell never reveals who. He doesn't have to. Everyone has a theory, and every theory has wings."] }
+    ]
+  },
+
+  /* ── Chapter Three: Mirelle's gift (alive) or her tower (dead) ── */
+  "3.4b": {
+    chapterShort:"Chapter Three", chapter:"Chapter Three — The War of Mankind", part:"Part V½",
+    title: (s) => s.flags.sorceressAlive ? "The Witch's Price" : "The Empty Tower",
+    text: (s) => s.flags.sorceressAlive ? [
+      "When the last of Ostrovan's battalion has been driven back down the mountain — or buried on it, depending on how the day went — Mirelle climbs to your ledge with a satchel of salves that smell powerfully of tar and regret, and starts on your wounds without asking permission, which you suspect is the only way she has ever done anything.",
+      "'Ostrovan's men will not be the last thing this war throws at you,' she says, working a burning paste into a gash you had not even noticed. 'And something with your face — larger, angrier — has been circling the northern ridges for a week. I can give you one thing before what comes next. One. Choose carefully. I am old, good spells are expensive, and I do not do refunds.'"
+    ] : [
+      "The battle settles, and in the hush that follows your thoughts keep drifting back to the hollow with the ivy-swallowed tower, and to the last words of the woman you killed there — words that sound, the more you replay them, less like a curse and more like a warning delivered too late. You go back. Nobody stops you. Nobody, now, is left to.",
+      "The tower is smaller inside than its wards suggested and considerably fuller: shelves bowed under books, a workbench of half-finished charms, a cold hearth, a cup of tea that has been cold for weeks. On the wall hangs a map of the far north, a black citadel circled so many times the ink has worn through the parchment."
+    ],
+    choices: (s) => s.flags.sorceressAlive ? [
+      { label:"A ward woven into your scales", flavor:"Something to stand between you and the next blade that matters.",
+        stats:{axis2:-4}, health:10, next:"3.4c", setFlags:{mirelleGift:'ward', ward:2},
+        outcome:["She paints sigils along your flank with a brush that appears to be made from the tail of something you would rather not identify. They sink into your scales with a sensation like swallowing a cold coin, and settle there, faintly humming.",
+        "'It will soften the next two blows that truly matter,' she says, packing up. 'Not the third. Do not get greedy.' You get the sense she has said this to other people, and that not all of them listened."] },
+      { label:"Show me what my brother is planning", flavor:"Something with your face is circling the ridges. You know who.",
+        stats:{axis3:6}, next:"3.4c", setFlags:{mirelleGift:'sight'},
+        outcome:["She fills a copper bowl with snowmelt and something black, and in its surface you see him: Vexar, larger than you remember, gliding the northern thermals, rehearsing. You watch for an hour. By the end of it you have noticed what he has not — the slight hitch in his left wing on every third downstroke, the old injury he has learned to fly around rather than heal.",
+        "'Family,' Mirelle says, emptying the bowl onto the rocks. 'It is always family. Every war I have ever seen, sooner or later, comes down to two people who learned to fight in the same nest.'"] },
+      { label:"Teach me a word that breaks wards", flavor:"You would rather own the weapon than borrow it.",
+        stats:{axis3:12, axis1:4}, next:"3.4c", setFlags:{mirelleGift:'lore'},
+        outcome:["It takes three days, and she is a merciless teacher. The word is not really a word; it is a shape you have to make with your breath and your will at the same time, and it tastes like burnt copper every time you get it wrong, which is often.",
+        "On the third evening you finally say it right, and every ward on her tower flickers at once. Mirelle looks, for the first time since you met her, genuinely alarmed. 'Use it once,' she says, 'on something that deserves it. Not on my tower. Never again on my tower.'"] }
+    ] : [
+      { label:"Study her grimoire", flavor:"Whatever she knew, you can still learn.",
+        stats:{axis3:14}, next:"3.4c", setFlags:{mirelleGift:'lore', towerFate:'studied'},
+        outcome:["You spend the better part of a month in her tower, turning brittle pages with a claw far too large for the task. Her handwriting is impossible and her marginalia argue with her own conclusions, sometimes for whole chapters. Buried in the last third is a single word that breaks wards — not really a word, but a shape of breath and will — and after many nights of burnt-copper failures, you learn to say it.",
+        "You find yourself wishing, in a way you did not expect, that you could have argued with her too."] },
+      { label:"Take everything of value", flavor:"She has no further use for any of it.",
+        stats:{axis2:6}, wealth:30, next:"3.4c", setFlags:{towerFate:'looted'},
+        outcome:["Gold sewn into the hem of an old court cloak. A silver astrolabe. A small, heavy box of gemstones labeled, in a precise hand, FOR EMERGENCIES ONLY. You decide this qualifies.",
+        "You leave the map on the wall. Later, flying north toward the citadel it marks, you will wish you had not."] },
+      { label:"Burn it, and let her rest", flavor:"Some things should not outlive their keeper.",
+        stats:{axis1:-8}, health:5, infamy:-2, next:"3.4c", setFlags:{towerFate:'burned'},
+        outcome:["The wards flare one last time as the fire takes them, blue-white against the dusk, and for a moment the smoke above the tower folds into something that looks almost like a face, and then, almost like a nod.",
+        "You do not believe in ghosts. You fly home feeling lighter anyway, and decide not to examine that too closely."] }
+    ]
+  },
+
+  /* ── Chapter Three: between wars ── */
+  "3.4c": {
+    chapterShort:"Chapter Three", chapter:"Chapter Three — The War of Mankind", part:"Part V¾",
+    title:"Between Wars",
+    text: (s) => {
+      const sn = {
+        steward: " Snikkit has drawn up a schedule for that season in three colors of chalk. You did not ask him to. You suspect you will be following it anyway.",
+        herald: " Snikkit reports that your legend has grown another twenty feet in the retelling since spring, and asks, hopefully, whether you might consider growing into it.",
+        scholar: " Snikkit has started leaving books at the mouth of your lair, open to pages he thinks you will find interesting. He is, irritatingly, usually right."
+      }[s.flags.snikkit] || "";
+      return [
+        "For the first time since you cracked your shell, nothing is actively trying to kill you. The kingdom is licking its wounds; the mountain is quiet; somewhere to the north, something is surely plotting, but it is plotting slowly. You have, at a rough estimate, one long season before the world remembers you exist." + sn,
+        "It is not much time. How you spend it will follow you into everything that comes next."
+      ];
+    },
+    choices: [
+      { label:"Sleep deep and long upon your gold", flavor:"Dragons heal the old way: slowly, and on top of treasure.",
+        stats:{axis3:-4}, health:30, infamy:-6, next:"3.5", setFlags:{interlude:'sleep'},
+        outcome:["You sleep through the whole of winter, coiled on the hoard, wounds knitting closed in the warm dark the way they could never quite manage while you were busy getting new ones. Outside, snow buries the mountain to its shoulders. Down in the valley, people begin to hope you have died. You have not. You are simply recharging.",
+        "You wake in the first thaw rested, whole, and with a single gold coin fused to your belly scales. You decide, after some consideration, to keep it. It suits you."] },
+      { label:"Train against the mountain itself", flavor:"Fly the storms. Fight the rockslides. Come back sharper.",
+        stats:{axis1:-6}, health:-6, next:"3.5", setFlags:{trained:true, interlude:'train'},
+        outcome:["You spend the season flying straight into every storm the north sends down, diving through gorges barely wider than your wingspan, starting avalanches on purpose for the sole pleasure of outrunning them. You come back leaner, faster, and scarred in new and educational places.",
+        "You also come back with an entirely new set of opinions about wind, most of which you would describe, if asked, as personal."] },
+      { label:"Grow the hoard while the world is distracted", flavor:"Peace is simply war with better accounting.",
+        stats:{axis2:8}, wealth:40, infamy:6, next:"3.5", setFlags:{interlude:'hoard'},
+        outcome:["A season of quiet extortion, careful trades and one very large private loan to a baron who will regret it for the rest of his life. None of it is dramatic. All of it is profitable.",
+        "By spring the hoard has grown enough that you have to rearrange your sleeping position, which you choose to regard as a high-quality problem."] }
+    ]
+  }
+});
+
+/* ── Rewire the original spine to pass through the new scenes ── */
+(function spliceExpansion(){
+  const N = STORY.nodes;
+  // The lair choice now remembers what you claimed, then the goblin envoy arrives
+  const lairs = ['mine','peak','labyrinth'];
+  N["2.1"].choices.forEach((c, i) => { c.next = "2.1b"; c.setFlags = Object.assign({}, c.setFlags, {lairType: lairs[i]}); });
+  // After Oakhaven: the bard
+  N["2.3"].choices.forEach(c => { c.next = "2.3b"; });
+  // After the battalion: Mirelle (or her tower), then a season between wars
+  N["3.4"].choices.forEach(c => { c.next = "3.4b"; });
+  // Remember which final path closed the saga
+  const c42 = N["4.2"].choices;
+  c42[1].setFlags = {endPath:'treaty'};
+  c42[2].setFlags = {endPath:'myth'};
+
+  // Feasting restores a dragon: eating is healing
+  N["1.2"].choices[0].health = 8;
+  N["2.4"].choices[1].health = 10;
+
+  /* ── Trait-locked choices: what your dragon IS opens doors ── */
+  N["1.4"].choices.push({
+    label:"Ride the high thermals until he tires", flavor:"Your broad fin-tail catches air no heavier dragon can use.",
+    requires:(s) => s.flags.tailType === 'fin', lockHint:"Requires a fin-like tail",
+    stats:{axis3:12, axis1:6}, health:-4, infamy:6, next:"2.1",
+    outcome:["You do not fight him at all, not where he wants to fight. You climb. Thermal after thermal, higher than any dragon of his weight can comfortably follow, your fin-tail steering you through rising air the way a ship's rudder steers through current, always just — just — out of reach of his claws.",
+    "Infernus is old, and heavy, and proud, and it takes him most of an afternoon to burn himself out trying to match you. When he finally lands on a far crag, sides heaving, he glares up at you for a long moment. 'Fine,' he wheezes. 'FINE. Take the mountain. I'm going somewhere flatter.' He does. You never see him again."]
+  });
+
+  N["2.4"].choices.push({
+    label:"Ask her to teach you to read", flavor:"You own a library's worth of stolen books and cannot read a single one.",
+    requires:(s) => s.axis3 >= 25, lockHint:"Requires Curiosity 25",
+    stats:{axis3:16, axis2:-4}, infamy:-6, next:"3.1", setFlags:{aureliaAlive:true, aureliaTutor:true},
+    outcome:["Aurelia stares at you for a long, long moment, visibly re-sorting every assumption she has ever held about dragons, princesses, and captivity in general. Then she rolls up her sleeves. She is, it turns out, a merciless teacher: impatient with excuses, unimpressed by claws, and completely unwilling to accept 'I am a dragon' as a reason for bad handwriting.",
+    "By the time she leaves your mountain — and she does leave, because by then it has become obvious that she will — you can read three languages, and she has the only dragon in history who owes her a debt of honor. Neither of you will forget it."]
+  });
+
+  N["4.1"].choices.push(
+    { label:"Speak the word that unmakes wards", flavor:"Mirelle's word. Burnt copper on your tongue. Use it once.",
+      requires:(s) => s.flags.mirelleGift === 'lore', lockHint:"Requires Mirelle's ward-breaking word",
+      stats:{axis3:10}, infamy:6, wealth:65, next:"4.2a",
+      outcome:(s) => ["You land before the black gate, draw a long breath, and say the word.",
+      "Two centuries of wards come apart like wet paper — not all at once but in a slow, spreading unraveling, layer after layer, the citadel's defenses peeling away from the center outward as though the whole fortress were exhaling. Malvorath has just enough time, at the top of his tower, to begin a single sentence — 'Who taught you —' — before you answer it in person." + (s.flags.sorceressAlive ? " Mirelle, behind you, says nothing at all. She is smiling." : " Somewhere, you hope, a woman in an ivy-swallowed tower would have been smiling.")] },
+    { label:"Batter down the gate with your tail", flavor:"A club of bone and fury against two hundred years of iron.",
+      requires:(s) => s.flags.tailType === 'club' && s.axis1 <= -25, lockHint:"Requires a club tail and Brutality 25",
+      stats:{axis1:-12}, health:-8, infamy:12, wealth:50, next:"4.2a",
+      outcome:["The wards were built to stop spells, armies, and siege engines. Nobody, in two hundred years of careful planning, thought to ward the gate against a dragon simply turning around and hitting it with its tail. Repeatedly.",
+      "On the eleventh blow the gate gives, on the twelfth it is gone, and Malvorath, watching from his tower, is left with the profoundly undignified realization that his life's work has been undone by what amounts to a very large, very angry hammer."] },
+    { label:"Walk through the wards as though they were not there", flavor:"Your strange, glowing hide hums at the same pitch as his magic.",
+      requires:(s) => s.flags.skinTexture === 'strange', lockHint:"Requires a bioluminescent hide",
+      stats:{axis3:8, axis2:8}, health:-2, infamy:4, wealth:60, next:"4.2a",
+      outcome:["You had always wondered what the faint cold light under your hide was for. At the citadel's gate, you find out. The wards reach for you, taste you, and recoil in confusion: whatever you are, it hums at the same pitch as the magic they were woven from, and they cannot decide whether you are an intruder or one of their own spells, wandering home.",
+      "You walk through four layers of defense at a stroll. Malvorath, when you reach his study, has the bewildered look of a man whose front door has just politely let a dragon in."] }
+  );
+
+  N["5.1"].choices.push({
+    label:"Dive through the Guard in a single strike", flavor:"A season of storm-flying has taught you exactly how narrow a gap can be.",
+    requires:(s) => !!s.flags.trained, lockHint:"Requires training between wars",
+    stats:{axis1:8}, health:-4, infamy:8, next:(s) => s.flags.aureliaAlive ? '5.2a' : '5.2',
+    outcome:["Every storm you flew into last winter, every gorge you dove through with a wing's width to spare, pays for itself in one long breath. You fold your wings at the top of the palace's highest tower and drop — straight through the gap between the guard's crossbow lines, through the courtyard, through the great doors before they finish closing.",
+    "Dame Vaneth, to her immense credit, gets her sword up in time. It does not matter. You are already past her. 'That,' she calls after you, with something that sounds alarmingly like admiration, 'was cheating.' It was not. It was practice."]
+  });
+})();
+
+/* ── New endings ── */
+Object.assign(ENDINGS, {
+  myth: {
+    badge: "THE VANISHED LEGEND",
+    title: "The Dragon in the Clouds",
+    text: [
+      "You were seen once more, the stories say, on the morning after the Emperor's truce: a shape far too large for any bird, climbing into the high thin air above the treaty banners until the sun swallowed it. After that, nothing. No raids. No tribute demands. No answer to the shrines that began appearing, within the decade, on every hilltop with a view of your empty mountain.",
+      "The kingdom never quite recovers from not knowing. Generals keep watchtowers manned for a hundred years against a threat that never returns. Priests argue over whether you were a punishment, a test, or a god who simply grew bored. Children dare each other to climb to your old lair and come back with a coin; the few who make it swear the gold is still warm.",
+      "And somewhere above the weather, where no human eye can follow, you sleep on currents of cold air with the whole world spread out beneath you like a map you have finished reading. You are not forgotten. You have done something rarer and far more difficult. You have become a question nobody will ever be able to answer."
+    ]
+  },
+  treaty: {
+    badge: "THE GILDED PACT",
+    title: "The Tribute Eternal",
+    text: [
+      "The treaty you signed on the slope beneath your mountain becomes the most important document in the empire, and the most carefully worded. Every spring, the tribute wagons climb the old road: gold, gems, rare books, and once, after a particularly bad harvest year, an apology written in the Emperor's own hand, which you keep framed.",
+      "You never burn the capital. You never need to. The arrangement works better than conquest ever could: the empire keeps its pride and its throne, you keep everything that actually matters, and both sides find it deeply convenient never to discuss which of you is truly in charge. Three Emperors in a row inherit the treaty, read it, go pale, and sign it again.",
+      "Your hoard becomes something economists in distant kingdoms write papers about. Your name becomes a line item in a national budget. It is, you reflect, curled atop the fruits of a peace that pays you to keep it, perhaps the least romantic way a dragon has ever ruled a kingdom, and quite possibly the most effective."
+    ]
+  },
+  emperor: {
+    badge: "THE TWIN THRONES",
+    title: "An Empire of Fire and Crown",
+    text: [
+      "The continent's maps have to be redrawn four times in ten years, and by the end there is only one colour left on them. Empress Aurelia rules from the old capital, and you rule from the sky above it, and between her armies and your shadow there is no border left that anyone seriously intends to defend.",
+      "It is not a gentle empire. It was never going to be. But it is, to the surprise of every historian who predicts its collapse, a stable one: Aurelia governs with a cold, brilliant competence that the old kings never managed, and the mere fact of you makes rebellion a purely theoretical exercise. Roads are built. Laws are written down. Taxes are collected, ruthlessly and on time.",
+      "Late at night, on the highest balcony of the palace, the two of you sometimes talk about the day she held a letter-opener at you in your lair, and laugh about it, and then go quiet. Neither of you says what you both are thinking: that it could have ended a hundred different ways, and that this one — an empress and a dragon, owning the world between them — was by far the most dangerous, and by far the best."
+    ]
+  },
+  protector: {
+    badge: "THE SHIELD OF THE REALM",
+    title: "The Peace That Breathes Fire",
+    text: [
+      "Your mountain becomes the realm's northern wall, and you become the thing that guards it. Raiders who cross the border learn, briefly and memorably, that this particular kingdom has a dragon, and that the dragon has opinions about raiders. Neighbouring kings send envoys to ask, very carefully, what it would take to stay on your good side. The answer is always the same: behave.",
+      "Farmers in the valley stop looking up in fear when your shadow crosses their fields. Then they stop looking up at all, the way people stop noticing the weather. A generation grows up that has never seen a burned village, and does not quite believe their grandparents' stories about how it used to be — or about the dragon who once burned villages too.",
+      "It is not the legend you imagined in the egg. There are fewer songs about protectors than about conquerors, and the songs there are tend to be about other people. But on clear nights, from the peak, you can see the lights of a hundred towns that are still standing because you decided they should, and you find, somewhat to your own surprise, that you would not trade the view for every crown on the continent."
+    ]
+  },
+  storm: {
+    badge: "THE UNTAMED STORM",
+    title: "A Legend Nobody Agrees On",
+    text: [
+      "No two chroniclers ever manage to describe you the same way, and after a while they stop trying. To one province you are a monster; to the next, a strange and moody guardian; to a third, a rumor that collects taxes. You were cruel when it suited you, merciful when it amused you, and unpredictable always — the one dragon in recorded history that no king, priest or scholar ever managed to put in a box.",
+      "This makes you, it turns out, extraordinarily difficult to plan around. Treaties with you are written in pencil. Armies sent against you arrive to find you have already left, or are already behind them, or are inexplicably helping. Your hoard grows in fits and starts, sometimes enormous, sometimes given away entirely to a village that happened to catch you in the right mood.",
+      "You live a very long time, and you never once settle down into a single story. When the end finally comes, it is peaceful, and late, and on your own terms, and the obituaries — all of them — contradict each other. You would have liked that. You were never a legend. You were weather."
+    ]
+  }
+});
+
+/* ── Ending logic (v2) ──
+   Health 0 still means a legend cut short. Otherwise the ending follows the
+   path you closed the saga on, and only then the shape of your character. */
+function computeEnding(){
+  const {axis1, axis2, axis3, infamy, flags:f} = state;
+  if(f.endPath === 'myth') return (axis3 >= 30 && infamy <= 35) ? 'wise' : 'myth';
+  if(f.endPath === 'treaty') return (axis2 >= 25 && infamy <= 30) ? 'shadow' : 'treaty';
+  if(f.empireFate === 'conqueror') return 'emperor';
+  if(infamy >= 65 && axis1 <= -5) return 'tyrant';
+  if(axis2 >= 10 && infamy <= 40) return 'shadow';
+  if(axis3 >= 8 && axis2 <= 6 && infamy <= 55) return 'wise';
+  if(f.empireFate === 'protector') return 'protector';
+  if(axis2 <= -20 && infamy <= 45) return 'protector';
+  return 'storm';
+}
+
+/* ── Extra epilogue lines for the new threads ── */
+function expansionEpilogue(s){
+  const out = [];
+  const f = s.flags;
+  if(f.snikkit === 'steward') out.push("Snikkit kept your ledgers for the rest of his long, nervous, magnificent life, and trained three apprentices to keep them after him. The last entry in his own hand reads, simply: GOLD (VARIOUS). LARGER.");
+  else if(f.snikkit === 'herald') out.push("Snikkit's version of your legend outlived him by centuries. In it you are still forty feet taller than you ever were, and you have, at some point, eaten the moon. Nobody has ever been able to prove otherwise.");
+  else if(f.snikkit === 'scholar') out.push("Snikkit eventually founded the first goblin library in the known world, in a cave not far from yours. Its first and most borrowed book is a rather flattering biography of a certain dragon, written by a goblin who could count.");
+  else if(f.snikkit === 'eaten') out.push("In the warren below your mountain, goblins still teach their children to count on their fingers, all the way to ten, and then to stop, and never, ever to volunteer for anything.");
+
+  if(f.bard === 'terror') out.push("The Ashen Hymn is still sung, low, in taverns where the doors are shut. Nobody remembers who wrote it. Everybody remembers who it is about.");
+  else if(f.bard === 'silence') out.push("Pell Quillane died old, famous, and true to his word: there is not one verse about you in all his collected works. There is, however, a blank page at the end of the last volume, which scholars have been arguing over ever since.");
+  else if(f.bard === 'truth') out.push("Pell's quiet ballad turned out to be the only account of your life the scholars would ever fully trust. It is taught now, in places, as an example of how to write about something you are afraid of.");
+  else if(f.bard === 'cowrite') out.push("The ballad of 'Pell Quillane and an Anonymous Collaborator of Considerable Size' is still the most famous song in the realm. Its scansion, critics agree, is flawless. Its second author has never once been publicly confirmed.");
+
+  if(f.mirelleGift === 'ward' && f.sorceressAlive) out.push("The sigils Mirelle painted along your flank faded long ago. You can still feel them on cold mornings, a faint hum like a coin swallowed years before.");
+  if(f.towerFate === 'burned') out.push("Ivy has long since reclaimed the hollow where a sorceress's tower once stood. Nothing grows taller there than the grass, and on clear nights the stones still glow, very faintly, blue-white.");
+  if(f.towerFate === 'looted') out.push("Among the treasures in your hoard is a small, heavy box labeled FOR EMERGENCIES ONLY. You have never opened it again. It feels like something you should save.");
+  if(f.aureliaTutor) out.push("Whatever else passed between you and Aurelia, you never forgot who taught you to read. The first book you ever finished on your own still sits at the top of your hoard, above the gold, where you can reach it.");
+  if(f.interlude === 'sleep') out.push("The gold coin fused to your belly during the long winter sleep is still there, worn smooth now, the face on it long since rubbed away. You have never once considered removing it.");
+  return out;
+}
+/* ============ GAME STATE & CORE RULES ============
+   Pure game logic: no DOM. The UI layer below calls into this. */
+
+const SAVE_KEY = 'dragon-saga-save-v2';
+const SAVE_KEY_V1 = 'dragon-saga-save-v1';
+const META_KEY = 'dragon-saga-meta-v1';
+const SETTINGS_KEY = 'dragon-saga-settings-v1';
+
+// Give the very first choice a memory of which element you embraced,
+// so the hatchling has a colour before you pick a specific shade.
+STORY.nodes["1.1"].choices.forEach((c, i) => {
+  c.setFlags = Object.assign({}, c.setFlags, {element: ['fire','shadow','gold','fluid'][i]});
+});
 
 function freshState(){
   return {
     node: STORY.start,
-    phase: 'naming',      // 'naming' = choosing a name, 'story' = scene with choices, 'outcome' = aftermath
+    phase: 'naming',
     dragonName: null,
-    pendingOutcome: null, // array of paragraphs for the aftermath screen
-    pendingImpacts: null, // array of stat-change chips to show on the aftermath screen
-    pendingNext: null,    // node key (or "END") to move to once Continue is pressed
-    flags: {},   // narrative flags set by earlier choices (e.g. goblinAllies, sorceressAlive) that later text can react to
+    pendingOutcome: null,
+    pendingImpacts: null,
+    pendingNext: null,
+    flags: {},
     axis1: 0,  // negative = Brutality, positive = Finesse
     axis2: 0,  // negative = Honor, positive = Cunning
     axis3: 0,  // negative = Disdain, positive = Curiosity
     health: 100,
     wealth: 0,
     infamy: 0,
-    history: []
+    history: [],
+    visited: [],
+    undo: null,
+    lockedTaken: 0,
+    version: 2
   };
 }
 
@@ -1382,378 +1558,1013 @@ const NAME_PRESETS = [
   "Nyxaria", "Grimwing", "Aurumis", "Skarnoth",
   "Thalassor", "Obsidianne"
 ];
-
-function pickPresetName(){
-  return NAME_PRESETS[Math.floor(Math.random() * NAME_PRESETS.length)];
-}
+function pickPresetName(){ return NAME_PRESETS[Math.floor(Math.random() * NAME_PRESETS.length)]; }
 
 let state = freshState();
 
 function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
+function resolveText(value, s = state){ return typeof value === 'function' ? value(s) : value; }
+function resolveChoices(node, s = state){ return typeof node.choices === 'function' ? node.choices(s) : node.choices; }
+function resolveTitle(node, s = state){ return typeof node.title === 'function' ? node.title(s) : node.title; }
+function isLocked(choice, s = state){ return !!(choice.requires && !choice.requires(s)); }
+function chapterIndex(nodeId){ const n = STORY.nodes[nodeId]; if(!n) return 6; return ['Chapter One','Chapter Two','Chapter Three','Chapter Four','Chapter Five'].indexOf(n.chapterShort) + 1; }
 
-const SAVE_KEY = 'dragon-saga-save-v1';
+/* Apply a choice to a state. Returns what actually changed. */
+function applyChoiceCore(s, choice){
+  const before = { axis1:s.axis1, axis2:s.axis2, axis3:s.axis3, health:s.health, wealth:s.wealth, infamy:s.infamy };
+  const st = choice.stats || {};
+  s.axis1 = clamp(s.axis1 + (st.axis1||0), -100, 100);
+  s.axis2 = clamp(s.axis2 + (st.axis2||0), -100, 100);
+  s.axis3 = clamp(s.axis3 + (st.axis3||0), -100, 100);
 
-async function tryLoad(){
-  try{
-    const raw = window.localStorage.getItem(SAVE_KEY);
-    if(raw){ state = JSON.parse(raw); return true; }
-  }catch(e){ /* no save yet, or storage unavailable — fine, start fresh */ }
-  return false;
-}
-async function trySave(){
-  try{
-    window.localStorage.setItem(SAVE_KEY, JSON.stringify(state));
-  }catch(e){ /* storage full or blocked — game still works, just won't persist */ }
-}
-async function tryClear(){
-  try{
-    window.localStorage.removeItem(SAVE_KEY);
-  }catch(e){ /* ignore */ }
-}
+  // Mirelle's ward softens the next two real blows
+  let dh = choice.health || 0, absorbed = 0;
+  if(dh < 0 && (s.flags.ward||0) > 0){ absorbed = Math.ceil(-dh / 2); dh += absorbed; s.flags.ward--; }
+  s.health = clamp(s.health + dh, 0, 100);
+  s.wealth = Math.max(0, s.wealth + (choice.wealth||0));
+  s.infamy = clamp(s.infamy + (choice.infamy||0), 0, 100);
+  if(choice.requires) s.lockedTaken = (s.lockedTaken||0) + 1;
 
-function pct(axisVal){
-  // axisVal ranges roughly -100..100 -> 0..100 for bar width
-  return clamp(((axisVal + 100) / 200) * 100, 0, 100);
-}
-
-function buildImpactBadges(applied){
-  const badges = [];
-  if(applied.axis1 < 0) badges.push({icon:'🔥', label:'Brutality', value:-applied.axis1, cls:'chip-brutality'});
-  else if(applied.axis1 > 0) badges.push({icon:'✨', label:'Finesse', value:applied.axis1, cls:'chip-finesse'});
-
-  if(applied.axis2 < 0) badges.push({icon:'🛡️', label:'Honor', value:-applied.axis2, cls:'chip-honor'});
-  else if(applied.axis2 > 0) badges.push({icon:'🐍', label:'Cunning', value:applied.axis2, cls:'chip-cunning'});
-
-  if(applied.axis3 < 0) badges.push({icon:'🌑', label:'Disdain', value:-applied.axis3, cls:'chip-disdain'});
-  else if(applied.axis3 > 0) badges.push({icon:'👁️', label:'Curiosity', value:applied.axis3, cls:'chip-curiosity'});
-
-  if(applied.health !== 0){
-    const up = applied.health > 0;
-    badges.push({icon: up ? '❤️' : '💔', label:'Health', value: applied.health, signed:true, cls: up ? 'chip-health-up' : 'chip-health-down'});
-  }
-  if(applied.wealth !== 0){
-    badges.push({icon:'💰', label:'Hoard', value: applied.wealth, signed:true, cls:'chip-hoard'});
-  }
-  if(applied.infamy !== 0){
-    badges.push({icon:'💀', label:'Infamy', value: applied.infamy, signed:true, cls:'chip-infamy'});
-  }
-  return badges;
-}
-
-function resolveText(value){
-  // Story text and outcome text can be a static array, or a function(state) => array
-  // so later scenes can react to earlier choices (e.g. whether an ally survived).
-  return typeof value === 'function' ? value(state) : value;
-}
-
-function applyChoice(choice){
-  const before = {
-    axis1: state.axis1, axis2: state.axis2, axis3: state.axis3,
-    health: state.health, wealth: state.wealth, infamy: state.infamy
-  };
-
-  state.axis1 = clamp(state.axis1 + (choice.stats.axis1||0), -100, 100);
-  state.axis2 = clamp(state.axis2 + (choice.stats.axis2||0), -100, 100);
-  state.axis3 = clamp(state.axis3 + (choice.stats.axis3||0), -100, 100);
-  state.health = clamp(state.health + (choice.health||0), 0, 100);
-  state.wealth = Math.max(0, state.wealth + (choice.wealth||0));
-  state.infamy = clamp(state.infamy + (choice.infamy||0), 0, 100);
-  state.history.push(choice.label);
+  const node = STORY.nodes[s.node];
+  s.history.push({ node: s.node, chapter: node ? node.chapterShort : '', title: node ? resolveTitle(node, s) : '', label: choice.label });
   if(choice.setFlags){
-    const resolvedFlags = typeof choice.setFlags === 'function' ? choice.setFlags(state) : choice.setFlags;
-    Object.assign(state.flags, resolvedFlags);
+    const fl = typeof choice.setFlags === 'function' ? choice.setFlags(s) : choice.setFlags;
+    Object.assign(s.flags, fl);
   }
 
   const applied = {
-    axis1: state.axis1 - before.axis1, axis2: state.axis2 - before.axis2, axis3: state.axis3 - before.axis3,
-    health: state.health - before.health, wealth: state.wealth - before.wealth, infamy: state.infamy - before.infamy
+    axis1: s.axis1 - before.axis1, axis2: s.axis2 - before.axis2, axis3: s.axis3 - before.axis3,
+    health: s.health - before.health, wealth: s.wealth - before.wealth, infamy: s.infamy - before.infamy, absorbed
   };
-
-  // Show the aftermath of this specific choice before moving on.
-  state.phase = 'outcome';
-  state.pendingOutcome = resolveText(choice.outcome) || [];
-  state.pendingImpacts = buildImpactBadges(applied);
-  const resolvedNext = typeof choice.next === 'function' ? choice.next(state) : choice.next;
-  state.pendingNext = (state.health <= 0) ? "__ending_fallenEarly" : resolvedNext;
-
-  trySave();
-  render();
+  s.phase = 'outcome';
+  s.pendingOutcome = resolveText(choice.outcome, s) || [];
+  s.pendingImpacts = buildImpacts(applied);
+  const nx = typeof choice.next === 'function' ? choice.next(s) : choice.next;
+  s.pendingNext = (s.health <= 0) ? "__ending_fallenEarly" : nx;
+  return applied;
 }
 
-function continueStory(){
-  let next = state.pendingNext;
-  if(next === "END"){
-    next = "__ending_" + computeEnding();
+function buildImpacts(a){
+  const out = [];
+  if(a.axis1 < 0) out.push({k:'brutality', v:-a.axis1}); else if(a.axis1 > 0) out.push({k:'finesse', v:a.axis1});
+  if(a.axis2 < 0) out.push({k:'honor', v:-a.axis2});     else if(a.axis2 > 0) out.push({k:'cunning', v:a.axis2});
+  if(a.axis3 < 0) out.push({k:'disdain', v:-a.axis3});   else if(a.axis3 > 0) out.push({k:'curiosity', v:a.axis3});
+  if(a.health) out.push({k: a.health > 0 ? 'heal' : 'hurt', v:a.health, signed:true});
+  if(a.absorbed) out.push({k:'ward', v:a.absorbed});
+  if(a.wealth) out.push({k:'hoard', v:a.wealth, signed:true});
+  if(a.infamy) out.push({k:'infamy', v:a.infamy, signed:true});
+  return out;
+}
+
+function continueCore(s){
+  let next = s.pendingNext;
+  if(next === "END"){ state = s; next = "__ending_" + computeEnding(); }
+  // Seasons pass between chapters: wounds close a little
+  s.chapterHeal = 0;
+  const prevCh = chapterIndex(s.node), nextCh = chapterIndex(next);
+  if(nextCh > prevCh && nextCh <= 5 && s.health < 100){ s.chapterHeal = Math.min(10, 100 - s.health); s.health += s.chapterHeal; }
+  s.node = next;
+  s.phase = 'story';
+  s.pendingOutcome = null; s.pendingImpacts = null; s.pendingNext = null;
+  if(!s.visited.includes(next)) s.visited.push(next);
+}
+
+/* ── Persistence ── */
+function migrate(old){
+  const s = Object.assign(freshState(), old);
+  s.version = 2;
+  s.visited = Array.isArray(old.visited) ? old.visited : [old.node];
+  s.history = (old.history || []).map(h => typeof h === 'string' ? {node:'', chapter:'', title:'', label:h} : h);
+  if(s.pendingImpacts && s.pendingImpacts.length && !s.pendingImpacts[0].k) s.pendingImpacts = [];
+  return s;
+}
+function loadSave(){
+  try{
+    const raw = localStorage.getItem(SAVE_KEY);
+    if(raw) return migrate(JSON.parse(raw));
+    const v1 = localStorage.getItem(SAVE_KEY_V1);
+    if(v1) return migrate(JSON.parse(v1));
+  }catch(e){}
+  return null;
+}
+function saveGame(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }catch(e){} }
+function clearSave(){ try{ localStorage.removeItem(SAVE_KEY); localStorage.removeItem(SAVE_KEY_V1); }catch(e){} }
+
+/* ── Meta progress (across playthroughs) ── */
+function loadMeta(){ try{ return Object.assign({endings:{}, ach:{}, runs:0}, JSON.parse(localStorage.getItem(META_KEY)||'{}')); }catch(e){ return {endings:{}, ach:{}, runs:0}; } }
+let META = loadMeta();
+function saveMeta(){ try{ localStorage.setItem(META_KEY, JSON.stringify(META)); }catch(e){} }
+
+const ENDING_ORDER = ['tyrant','shadow','wise','emperor','protector','treaty','myth','storm','fallenEarly'];
+
+const ACHIEVEMENTS = [
+  { id:'hatch',    icon:'egg',     title:'First Breath',            desc:'Break out of the egg.',                         test:(s) => !!s.flags.element },
+  { id:'vexar',    icon:'sword',   title:'Sibling Rivalry, Settled', desc:'Defeat Vexar in the rematch.',                 test:(s) => s.flags.vexarOutcome === 'victory' },
+  { id:'religion', icon:'flame',   title:'Accidental Religion',      desc:'Let the goblins worship you.',                 test:(s) => s.flags.goblinAllies === 'worship' },
+  { id:'steward',  icon:'coins',   title:'Fiscal Responsibility',    desc:'Hire a goblin to count your gold.',            test:(s) => s.flags.snikkit === 'steward' },
+  { id:'cowrite',  icon:'lute',    title:'Of Considerable Size',     desc:'Co-write the most famous song in the realm.',  test:(s) => s.flags.bard === 'cowrite' },
+  { id:'locked',   icon:'key',     title:'Born For This',            desc:'Take a choice only your kind of dragon could.', test:(s) => (s.lockedTaken||0) > 0 },
+  { id:'witch',    icon:'star',    title:"The Witch's Favourite",    desc:'Accept a gift from Mirelle.',                  test:(s) => s.flags.sorceressAlive && !!s.flags.mirelleGift },
+  { id:'reader',   icon:'book',    title:'Literate Lizard',          desc:'Learn to read from a captive princess.',       test:(s) => !!s.flags.aureliaTutor },
+  { id:'rich',     icon:'crown',   title:'Gold (Various). Large.',   desc:'Amass a hoard of 250 gold.',                   test:(s) => s.wealth >= 250 },
+  { id:'feared',   icon:'skull',   title:'A Name to Fear',           desc:'Reach 100 infamy.',                            test:(s) => s.infamy >= 100 },
+  { id:'gentle',   icon:'heart',   title:'Gentle Giant',             desc:'Finish a saga with 15 infamy or less.',        test:(s, e) => e && e !== 'fallenEarly' && s.infamy <= 15 },
+  { id:'scale',    icon:'shield',  title:'By a Single Scale',        desc:'Finish alive with 15 health or less.',         test:(s, e) => e && e !== 'fallenEarly' && s.health <= 15 },
+  { id:'rewind',   icon:'rewind',  title:'Second Thoughts',          desc:'Take back a choice.',                          test:() => false },
+  { id:'all',      icon:'trophy',  title:'Every Story Told',         desc:'Discover all nine endings.',                   test:() => ENDING_ORDER.every(k => META.endings[k]) }
+];
+
+/* Returns newly unlocked achievements */
+function checkAchievements(s, endingKey){
+  const fresh = [];
+  ACHIEVEMENTS.forEach(a => { if(!META.ach[a.id] && a.test(s, endingKey)){ META.ach[a.id] = Date.now(); fresh.push(a); } });
+  if(fresh.length) saveMeta();
+  return fresh;
+}
+function unlockAchievement(id){ if(META.ach[id]) return null; META.ach[id] = Date.now(); saveMeta(); return ACHIEVEMENTS.find(a => a.id === id); }
+function recordEnding(key){
+  const first = !META.endings[key];
+  META.endings[key] = (META.endings[key]||0) + 1; META.runs++; saveMeta();
+  return first;
+}
+/* ============ ART: dragon portrait, scenes, hoard, icons ============
+   Everything is drawn in code (SVG), so it ships in this one file and
+   reacts to the choices you make. */
+
+const ICONS = {
+  flame:'<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',
+  feather:'<path d="M12.67 19a2 2 0 0 0 1.42-.59l6.12-6.12a6 6 0 0 0-8.49-8.49L5.6 9.92A2 2 0 0 0 5 11.33V19z"/><path d="M16 8 2 22M17.5 15H9"/>',
+  shield:'<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>',
+  mask:'<path d="M2 12a5 5 0 0 0 5 5 8 8 0 0 1 5 2 8 8 0 0 1 5-2 5 5 0 0 0 5-5V7h-5a8 8 0 0 0-5 2 8 8 0 0 0-5-2H2Z"/><path d="M6 11c1.5 0 3 .5 3 2-2 0-3 0-3-2ZM18 11c-1.5 0-3 .5-3 2 2 0 3 0 3-2Z"/>',
+  moon:'<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+  eye:'<path d="M2.06 12.35a1 1 0 0 1 0-.7 10.75 10.75 0 0 1 19.88 0 1 1 0 0 1 0 .7 10.75 10.75 0 0 1-19.88 0"/><circle cx="12" cy="12" r="3"/>',
+  heart:'<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>',
+  broken:'<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="m12 5-2 5 4 2-2 5"/>',
+  coins:'<circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18M7 6h1v4M16.71 13.88l.7.71-2.82 2.82"/>',
+  skull:'<path d="m12.5 17-.5-1-.5 1h1z"/><path d="M15 22a1 1 0 0 0 1-1v-1a2 2 0 0 0 1.56-3.25 8 8 0 1 0-11.12 0A2 2 0 0 0 8 20v1a1 1 0 0 0 1 1z"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="12" r="1"/>',
+  book:'<path d="M12 7v14M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/>',
+  sound:'<path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z"/><path d="M16 9a5 5 0 0 1 0 6M19.36 18.36a9 9 0 0 0 0-12.73"/>',
+  mute:'<path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z"/><path d="m22 9-6 6M16 9l6 6"/>',
+  gear:'<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>',
+  rewind:'<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
+  share:'<path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13"/>',
+  lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  key:'<circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/>',
+  crown:'<path d="M11.56 3.27a.5.5 0 0 1 .88 0l2.95 5.6a1 1 0 0 0 1.52.29L21.18 5.5a.5.5 0 0 1 .8.52l-2.83 10.25a1 1 0 0 1-.96.73H5.81a1 1 0 0 1-.96-.73L2.02 6.02a.5.5 0 0 1 .8-.52l4.27 3.66a1 1 0 0 0 1.52-.29zM5 21h14"/>',
+  sword:'<path d="M14.5 17.5 3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2"/>',
+  tower:'<path d="M18 21V8l-2-2V3h-2v2h-1V3h-2v2h-1V3H8v3L6 8v13"/><path d="M3 21h18M10 21v-4a2 2 0 0 1 4 0v4M11 10h2"/>',
+  lute:'<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
+  star:'<path d="M11.5 2.3a.53.53 0 0 1 .95 0l2.31 4.68a2.12 2.12 0 0 0 1.6 1.16l5.16.76a.53.53 0 0 1 .3.9l-3.74 3.64a2.12 2.12 0 0 0-.61 1.88l.88 5.14a.53.53 0 0 1-.77.56l-4.62-2.43a2.12 2.12 0 0 0-1.97 0L6.4 21.01a.53.53 0 0 1-.77-.56l.88-5.13a2.12 2.12 0 0 0-.61-1.88L2.16 9.8a.53.53 0 0 1 .3-.9l5.16-.76a2.12 2.12 0 0 0 1.6-1.16z"/>',
+  trophy:'<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>',
+  egg:'<path d="M12 22c6.23-.05 7.87-5.57 7.5-10-.36-4.34-3.95-9.96-7.5-10-3.55.04-7.14 5.66-7.5 10-.37 4.43 1.27 9.95 7.5 10z"/>',
+  scroll:'<path d="M15 12h-5M15 8h-5M19 17V5a2 2 0 0 0-2-2H4"/><path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"/>',
+  x:'<path d="M18 6 6 18M6 6l12 12"/>',
+  arrow:'<path d="M5 12h14M12 5l7 7-7 7"/>',
+  goblin:'<path d="M12 4c-3.5 0-6 2.7-6 6.5 0 4 2.7 7.5 6 7.5s6-3.5 6-7.5C18 6.7 15.5 4 12 4Z"/><path d="M6 9 1.5 6.5 3 11.5 6.3 12M18 9l4.5-2.5-1.5 5-3.3.5M9.5 11h.01M14.5 11h.01M10 15c1.3.8 2.7.8 4 0"/>',
+  dragon:'<path d="M4 18c3-1 5-4 5-8 0-3 2-6 6-6l-1 3 4-1-2 3 4 1c-2 2-5 2-6 4-1 3 1 6 4 8H4Z"/><path d="M13.5 8.5h.01"/>',
+  wand:'<path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72M14 7l3 3M5 6v4M19 14v4M10 2v2M7 8H3M21 16h-4M11 3H9"/>',
+  laurel:'<path d="M12 21c-4-2-7-6-7-11M12 21c4-2 7-6 7-11"/><path d="M5 10c-1-1-1.5-3-1-5 1.5.5 2.5 2 2.5 3.5M7 14c-2 0-3.5-1-4.5-2.5 1.5-.7 3.3-.4 4.3.7M19 10c1-1 1.5-3 1-5-1.5.5-2.5 2-2.5 3.5M17 14c2 0 3.5-1 4.5-2.5-1.5-.7-3.3-.4-4.3.7"/>',
+  helm:'<path d="M5 20V11a7 7 0 0 1 14 0v9"/><path d="M5 14h14M12 4v16M9 17h.01M15 17h.01"/>',
+  map:'<path d="M14.1 6.3 9.9 4.1a2 2 0 0 0-1.8 0L3.6 6.4A1 1 0 0 0 3 7.3v12.1a1 1 0 0 0 1.4.9l3.7-1.9a2 2 0 0 1 1.8 0l4.2 2.2a2 2 0 0 0 1.8 0l4.5-2.3a1 1 0 0 0 .6-.9V5.3a1 1 0 0 0-1.4-.9l-3.7 1.9a2 2 0 0 1-1.8 0zM15 6v15M9 3v15"/>',
+  play:'<path d="M6 3 20 12 6 21Z"/>',
+  plus:'<path d="M5 12h14M12 5v14"/>'
+};
+const icon = (k, cls = '') => `<svg class="ic ${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[k] || ''}</svg>`;
+
+/* ── Dragon look derived from the story so far ── */
+const PALETTES = {
+  'crimson':     { body:'#a3241f', dark:'#5c0f10', belly:'#e8a77a', wing:'#6e1414', membrane:'#c9452c', accent:'#ff7a3d' },
+  'obsidian':    { body:'#3d3550', dark:'#15111c', belly:'#6d5f86', wing:'#221c2e', membrane:'#4a3a6a', accent:'#b48cff' },
+  'storm-grey':  { body:'#66707e', dark:'#353b45', belly:'#b9c1ca', wing:'#454c58', membrane:'#7d8a9c', accent:'#9fdcff' },
+  'gold-bronze': { body:'#c08f2e', dark:'#6b4612', belly:'#f6dc96', wing:'#8a5d18', membrane:'#d9a441', accent:'#fff0a8' }
+};
+const ELEMENT_COLOR = { fire:'crimson', shadow:'obsidian', gold:'gold-bronze', fluid:'storm-grey' };
+
+function dragonLook(s, preview){
+  const f = Object.assign({}, s.flags, preview || {});
+  const color = f.skinColor || ELEMENT_COLOR[f.element];
+  return {
+    hatched: !!color,
+    color: color || 'storm-grey',
+    texture: f.skinTexture || null,
+    horns: f.hornType || null,
+    tail: f.tailType || null,
+    stage: Math.max(1, chapterIndex(s.node)),
+    health: s.health,
+    eye: eyeColor(s)
+  };
+}
+function eyeColor(s){
+  const ax = [['#ff6a2a', -s.axis1], ['#ffd76a', s.axis1], ['#6ab7ff', -s.axis2], ['#7dff8a', s.axis2], ['#b47cff', s.axis3]];
+  ax.sort((a, b) => b[1] - a[1]);
+  return ax[0][1] > 8 ? ax[0][0] : '#ffcf6a';
+}
+
+let _uid = 0;
+function dragonSVG(look, opts = {}){
+  const id = 'd' + (++_uid);
+  const p = PALETTES[look.color] || PALETTES['storm-grey'];
+  const sc = opts.fixedScale || [0.72, 0.72, 0.84, 0.94, 1, 1, 1][look.stage] || 1;
+  const anim = opts.still ? '' : 'class="breathe"';
+
+  if(!look.hatched){
+    // The egg, before the first choice
+    return `<svg viewBox="0 0 240 200" class="dragon-svg" aria-hidden="true">
+      <defs><radialGradient id="${id}e" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#6b5a4a"/><stop offset=".6" stop-color="#3a2e26"/><stop offset="1" stop-color="#1a1411"/></radialGradient>
+      <radialGradient id="${id}g" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ff8a3d" stop-opacity=".55"/><stop offset="1" stop-color="#ff8a3d" stop-opacity="0"/></radialGradient></defs>
+      <ellipse cx="120" cy="186" rx="56" ry="8" fill="#000" opacity=".45"/>
+      <circle cx="120" cy="112" r="88" fill="url(#${id}g)" class="pulse"/>
+      <g ${anim}><path d="M120 34c-30 0-52 50-52 86 0 34 22 60 52 60s52-26 52-60c0-36-22-86-52-86Z" fill="url(#${id}e)" stroke="#120d0a" stroke-width="2"/>
+      <path d="M96 78l10 14-6 10 14 8-4 14M150 96l-12 10 8 12-10 10" fill="none" stroke="#ffb15c" stroke-width="2.4" stroke-linecap="round" class="crack"/>
+      <ellipse cx="102" cy="70" rx="10" ry="18" fill="#fff" opacity=".07" transform="rotate(18 102 70)"/></g>
+    </svg>`;
   }
-  state.node = next;
-  state.phase = 'story';
-  state.pendingOutcome = null;
-  state.pendingImpacts = null;
-  state.pendingNext = null;
-  trySave();
-  render();
+
+  const scales = look.texture === 'armored' ? `<pattern id="${id}s" width="9" height="7" patternUnits="userSpaceOnUse"><path d="M0 7 Q4.5 0 9 7" fill="none" stroke="${p.dark}" stroke-width="1.1" opacity=".55"/></pattern>` : '';
+  const glow = look.texture === 'strange';
+
+  // Tail (drawn behind the body), with a tip that depends on the tail you chose
+  const tailPath = look.tail === 'whip'
+    ? 'M82 150 C 55 170, 30 176, 18 160 C 8 146, 22 132, 34 142 C 40 147, 36 155, 30 152'
+    : 'M82 150 C 58 172, 32 178, 20 164 C 12 154, 16 142, 26 138';
+  const tipAt = look.tail === 'whip' ? [30, 152] : [26, 138];
+  let tip = '';
+  if(look.tail === 'club') tip = `<g transform="translate(${tipAt[0]} ${tipAt[1]})"><circle r="10" fill="${p.dark}"/><path d="M-14 0h-6M14 0h6M0-14v-6M-10-10l-4-4M10-10l4-4M-10 10l-4 4" stroke="${p.dark}" stroke-width="3.4" stroke-linecap="round"/></g>`;
+  else if(look.tail === 'venom') tip = `<g transform="translate(${tipAt[0]} ${tipAt[1]}) rotate(-60)"><path d="M0 0 L-6 -18 L0 -12 L6 -18 Z" fill="${p.dark}"/><path d="M-4 -6 L-12 -4 M4 -6 L12 -4" stroke="${p.dark}" stroke-width="2.6" stroke-linecap="round"/></g><circle cx="${tipAt[0]-14}" cy="${tipAt[1]-6}" r="2.6" fill="#8cff5a" class="drip"/>`;
+  else if(look.tail === 'fin') tip = `<path d="M${tipAt[0]+2} ${tipAt[1]+4} C ${tipAt[0]-22} ${tipAt[1]-4}, ${tipAt[0]-22} ${tipAt[1]-34}, ${tipAt[0]+6} ${tipAt[1]-30} C ${tipAt[0]} ${tipAt[1]-18}, ${tipAt[0]+6} ${tipAt[1]-8}, ${tipAt[0]+2} ${tipAt[1]+4}Z" fill="${p.membrane}" stroke="${p.dark}" stroke-width="2"/>`;
+  else if(look.tail === 'whip') tip = `<path d="M${tipAt[0]} ${tipAt[1]} l-8 -2 l4 6z" fill="${p.dark}"/>`;
+  else tip = `<path d="M${tipAt[0]} ${tipAt[1]} l-10 -6 l12 -4z" fill="${p.dark}"/>`;
+
+  // Horns
+  let horns = '';
+  const hc = '#e9dcc0', hs = '#7a6a50';
+  if(look.horns === 'ram') horns = `<path d="M166 44 C 152 30, 132 34, 134 50 C 136 64, 152 64, 154 54 C 156 46, 148 44, 146 50" fill="none" stroke="${hc}" stroke-width="7" stroke-linecap="round"/><path d="M166 44 C 152 30, 132 34, 134 50 C 136 64, 152 64, 154 54" fill="none" stroke="${hs}" stroke-width="1.4" stroke-dasharray="2 3"/>`;
+  else if(look.horns === 'spike') horns = `<path d="M168 42 L140 14 L172 36Z" fill="${hc}" stroke="${hs}" stroke-width="1.2"/><path d="M176 40 L158 8 L182 36Z" fill="${hc}" stroke="${hs}" stroke-width="1.2"/>`;
+  else if(look.horns === 'crown') horns = `<g fill="none" stroke="${hc}" stroke-width="4" stroke-linecap="round"><path d="M166 42 L146 18 M156 30 L144 30 M152 25 L150 12"/><path d="M176 40 L170 12 M173 26 L184 18 M171 18 L178 6"/></g>`;
+  else if(look.horns === 'none') horns = `<path d="M150 50 C 158 38, 172 34, 184 40 C 172 40, 162 44, 156 54Z" fill="${p.dark}"/>`;
+  else horns = `<path d="M164 44 L156 34 L170 40Z M176 40 L172 30 L182 38Z" fill="${hc}" opacity=".8"/>`;
+
+  // Spine ridges for ridged hide
+  const ridges = look.texture === 'ridged'
+    ? `<g fill="${p.dark}">${[[150,74],[142,88],[132,100],[118,106],[104,108],[90,112],[78,122]].map(([x,y],i)=>`<path d="M${x-6} ${y+4} L${x} ${y-9-(i<3?2:0)} L${x+6} ${y+4}Z"/>`).join('')}</g>` : '';
+
+  const scars = look.health < 50 ? `<g stroke="#ffb3a0" stroke-width="1.6" stroke-linecap="round" opacity=".75"><path d="M100 128 l12 8 M104 124 l10 9"/>${look.health < 25 ? '<path d="M150 98 l6 10 M136 140 l12 4 M78 140 l8 6"/>' : ''}</g>` : '';
+
+  const sheen = look.texture === 'leathery' ? `<path d="M80 122 C 100 104, 140 104, 152 116" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="5" stroke-linecap="round"/>` : '';
+  const runes = glow ? `<g fill="none" stroke="${p.accent}" stroke-width="1.6" stroke-linecap="round" class="runes"><path d="M90 128 q8 -6 16 0 t16 0 t16 0"/><path d="M150 84 q6 6 0 12 t0 12"/><path d="M70 150 q-8 6 -14 2"/><circle cx="118" cy="146" r="2.5"/></g>` : '';
+
+  const bodyFill = scales ? `url(#${id}s)` : 'none';
+
+  return `<svg viewBox="0 0 240 200" class="dragon-svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="${id}b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${p.body}"/><stop offset="1" stop-color="${p.dark}"/></linearGradient>
+      <linearGradient id="${id}w" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${p.membrane}"/><stop offset="1" stop-color="${p.wing}"/></linearGradient>
+      <radialGradient id="${id}eye"><stop offset="0" stop-color="#fff"/><stop offset=".35" stop-color="${look.eye}"/><stop offset="1" stop-color="${look.eye}" stop-opacity="0"/></radialGradient>
+      ${scales}
+    </defs>
+    <ellipse cx="118" cy="188" rx="${70*sc}" ry="${7*sc}" fill="#000" opacity=".45"/>
+    <g transform="translate(${120 - 120*sc} ${188 - 188*sc}) scale(${sc})">
+     <g ${anim}>
+      <!-- far wing -->
+      <path d="M132 96 C 120 54, 92 22, 58 12 C 66 30, 64 44, 54 56 C 66 58, 72 66, 70 76 C 82 76, 92 84, 92 96 C 104 92, 118 94, 132 104Z" fill="url(#${id}w)" stroke="${p.dark}" stroke-width="2" opacity=".85"/>
+      <path d="M132 98 L58 12 M112 92 L54 56 M100 94 L70 76" stroke="${p.dark}" stroke-width="2.2" opacity=".7"/>
+      <!-- tail -->
+      <path d="${tailPath}" fill="none" stroke="${p.dark}" stroke-width="${look.tail==='whip'?7:13}" stroke-linecap="round"/>
+      <path d="${tailPath}" fill="none" stroke="${p.body}" stroke-width="${look.tail==='whip'?4:9}" stroke-linecap="round"/>
+      ${tip}
+      <!-- hind leg -->
+      <path d="M80 140 C 72 158, 80 176, 96 180 L112 182 L110 174 L100 170 C 98 160, 100 150, 98 140Z" fill="${p.dark}"/>
+      <!-- body -->
+      <path d="M70 140 C 66 112, 96 98, 128 100 C 152 102, 160 120, 156 142 C 152 164, 128 176, 104 174 C 84 172, 72 160, 70 140Z" fill="url(#${id}b)" stroke="${p.dark}" stroke-width="2"/>
+      <path d="M70 140 C 66 112, 96 98, 128 100 C 152 102, 160 120, 156 142 C 152 164, 128 176, 104 174 C 84 172, 72 160, 70 140Z" fill="${bodyFill}"/>
+      <!-- belly plates -->
+      <path d="M118 170 C 136 168, 150 156, 152 138 C 148 150, 134 160, 116 162Z" fill="${p.belly}" opacity=".9"/>
+      <!-- neck -->
+      <path d="M128 104 C 136 86, 146 70, 160 58 L176 66 C 166 76, 158 92, 154 112 C 150 120, 136 118, 128 104Z" fill="url(#${id}b)" stroke="${p.dark}" stroke-width="2"/>
+      <path d="M154 112 C 158 92, 164 78, 174 68" fill="none" stroke="${p.belly}" stroke-width="6" stroke-linecap="round" stroke-dasharray="4 3" opacity=".85"/>
+      ${ridges}
+      <!-- head -->
+      <g class="head">
+        ${horns}
+        <path d="M156 46 C 168 36, 186 38, 196 46 L214 54 C 218 56, 218 62, 212 64 L196 66 C 188 72, 172 74, 162 68 C 152 62, 150 52, 156 46Z" fill="url(#${id}b)" stroke="${p.dark}" stroke-width="2"/>
+        <path d="M196 66 L210 66 L198 72 C 190 74, 182 74, 176 71Z" fill="${p.dark}"/>
+        <path d="M200 64 l2 4 l3-4 M192 66 l2 4 l3 -4" fill="#f4efe2"/>
+        <circle cx="208" cy="55" r="1.6" fill="${p.dark}"/>
+        <circle cx="181" cy="51" r="7" fill="url(#${id}eye)" class="eyeglow"/>
+        <path d="M176 51 Q181 47 186 51 Q181 55 176 51Z" fill="${look.eye}"/>
+        <path d="M181 48.5 L181 53.5" stroke="#120d0a" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M172 45 L190 44" stroke="${p.dark}" stroke-width="2.4" stroke-linecap="round"/>
+      </g>
+      <!-- near wing (folded) -->
+      <path d="M118 112 C 110 92, 96 80, 78 74 C 84 86, 84 96, 76 104 C 92 104, 100 112, 98 124 C 106 118, 114 118, 118 112Z" fill="url(#${id}w)" stroke="${p.dark}" stroke-width="2"/>
+      <!-- front leg -->
+      <path d="M136 140 C 140 156, 140 168, 136 178 L152 182 L154 176 L146 172 C 150 160, 152 150, 150 138Z" fill="${p.dark}"/>
+      <path d="M137 181 l-3 4 M143 182 l-1 4 M149 182 l1 4" stroke="#f4efe2" stroke-width="1.6" stroke-linecap="round"/>
+      ${sheen}${runes}${scars}
+      ${opts.smoke ? `<g class="smoke"><circle cx="216" cy="52" r="3" fill="#bbb" opacity=".35"/><circle cx="222" cy="46" r="4" fill="#bbb" opacity=".25"/><circle cx="228" cy="38" r="5" fill="#bbb" opacity=".15"/></g>` : ''}
+     </g>
+    </g>
+  </svg>`;
 }
 
-function computeEnding(){
-  const {axis1, axis2, axis3, infamy} = state;
-  // Cruel Tyrant: brutal + very infamous
-  if(infamy >= 65 && axis1 <= -5) return "tyrant";
-  // Unseen Shadow: cunning + kept infamy low
-  if(axis2 >= 10 && infamy <= 40) return "shadow";
-  // Wise Dragon-God: curious + honorable/diplomatic
-  if(axis3 >= 8 && axis2 <= 6 && infamy <= 55) return "wise";
-  // Fallback: contradictory / chaotic legacy
-  return "fallenEarly";
+/* ── Scene backdrops ── */
+const SCENE_OF = {
+  "1.1":"cave","1.1a":"cave","1.1b":"cave","1.1c":"cave","1.1d":"cave","1.1e":"cave","1.1f":"cave",
+  "1.2":"plains","1.3":"warren","1.3b":"warren","1.4a":"peaks","1.4":"peaks",
+  "2.1":"lair","2.1b":"lair","2.2":"road","2.3":"town","2.3b":"road","2.4a":"lair","2.4":"lair",
+  "3.1":"foothills","3.1b":"foothills","3.2a":"cave","3.2":"cave","3.3a":"tower","3.3":"tower",
+  "3.4":"battle","3.4b":"tower","3.4c":"lair","3.5":"peaks","3.6":"peaks",
+  "4.1":"citadel","4.2a":"court","4.2":"court","5.1a":"palace","5.1":"palace","5.2a":"throne","5.2":"throne","5.3":"throne"
+};
+const ENDING_SCENE = { tyrant:'ashsky', shadow:'night', wise:'dawn', emperor:'palace', protector:'dawn', treaty:'lair', myth:'sky', storm:'peaks', fallenEarly:'night' };
+const SCENE_FX = {
+  cave:'embers', plains:'fireflies', warren:'smoke', peaks:'snow', lair:'glitter', road:'fireflies', town:'ash', foothills:'dust',
+  tower:'motes', battle:'ash', citadel:'void', court:'dust', palace:'embers', throne:'dust', ashsky:'ash', night:'stars', dawn:'motes', sky:'snow'
+};
+const SCENE_AUDIO = {
+  cave:'cave', plains:'wind', warren:'fire', peaks:'wind', lair:'cave', road:'wind', town:'fire', foothills:'wind',
+  tower:'magic', battle:'battle', citadel:'magic', court:'hall', palace:'hall', throne:'hall', ashsky:'fire', night:'wind', dawn:'magic', sky:'wind'
+};
+
+function sky(id, a, b, c){ return `<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${a}"/><stop offset=".6" stop-color="${b}"/><stop offset="1" stop-color="${c}"/></linearGradient>`; }
+function ridge(seed, y, amp, color, n = 10){
+  let d = `M0 200 L0 ${y}`; let r = seed;
+  const rnd = () => (r = (r * 9301 + 49297) % 233280) / 233280;
+  for(let i = 1; i <= n; i++){ const x = i * 400 / n; d += ` L${x - 400/n/2} ${y - amp * rnd()} L${x} ${y - amp*0.35*rnd()}`; }
+  return `<path d="${d} L400 200Z" fill="${color}"/>`;
 }
 
-function confirmName(rawName){
-  const trimmed = (rawName || "").trim();
-  state.dragonName = trimmed.length > 0 ? trimmed.slice(0, 32) : pickPresetName();
-  state.phase = 'story';
-  trySave();
-  render();
+function sceneSVG(key){
+  const id = 's' + (++_uid);
+  const W = (inner, defs = '') => `<svg viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice" class="scene-svg" aria-hidden="true"><defs>${defs}</defs>${inner}</svg>`;
+  switch(key){
+    case 'cave': return W(`<rect width="400" height="200" fill="url(#${id})"/>
+      <path d="M0 0 H400 V24 L380 52 L366 26 L344 70 L326 30 L300 44 L280 22 L250 60 L230 28 L200 48 L176 24 L150 66 L130 30 L104 50 L80 22 L56 58 L36 28 L14 46 L0 30Z" fill="#0a0709"/>
+      <path d="M0 200 V160 Q60 140 120 156 T240 150 T400 158 V200Z" fill="#120c0d"/>
+      <g class="lava" fill="none" stroke="#ff6a1f" stroke-width="2.5" stroke-linecap="round"><path d="M20 190 Q60 170 90 180 T150 168"/><path d="M260 186 Q300 166 330 176 T398 160"/><path d="M340 80 Q350 110 336 130"/></g>
+      <ellipse cx="200" cy="190" rx="160" ry="30" fill="url(#${id}g)"/>`,
+      sky(id,'#120a0c','#1d0f0e','#2a110b') + `<radialGradient id="${id}g"><stop offset="0" stop-color="#ff5a1a" stop-opacity=".35"/><stop offset="1" stop-color="#ff5a1a" stop-opacity="0"/></radialGradient>`);
+    case 'plains': return W(`<rect width="400" height="200" fill="url(#${id})"/><circle cx="300" cy="96" r="26" fill="#ffcf8a" opacity=".85"/>
+      ${ridge(3,120,30,'#4a2a3a',8)}${ridge(7,150,24,'#2d1a26',10)}
+      <g fill="#140c12">${[60,78,92,240,256].map((x,i)=>`<path d="M${x} 168 q4 -8 12 -6 l2 -6 l2 6 q4 2 4 8 l-2 6 h-2 v-4 h-12 v4 h-2z"/>`).join('')}</g>
+      <path d="M0 200 V172 Q100 160 200 170 T400 166 V200Z" fill="#0f0a0e"/>`, sky(id,'#2b1b3d','#a34a3a','#f39a5a'));
+    case 'warren': return W(`<rect width="400" height="200" fill="url(#${id})"/>
+      <path d="M0 0 L120 0 L90 200 L0 200Z" fill="#1a1410"/><path d="M400 0 L290 0 L320 200 L400 200Z" fill="#1a1410"/>
+      ${[130,170,210,250,280].map((x,i)=>`<g transform="translate(${x} ${150 - i%2*14})"><path d="M-14 30 L0 6 L14 30Z" fill="#2c2117"/><circle cy="24" r="3" fill="#ff9a3d" class="flick"/></g>`).join('')}
+      <path d="M90 200 Q200 170 320 200Z" fill="#0d0a08"/>`, sky(id,'#191321','#2a1d20','#3b2418'));
+    case 'peaks': return W(`<rect width="400" height="200" fill="url(#${id})"/>
+      <path d="M0 120 L60 40 L100 90 L150 20 L210 100 L260 50 L320 110 L360 60 L400 100 V200 H0Z" fill="#3b4458"/>
+      <path d="M150 20 L168 46 L156 44 L146 52 L138 38Z M60 40 L72 56 L56 54Z M260 50 L274 68 L258 64Z" fill="#dfe6f0" opacity=".85"/>
+      ${ridge(11,160,40,'#232a39',9)}${ridge(5,190,24,'#141925',12)}<rect width="400" height="200" fill="#fff" opacity="0" class="flash"/>`, sky(id,'#0e1422','#2a3550','#5b6a86'));
+    case 'lair': return W(`<rect width="400" height="200" fill="url(#${id})"/>
+      <path d="M0 0 H400 V40 Q300 70 200 50 T0 60Z" fill="#0d0a08"/>
+      <path d="M40 200 Q120 120 200 130 T360 200Z" fill="#a8761f"/><path d="M80 200 Q160 140 240 150 T340 200Z" fill="#d6a540"/>
+      <g fill="#ffe7a0">${Array.from({length:22},(_,i)=>`<ellipse cx="${70+((i*53)%270)}" cy="${150+((i*29)%46)}" rx="4" ry="2"/>`).join('')}</g>
+      <g fill="#ff4d6d"><path d="M150 160 l5 -6 l5 6 l-5 6z"/></g><g fill="#5ad1ff"><path d="M260 170 l4 -5 l4 5 l-4 5z"/></g>`,
+      sky(id,'#120d0a','#2a1d10','#3a260e'));
+    case 'road': return W(`<rect width="400" height="200" fill="url(#${id})"/>${ridge(21,110,26,'#2a2a44',8)}${ridge(13,140,20,'#1e2234',10)}
+      <path d="M0 190 Q120 150 200 160 T400 140" fill="none" stroke="#8a7458" stroke-width="6" opacity=".7"/>
+      ${[70,200,320].map(x=>`<g transform="translate(${x} 150)"><path d="M-10 20 L-10 6 L0 -4 L10 6 L10 20Z" fill="#141626"/><rect x="-4" y="10" width="4" height="4" fill="#ffcf7a" class="flick"/></g>`).join('')}
+      <path d="M0 200 V176 Q200 168 400 176 V200Z" fill="#0d0f1a"/>`, sky(id,'#0b0d1f','#1e2544','#4b4a6e'));
+    case 'town': return W(`<rect width="400" height="200" fill="url(#${id})"/>
+      <path d="M40 200 V130 H70 V112 H84 V130 H130 V100 L146 80 L162 100 V130 H210 V118 H260 V96 H276 V118 H340 V136 H370 V200Z" fill="#160d0a"/>
+      <g fill="#ffb347" class="flick">${[60,100,140,190,236,290,330].map((x,i)=>`<rect x="${x}" y="${150+(i%3)*10}" width="5" height="6"/>`).join('')}</g>
+      <ellipse cx="200" cy="200" rx="230" ry="70" fill="url(#${id}g)"/>`, sky(id,'#1a0b08','#5a1e0e','#c2481d') + `<radialGradient id="${id}g"><stop offset="0" stop-color="#ff6a1a" stop-opacity=".35"/><stop offset="1" stop-color="#ff6a1a" stop-opacity="0"/></radialGradient>`);
+    case 'foothills': return W(`<rect width="400" height="200" fill="url(#${id})"/>${ridge(31,100,40,'#3c3a4e',8)}${ridge(17,140,30,'#262536',9)}
+      <g fill="#141320">${Array.from({length:18},(_,i)=>`<path d="M${30+i*20} 178 v-14 l6 3 l-6 3"/>`).join('')}</g>
+      <path d="M0 200 V180 Q200 170 400 182 V200Z" fill="#0e0d16"/>`, sky(id,'#1b1c2c','#4b3f52','#8c6a5c'));
+    case 'tower': return W(`<rect width="400" height="200" fill="url(#${id})"/>
+      ${ridge(41,140,40,'#13261f',14)}
+      <g transform="translate(250 60)"><path d="M-22 140 V20 L-26 10 H26 L22 20 V140Z" fill="#1d2420"/><rect x="-6" y="40" width="12" height="16" rx="6" fill="#7fd7ff" class="flick"/><path d="M-24 60 q10 20 -2 40 M20 30 q-12 30 2 60" stroke="#2e5236" stroke-width="5" fill="none"/></g>
+      <circle cx="250" cy="110" r="70" fill="none" stroke="#7fd7ff" stroke-opacity=".12" stroke-width="2" class="ward"/>
+      ${ridge(9,175,20,'#0a1511',16)}`, sky(id,'#06121a','#10263a','#1d3b4a'));
+    case 'battle': return W(`<rect width="400" height="200" fill="url(#${id})"/>${ridge(51,120,50,'#2b1e20',7)}
+      <g stroke="#ff9a4a" stroke-width="1.6" fill="none" opacity=".7"><path d="M40 170 Q140 40 250 120"/><path d="M90 175 Q190 60 300 110"/></g>
+      <g fill="#120c0e">${Array.from({length:24},(_,i)=>`<path d="M${10+i*16} 184 v-18 l8 4 l-8 4"/>`).join('')}</g>
+      <path d="M0 200 V184 Q200 176 400 186 V200Z" fill="#0b0809"/>`, sky(id,'#160c0e','#4a1c16','#a24a26'));
+    case 'citadel': return W(`<rect width="400" height="200" fill="url(#${id})"/>
+      <path d="M120 200 V110 L128 80 L136 110 V120 H170 V70 L180 30 L190 70 V120 H210 V60 L222 14 L234 60 V120 H260 V90 L268 66 L276 90 V200Z" fill="#07050a"/>
+      <circle cx="222" cy="40" r="3" fill="#b07cff" class="flick"/><circle cx="180" cy="54" r="2" fill="#b07cff" class="flick"/>
+      <g fill="none" stroke="#b07cff" stroke-opacity=".25" class="ward"><ellipse cx="200" cy="120" rx="130" ry="80"/><ellipse cx="200" cy="120" rx="150" ry="96"/></g>
+      ${ridge(61,186,14,'#050308',14)}`, sky(id,'#0b0713','#22153a','#3c2350'));
+    case 'court': return W(`<rect width="400" height="200" fill="url(#${id})"/>${ridge(71,130,30,'#3a3048',8)}
+      ${[90,200,310].map((x,i)=>`<g transform="translate(${x} 160)"><path d="M-40 30 L0 -20 L40 30Z" fill="${['#5b1f2a','#6b5a1f','#1f3a5b'][i]}"/><path d="M0 -20 V-44" stroke="#2a2030" stroke-width="2"/><path d="M0 -44 h14 l-4 5 l4 5 h-14z" fill="#c9a227"/></g>`).join('')}
+      <path d="M0 200 V188 H400 V200Z" fill="#141018"/>`, sky(id,'#1f2340','#6a5a72','#d6a46e'));
+    case 'palace': return W(`<rect width="400" height="200" fill="url(#${id})"/>
+      <path d="M60 200 V120 H100 V96 Q120 60 140 96 V120 H170 V80 Q200 20 230 80 V120 H260 V96 Q280 60 300 96 V120 H340 V200Z" fill="#100c1a"/>
+      <g fill="#ffd27a" class="flick">${[80,120,150,190,210,250,290,320].map((x,i)=>`<rect x="${x}" y="${140+(i%2)*14}" width="5" height="9" rx="2.5"/>`).join('')}</g>
+      <circle cx="80" cy="40" r="14" fill="#f1ecd6" opacity=".85"/>`, sky(id,'#070814','#18183a','#2e2550'));
+    case 'throne': return W(`<rect width="400" height="200" fill="url(#${id})"/>
+      ${[40,110,290,360].map(x=>`<rect x="${x-10}" y="20" width="20" height="180" fill="#120e14"/>`).join('')}
+      <path d="M200 0 L140 200 H260Z" fill="#ffe7a8" opacity=".09" class="ray"/>
+      <path d="M176 200 V120 L184 96 H216 L224 120 V200Z" fill="#2a1d0e"/><path d="M184 96 L200 76 L216 96Z" fill="#c9a227"/>
+      <path d="M100 200 H300 V194 H100Z" fill="#6b1f24"/>`, sky(id,'#120c10','#241820','#3a2420'));
+    case 'ashsky': return W(`<rect width="400" height="200" fill="url(#${id})"/>${ridge(81,140,60,'#1a0c0a',7)}<path d="M180 140 L200 90 L220 140Z" fill="#0a0505"/>`, sky(id,'#1a0806','#5a160c','#b23a16'));
+    case 'night': return W(`<rect width="400" height="200" fill="url(#${id})"/>${ridge(91,150,40,'#0a0c18',9)}<circle cx="320" cy="50" r="18" fill="#e9ecf5" opacity=".9"/><circle cx="314" cy="46" r="18" fill="#0c1024"/>`, sky(id,'#03040c','#0c1024','#1b2040'));
+    case 'dawn': return W(`<rect width="400" height="200" fill="url(#${id})"/><circle cx="200" cy="150" r="40" fill="#ffe0a0" opacity=".8"/>${ridge(101,150,50,'#4a5068',8)}${ridge(33,180,26,'#2a3046',11)}`, sky(id,'#3b4a7a','#e49a7a','#ffd9a0'));
+    case 'sky': return W(`<rect width="400" height="200" fill="url(#${id})"/>${[[60,140,90],[220,160,120],[330,120,70]].map(([x,y,w])=>`<ellipse cx="${x}" cy="${y}" rx="${w}" ry="${w/4}" fill="#fff" opacity=".18"/>`).join('')}`, sky(id,'#0d1a3a','#3b62a0','#a9c8ee'));
+    default: return W(`<rect width="400" height="200" fill="#120d10"/>`);
+  }
 }
 
-function restart(){
-  state = freshState();
-  tryClear();
-  trySave();
-  render();
+/* ── The hoard: a pile that grows with your gold ── */
+function hoardSVG(w){
+  const h = Math.min(1, Math.log10(1 + Math.max(0, w)) / Math.log10(400));
+  const top = 58 - h * 44;
+  const coins = Math.round(4 + h * 26);
+  let c = '';
+  for(let i = 0; i < coins; i++){
+    const x = 14 + ((i * 37) % 92), yy = 60 - ((i * 13) % Math.max(4, Math.round(h * 40)));
+    if(yy >= top + 4) c += `<ellipse cx="${x}" cy="${yy}" rx="4.4" ry="1.8" fill="${i%5===0?'#fff2b3':'#f2c04e'}" stroke="#8a5d18" stroke-width=".6"/>`;
+  }
+  const gems = h > .35 ? `<path d="M46 ${top+10} l4 -5 l4 5 l-4 5z" fill="#ff4d6d"/><path d="M76 ${top+14} l3 -4 l3 4 l-3 4z" fill="#5ad1ff"/>` : '';
+  const crown = h > .75 ? `<path d="M56 ${top-2} l3 -7 l4 4 l4 -6 l4 6 l4 -4 l3 7z" fill="#ffd95a" stroke="#8a5d18" stroke-width=".6"/>` : '';
+  return `<svg viewBox="0 0 120 64" class="hoard-svg" aria-hidden="true"><path d="M2 64 Q60 ${top-6} 118 64Z" fill="#b8862b"/><path d="M14 64 Q60 ${top+4} 106 64Z" fill="#d9a441"/>${c}${gems}${crown}</svg>`;
 }
 
-/* ============ RENDER ============ */
+/* ── Character sigils for the journal ── */
+const CAST = [
+  { id:'vexar',   name:'Vexar',             icon:'dragon', at:'1.1e', desc:'Your brother. Hatched first, and has never once let you forget it.',
+    status:(s) => ({victory:'Beaten, fairly, at last.', draw:'Still undecided. Possibly forever.', defeat:'Still the stronger. For now.'})[s.flags.vexarOutcome] || (s.flags.metVexar ? 'Out there somewhere, keeping score.' : '') },
+  { id:'chief',   name:'The Goblin Chieftain', icon:'goblin', at:'1.3', desc:'Scarred, wiry, and the bravest coward in the ravine.',
+    status:(s) => ({worship:'Now high priest of a faith he did not plan.', fear:'Mines gold for you. Does not sleep well.', trust:'A good neighbour, against all odds.'})[s.flags.goblinAllies] || '' },
+  { id:'infernus',name:'Infernus',          icon:'flame',  at:'1.4a', desc:'The elder wyrm who owned your mountain first.', status:() => 'Gone. The mountain is yours.' },
+  { id:'snikkit', name:'Snikkit',           icon:'scroll', at:'2.1b', desc:'Goblin envoy. The only one in the warren who can count.',
+    status:(s) => ({steward:'Steward of your hoard. Three colours of chalk.', herald:'Your herald. Prone to exaggeration.', scholar:'Bookish, curious, and usually right.', eaten:'Delicious. Deeply missed by the ledgers.'})[s.flags.snikkit] || '' },
+  { id:'pell',    name:'Pell Quillane',     icon:'lute',   at:'2.3b', desc:'Balladeer, chronicler, occasional liar for hire.',
+    status:(s) => ({terror:'Wrote the Ashen Hymn. Sweated throughout.', silence:'Paid never to sing of you. Keeps his word.', truth:'Wrote the true song. Nobody knows what to do with it.', cowrite:'Your co-author. Credits you as Anonymous.'})[s.flags.bard] || '' },
+  { id:'aurelia', name:'Aurelia',           icon:'crown',  at:'2.4a', desc:'Crown Princess. Held a letter-opener at a dragon and meant it.',
+    status:(s) => ({killed:'Dead, by your choice.', puppet:'Queen, in name. Your hand on every string.', ally:'Your equal. Your partner. Your empress.'})[s.flags.aureliaFate] || (s.flags.aureliaAlive === false ? 'Devoured.' : s.flags.aureliaTutor ? 'Taught you to read. You owe her.' : s.flags.aureliaAlive ? 'Alive, and taking notes.' : '') },
+  { id:'galahad', name:'Sir Galahad',       icon:'sword',  at:'3.2a', desc:'Holy knight. Came alone, which says something either way.', status:() => '' },
+  { id:'mirelle', name:'Mirelle',           icon:'wand',   at:'3.3a', desc:'Hermit sorceress, once of a court two rulers removed.',
+    status:(s) => s.flags.sorceressAlive === false ? 'Killed in her own doorway. Her warning came too late.' : ({ward:'Wove a ward into your scales.', sight:'Showed you your brother’s weakness.', lore:'Taught you the word that breaks wards.'})[s.flags.mirelleGift] || (s.flags.sorceressAlive ? 'An ally, of a kind.' : '') },
+  { id:'ostrovan',name:'Archmage Ostrovan', icon:'star',   at:'3.4', desc:'A good wizard doing his king’s bidding.', status:() => '' },
+  { id:'malvorath',name:'Malvorath Thorne', icon:'tower',  at:'4.1', desc:'Dead two hundred years. Declined to stay that way.', status:() => 'Ended, at the top of his own tower.' },
+  { id:'emperor', name:'The Emperor',       icon:'laurel', at:'4.2a', desc:'Crowned ruler of the realm. Gout. Ceremony. Regret.', status:() => '' },
+  { id:'vaneth',  name:'Dame Vaneth',       icon:'helm',   at:'5.1a', desc:'Captain of the Royal Guard. Rehearsed her speech in a mirror.', status:() => '' }
+];
+/* ============ UI LAYER ============ */
 
-function statLabel(name, val, leftWord, rightWord, fillClass){
-  return `
-    <div class="stat-row">
-      <div class="stat-label"><span>${leftWord}</span><span>${rightWord}</span></div>
-      <div class="stat-track"><div class="stat-fill ${fillClass}" style="width:${pct(val)}%"></div></div>
-    </div>`;
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V'];
+const CREATION = new Set(['1.1','1.1a','1.1b','1.1c','1.1d']);
+
+/* ── settings ── */
+const SETTINGS = (() => { try{ return Object.assign({sound:true, volume:.7, textSize:'m', reduce:false, hints:false, ledger:'open'}, JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}')); }catch(e){ return {sound:true, volume:.7, textSize:'m', reduce:false, hints:false, ledger:'open'}; } })();
+function saveSettings(){ try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(SETTINGS)); }catch(e){} applySettings(); }
+function applySettings(){
+  document.documentElement.style.setProperty('--fs', {s:'16px', m:'18px', l:'20.5px'}[SETTINGS.textSize] || '18px');
+  document.body.classList.toggle('reduce', !!SETTINGS.reduce);
+  SND.setVolume();
 }
 
-function renderHud(){
-  const currentNode = STORY.nodes[state.node];
-  const chapterLabel = currentNode ? currentNode.chapterShort : "Epilogue";
-  const ledgerTitle = state.dragonName ? `${state.dragonName}'s Ledger` : "Draconic Ledger";
-  return `
-    <div class="hud">
-      <div class="hud-title"><span>${ledgerTitle}</span><span class="act-tag">${chapterLabel}</span></div>
-      <div class="stat-grid">
-        ${statLabel('axis1', state.axis1, 'Brutality', 'Finesse', 'fill-axis1')}
-        ${statLabel('axis2', state.axis2, 'Honor', 'Cunning', 'fill-axis2')}
-        ${statLabel('axis3', state.axis3, 'Disdain', 'Curiosity', 'fill-axis3')}
-        <div class="stat-row">
-          <div class="stat-label"><span>Health</span><span>${state.health}/100</span></div>
-          <div class="stat-track"><div class="stat-fill fill-health" style="width:${state.health}%"></div></div>
-        </div>
-      </div>
-      <div class="vitals">
-        <span>Hoard: <b>${state.wealth}</b> gold</span>
-        <span>Infamy: <b>${state.infamy}</b>/100</span>
-      </div>
-    </div>`;
+/* ════════════ SOUND (generated, no files) ════════════ */
+const SND = {
+  ctx:null, master:null, noise:null, amb:null, ambType:null, timers:[],
+  init(){
+    if(this.ctx) { if(this.ctx.state === 'suspended') this.ctx.resume(); return; }
+    const AC = window.AudioContext || window.webkitAudioContext; if(!AC) return;
+    this.ctx = new AC();
+    this.master = this.ctx.createGain(); this.master.connect(this.ctx.destination);
+    this.setVolume();
+    const len = this.ctx.sampleRate * 3, buf = this.ctx.createBuffer(1, len, this.ctx.sampleRate), d = buf.getChannelData(0);
+    let last = 0; for(let i = 0; i < len; i++){ const w = Math.random()*2-1; last = (last + 0.02*w) / 1.02; d[i] = last * 3.5; }
+    this.noise = buf;
+    if(this.pending){ const t = this.pending; this.pending = null; this.ambience(t); }
+  },
+  setVolume(){ if(this.master) this.master.gain.setTargetAtTime(SETTINGS.sound ? SETTINGS.volume * 0.9 : 0, this.ctx.currentTime, 0.1); },
+  src(){ const s = this.ctx.createBufferSource(); s.buffer = this.noise; s.loop = true; return s; },
+  env(g, t0, a, peak, dec){ g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(peak, t0 + a); g.gain.exponentialRampToValueAtTime(0.0001, t0 + a + dec); },
+  tone(freq, type, peak, dec, delay = 0, slideTo){
+    if(!this.ctx) return; const t = this.ctx.currentTime + delay, o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    o.type = type; o.frequency.setValueAtTime(freq, t); if(slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t + dec);
+    this.env(g, t, 0.01, peak, dec); o.connect(g); g.connect(this.master); o.start(t); o.stop(t + dec + 0.05);
+  },
+  burst(freq, q, peak, dec, delay = 0, type = 'bandpass', sweepTo){
+    if(!this.ctx) return; const t = this.ctx.currentTime + delay, s = this.src(), f = this.ctx.createBiquadFilter(), g = this.ctx.createGain();
+    f.type = type; f.frequency.setValueAtTime(freq, t); f.Q.value = q; if(sweepTo) f.frequency.exponentialRampToValueAtTime(sweepTo, t + dec);
+    this.env(g, t, 0.01, peak, dec); s.connect(f); f.connect(g); g.connect(this.master); s.start(t, Math.random()*2); s.stop(t + dec + 0.05);
+  },
+  sfx(name){
+    if(!this.ctx || !SETTINGS.sound) return;
+    switch(name){
+      case 'choose': this.burst(700, 1.2, .18, .3, 0, 'bandpass', 2200); break;
+      case 'page': this.burst(2500, .8, .05, .12, 0, 'highpass'); break;
+      case 'coin': [1900, 2450, 3000, 2200].forEach((f, i) => this.tone(f, 'triangle', .09, .28, i*.07)); break;
+      case 'hurt': this.tone(95, 'sine', .55, .4, 0, 38); this.burst(260, .7, .4, .25, 0, 'lowpass'); break;
+      case 'heal': this.tone(392, 'sine', .12, .5, 0, 587); this.tone(587, 'sine', .08, .6, .12, 784); break;
+      case 'roar': {
+        const t = this.ctx.currentTime, o = this.ctx.createOscillator(), f = this.ctx.createBiquadFilter(), g = this.ctx.createGain();
+        o.type = 'sawtooth'; o.frequency.setValueAtTime(150, t); o.frequency.exponentialRampToValueAtTime(52, t + 1.1);
+        f.type = 'lowpass'; f.frequency.value = 650; this.env(g, t, .08, .22, 1.1);
+        o.connect(f); f.connect(g); g.connect(this.master); o.start(t); o.stop(t + 1.3);
+        this.burst(400, .6, .3, 1, 0, 'lowpass', 120); break; }
+      case 'gong': [98, 196, 293.7, 392, 523].forEach((f, i) => this.tone(f, 'sine', [.22,.12,.08,.05,.03][i], 3.2 - i*.3)); break;
+      case 'unlock': [660, 880, 1320].forEach((f, i) => this.tone(f, 'triangle', .1, .35, i*.09)); break;
+      case 'end': [196, 247, 294, 392].forEach((f, i) => this.tone(f, 'sine', .12, 2.6, i*.22)); break;
+    }
+  },
+  ambience(type){
+    if(!this.ctx){ this.pending = type; return; }
+    if(type === this.ambType) return; this.ambType = type;
+    const t = this.ctx.currentTime;
+    if(this.amb){ const old = this.amb; old.g.gain.setTargetAtTime(0.0001, t, .6); setTimeout(() => old.nodes.forEach(n => { try{ n.stop(); }catch(e){} }), 2500); }
+    this.timers.forEach(clearInterval); this.timers = [];
+    const g = this.ctx.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.setTargetAtTime(1, t, 1.2); g.connect(this.master);
+    const nodes = [];
+    const bed = (freq, ftype, level, q = .7) => { const s = this.src(), f = this.ctx.createBiquadFilter(), gg = this.ctx.createGain(); f.type = ftype; f.frequency.value = freq; f.Q.value = q; gg.gain.value = level; s.connect(f); f.connect(gg); gg.connect(g); s.start(t, Math.random()*2); nodes.push(s); return f; };
+    const drone = (freq, level) => { const o = this.ctx.createOscillator(), gg = this.ctx.createGain(); o.type = 'sine'; o.frequency.value = freq; gg.gain.value = level; o.connect(gg); gg.connect(g); o.start(t); nodes.push(o); };
+    const every = (ms, fn) => this.timers.push(setInterval(() => { if(SETTINGS.sound && document.visibilityState === 'visible') fn(); }, ms));
+    switch(type){
+      case 'cave': bed(170, 'lowpass', .34); drone(46, .05); every(2300, () => Math.random() < .6 && this.tone(900 + Math.random()*700, 'sine', .05, .22, 0, 500)); break;
+      case 'wind': { const f = bed(500, 'bandpass', .22, 1.4); const l = this.ctx.createOscillator(), lg = this.ctx.createGain(); l.frequency.value = .08; lg.gain.value = 280; l.connect(lg); lg.connect(f.frequency); l.start(t); nodes.push(l); break; }
+      case 'fire': bed(400, 'lowpass', .22); every(260, () => Math.random() < .5 && this.burst(2500 + Math.random()*3000, 3, .05 + Math.random()*.05, .05, 0, 'bandpass')); break;
+      case 'hall': bed(120, 'lowpass', .25); drone(55, .05); drone(82.4, .03); break;
+      case 'magic': bed(900, 'bandpass', .06, 2); drone(220, .025); drone(331, .018); every(1800, () => this.tone([880, 990, 1175, 1320][Math.floor(Math.random()*4)], 'sine', .03, 1.2)); break;
+      case 'battle': bed(140, 'lowpass', .34); every(1400, () => Math.random() < .55 && this.tone(62, 'sine', .3, .5, 0, 40)); break;
+    }
+    this.amb = { g, nodes };
+  }
+};
+
+/* ════════════ PARTICLES ════════════ */
+const FX = {
+  raf:null, cv:null,
+  stop(){ cancelAnimationFrame(this.raf); this.raf = null; this.cv = null; },
+  start(cv, type){
+    this.stop(); if(!cv || SETTINGS.reduce) return;
+    this.cv = cv; const ctx = cv.getContext('2d');
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const resize = () => { cv.width = cv.clientWidth * dpr; cv.height = cv.clientHeight * dpr; };
+    resize();
+    const W = () => cv.width, H = () => cv.height;
+    const cfg = {
+      embers:{n:42, col:['#ff8a3d','#ffb15c','#ff5a1a'], r:[1,2.6], vx:[-.25,.25], vy:[-.9,-.3], glow:12, from:'bottom'},
+      fireflies:{n:18, col:['#e4ff8a','#ffe58a'], r:[1.2,2.2], vx:[-.25,.25], vy:[-.2,.2], glow:10, blink:true},
+      smoke:{n:12, col:['rgba(160,150,150,.10)'], r:[14,34], vx:[-.15,.15], vy:[-.35,-.1], from:'bottom'},
+      snow:{n:70, col:['#ffffff','#dfe8ff'], r:[.8,2.2], vx:[-.4,.1], vy:[.4,1.1], from:'top'},
+      glitter:{n:28, col:['#fff2b3','#ffd95a'], r:[.8,1.8], vx:[0,0], vy:[0,0], glow:8, blink:true, area:[.55,1]},
+      ash:{n:50, col:['#6b5a52','#8a6a5a','#ff7a3d'], r:[.8,2], vx:[-.3,.3], vy:[.2,.7], from:'top'},
+      dust:{n:30, col:['rgba(255,231,168,.5)'], r:[.6,1.6], vx:[-.15,.15], vy:[-.1,.1], blink:true},
+      motes:{n:26, col:['#7fd7ff','#b48cff'], r:[1,2.2], vx:[-.15,.15], vy:[-.5,-.15], glow:10, from:'bottom'},
+      void:{n:34, col:['#b07cff','#6a3dff'], r:[1,2.4], vx:[-.3,.3], vy:[-.3,.3], glow:12, swirl:true},
+      stars:{n:70, col:['#ffffff','#cfd8ff'], r:[.5,1.4], vx:[0,0], vy:[0,0], blink:true, area:[0,.6]}
+    }[type] || {n:0};
+    const R = (a) => a[0] + Math.random() * (a[1] - a[0]);
+    const mk = (init) => {
+      const p = { x:Math.random()*W(), y:Math.random()*H(), r:R(cfg.r)*dpr, vx:R(cfg.vx)*dpr, vy:R(cfg.vy)*dpr, c:cfg.col[Math.floor(Math.random()*cfg.col.length)], ph:Math.random()*6.28, life:1 };
+      if(cfg.area) p.y = H() * R(cfg.area);
+      if(!init && cfg.from === 'bottom') p.y = H() + 10;
+      if(!init && cfg.from === 'top') p.y = -10;
+      return p;
+    };
+    const ps = Array.from({length:cfg.n}, () => mk(true));
+    let t = 0;
+    const loop = () => {
+      if(this.cv !== cv || !document.body.contains(cv)) return;
+      if(cv.width !== cv.clientWidth * dpr) resize();
+      t += .016; ctx.clearRect(0, 0, W(), H());
+      ps.forEach((p, i) => {
+        if(cfg.swirl){ const a = Math.atan2(p.y - H()/2, p.x - W()/2) + 1.57; p.x += Math.cos(a)*.4*dpr + p.vx*.3; p.y += Math.sin(a)*.25*dpr + p.vy*.3; }
+        else { p.x += p.vx + Math.sin(t + p.ph) * .15 * dpr; p.y += p.vy; }
+        if(p.y < -20 || p.y > H() + 20 || p.x < -20 || p.x > W() + 20) ps[i] = mk(false);
+        let a = 1; if(cfg.blink) a = .35 + .65 * Math.abs(Math.sin(t*1.4 + p.ph));
+        if(cfg.from === 'bottom') a *= Math.min(1, p.y / (H()*.25));
+        ctx.globalAlpha = a; ctx.fillStyle = p.c;
+        if(cfg.glow){ ctx.shadowColor = p.c; ctx.shadowBlur = cfg.glow * dpr; } else ctx.shadowBlur = 0;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill();
+      });
+      ctx.globalAlpha = 1;
+      this.raf = requestAnimationFrame(loop);
+    };
+    loop();
+  }
+};
+document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible'){ const c = document.querySelector('.banner canvas'); if(c) FX.start(c, c.dataset.fx); } else FX.stop(); });
+
+/* ════════════ SMALL PIECES ════════════ */
+const IMPACT = {
+  brutality:{ic:'flame',   l:'Brutality', c:'var(--c-brutality)'}, finesse:{ic:'feather', l:'Finesse',  c:'var(--c-finesse)'},
+  honor:{ic:'shield',      l:'Honor',     c:'var(--c-honor)'},     cunning:{ic:'mask',    l:'Cunning',  c:'var(--c-cunning)'},
+  disdain:{ic:'moon',      l:'Disdain',   c:'var(--c-disdain)'},   curiosity:{ic:'eye',   l:'Curiosity',c:'var(--c-curiosity)'},
+  heal:{ic:'heart',        l:'Health',    c:'var(--ok)'},          hurt:{ic:'broken',     l:'Health',   c:'var(--danger)'},
+  ward:{ic:'shield',       l:'absorbed by the ward', c:'#7fd7ff'}, hoard:{ic:'coins',     l:'Hoard',    c:'var(--gold-hi)'},
+  infamy:{ic:'skull',      l:'Infamy',    c:'#d98a8a'}
+};
+function chipHTML(b, i){
+  const m = IMPACT[b.k]; const sign = b.signed ? (b.v >= 0 ? '+' : '') : '+';
+  const txt = b.k === 'ward' ? `${b.v} ${m.l}` : `${sign}${b.v} ${m.l}`;
+  return `<span class="chip" style="color:${m.c};border-color:${m.c}55;background:${m.c}14;animation-delay:${.1 + i*.09}s">${icon(m.ic,'sm')}${txt}</span>`;
 }
-
-function resolveChoices(node){
-  return typeof node.choices === 'function' ? node.choices(state) : node.choices;
+function choiceHints(c){
+  const a = c.stats || {}, out = [];
+  if(a.axis1) out.push(a.axis1 < 0 ? 'brutality' : 'finesse');
+  if(a.axis2) out.push(a.axis2 < 0 ? 'honor' : 'cunning');
+  if(a.axis3) out.push(a.axis3 < 0 ? 'disdain' : 'curiosity');
+  if((c.health||0) < 0) out.push('hurt'); if((c.health||0) > 0) out.push('heal');
+  if((c.wealth||0) > 0) out.push('hoard'); if((c.infamy||0) > 0) out.push('infamy');
+  return out.map(k => `<span class="c-hint" style="color:${IMPACT[k].c}">${icon(IMPACT[k].ic,'sm')}${IMPACT[k].l === 'absorbed by the ward' ? 'Ward' : IMPACT[k].l}</span>`).join('');
 }
-
-function renderScene(node){
-  const paras = resolveText(node.text).map(p => `<p>${p}</p>`).join("");
-  const choices = resolveChoices(node);
-  const choicesHtml = choices.map((c, i) => `
-    <button class="choice-btn" data-idx="${i}">
-      <span class="choice-label">${c.label}</span>
-      <span class="choice-flavor">${c.flavor}</span>
-    </button>`).join("");
-
-  return `
-    <div class="scene">
-      <div class="node-eyebrow">${node.chapterShort} · ${node.part}</div>
-      <h2 class="node-title">${node.title}</h2>
-      <div class="scene-text">${paras}</div>
+function axisBar(v, lIc, lLbl, lCol, rIc, rLbl, rCol){
+  const pos = clamp((v + 100) / 2, 0, 100), left = Math.min(50, pos), w = Math.abs(pos - 50);
+  return `<div><div class="bar-lbl"><span style="color:${v<0?lCol:''}">${icon(lIc,'sm')}${lLbl}</span><span style="color:${v>0?rCol:''}">${rLbl}${icon(rIc,'sm')}</span></div>
+    <div class="axis"><div class="mid"></div><div class="fill" style="left:${left}%;width:${w}%;background:${v<0?lCol:rCol}"></div><div class="knob" style="left:${pos}%"></div></div></div>`;
+}
+function ledgerHTML(){
+  const s = state, col = SETTINGS.ledger === 'collapsed';
+  const hp = s.health, hpCol = hp > 60 ? 'var(--ok)' : hp > 30 ? 'var(--gold-hi)' : 'var(--danger)';
+  return `<div class="ledger ${col?'collapsed':''}" id="ledger">
+    <div><div class="portrait" onclick="toggleLedger()" title="Toggle ledger">${dragonSVG(dragonLook(s), {still: col})}</div>
+      <div class="hoard">${hoardSVG(s.wealth)}</div><div class="hoard-n">${s.wealth} gold</div></div>
+    <div class="bars">
+      ${axisBar(s.axis1, 'flame', 'Brutality', 'var(--c-brutality)', 'feather', 'Finesse', 'var(--c-finesse)')}
+      ${axisBar(s.axis2, 'shield', 'Honor', 'var(--c-honor)', 'mask', 'Cunning', 'var(--c-cunning)')}
+      ${axisBar(s.axis3, 'moon', 'Disdain', 'var(--c-disdain)', 'eye', 'Curiosity', 'var(--c-curiosity)')}
+      <div><div class="bar-lbl"><span>${icon('heart','sm')}Health</span><span>${hp}/100</span></div>
+        <div class="axis"><div class="fill" style="left:0;width:${hp}%;background:${hpCol}"></div></div></div>
+      <div class="vitals"><span>${icon('skull','sm')}Infamy <b>${s.infamy}</b>/100</span>${s.flags.ward ? `<span style="color:#7fd7ff">${icon('shield','sm')}Ward <b>${s.flags.ward}</b></span>` : ''}</div>
     </div>
-    <div class="choices">${choicesHtml}</div>
-  `;
+    <button class="lg-toggle" onclick="toggleLedger()" aria-label="Toggle ledger">${icon(col ? 'plus' : 'x','sm')}</button>
+  </div>`;
+}
+function toggleLedger(){ SETTINGS.ledger = SETTINGS.ledger === 'collapsed' ? 'open' : 'collapsed'; saveSettings(); const l = $('ledger'); if(l) l.outerHTML = ledgerHTML(); }
+
+function topbar(){
+  const n = STORY.nodes[state.node];
+  const sub = UI.screen === 'title' ? 'The Hoard Eternal' : state.phase === 'naming' ? 'Before it begins' : n ? `${n.chapterShort}` : 'Epilogue';
+  return `<div class="topbar">
+    <div class="tb-name"><div class="tb-title">${state.dragonName ? esc(state.dragonName) : 'Dragon Saga'}</div><div class="tb-sub">${esc(sub)}</div></div>
+    <button class="tbtn" onclick="openJournal()" aria-label="Journal">${icon('book')}</button>
+    <button class="tbtn ${SETTINGS.sound?'on':''}" onclick="toggleSound()" aria-label="Sound">${icon(SETTINGS.sound ? 'sound' : 'mute')}</button>
+    <button class="tbtn" onclick="openSettings()" aria-label="Settings">${icon('gear')}</button>
+  </div>`;
+}
+function banner(sceneKey, eyebrow, title, opts = {}){
+  const fx = SCENE_FX[sceneKey] || 'dust';
+  SND.ambience(SCENE_AUDIO[sceneKey] || 'cave');
+  return `<div class="banner ${opts.creation ? 'creation' : ''}">${sceneSVG(sceneKey)}<canvas data-fx="${fx}"></canvas>
+    ${opts.dragon ? `<div class="hero-dragon" id="hero-dragon">${opts.dragon}</div>` : ''}
+    <div class="shade"></div><div class="cap"><div class="eyebrow">${eyebrow}</div><h2 class="ntitle">${title}</h2></div></div>`;
+}
+function startBannerFX(){ const c = document.querySelector('.banner canvas'); if(c) FX.start(c, c.dataset.fx); }
+function paras(list, reveal = true){ return `<div class="text ${reveal && !SETTINGS.reduce ? 'reveal' : ''}">${(list||[]).map((p, i) => `<p style="animation-delay:${Math.min(i,3)*.3}s">${p}</p>`).join('')}</div>`; }
+
+let toastQ = [], toastBusy = false;
+function toast(title, sub, ic = 'trophy'){
+  toastQ.push({title, sub, ic}); if(toastBusy) return;
+  const next = () => {
+    const t = toastQ.shift(); if(!t){ toastBusy = false; return; } toastBusy = true;
+    const el = document.createElement('div'); el.className = 'toast';
+    el.innerHTML = `<div class="t-ic">${icon(t.ic)}</div><div><b>${esc(t.title)}</b><small>${esc(t.sub)}</small></div>`;
+    document.body.appendChild(el); SND.sfx('unlock');
+    setTimeout(() => { el.remove(); next(); }, 3000);
+  };
+  next();
+}
+function announce(list){ (list||[]).forEach(a => toast('Achievement: ' + a.title, a.desc, a.icon)); }
+
+/* ════════════ FLOW ════════════ */
+const UI = { screen:null, preview:null, lastPointer:'mouse' };
+const TOUCH = () => UI.lastPointer === 'touch' || (window.matchMedia && matchMedia('(hover: none)').matches);
+document.addEventListener('pointerdown', (e) => { UI.lastPointer = e.pointerType || 'mouse'; SND.init(); }, true);
+document.addEventListener('keydown', () => SND.init(), {once:true});
+
+function choose(choice){
+  if(isLocked(choice)) return;
+  state.undo = JSON.stringify(Object.assign({}, state, {undo:null}));
+  SND.sfx('choose');
+  applyChoiceCore(state, choice);
+  saveGame();
+  announce(checkAchievements(state));
+  UI.preview = null; UI.previewIdx = null;
+  render();
+}
+function continueStory(){
+  const prev = STORY.nodes[state.node];
+  continueCore(state);
+  state.undo = null;
+  saveGame();
+  const n = STORY.nodes[state.node];
+  if(n && prev && n.chapterShort !== prev.chapterShort) showChapterCard(n, state.chapterHeal);
+  SND.sfx('page');
+  render();
+}
+function rewind(){
+  if(!state.undo) return;
+  state = JSON.parse(state.undo); state.undo = null; saveGame();
+  const a = unlockAchievement('rewind'); if(a) announce([a]);
+  render();
+}
+function confirmName(raw){
+  const name = (raw || '').trim();
+  state.dragonName = name ? name.slice(0, 32) : pickPresetName();
+  state.phase = 'story'; if(!state.visited.includes(state.node)) state.visited.push(state.node);
+  saveGame(); UI.screen = null;
+  showChapterCard(STORY.nodes[state.node], 0);
+  render();
+}
+async function newSaga(skipConfirm){
+  if(!skipConfirm && state.phase !== 'naming' && !state.node.startsWith('__ending_')){
+    if(!confirm('Start a new hatching? Your current saga will be lost.')) return;
+  }
+  state = freshState(); clearSave(); UI.screen = null; closeSheet(); render();
+}
+
+function showChapterCard(node, heal){
+  if(!node) return;
+  const [lab, nm] = node.chapter.split(' — ');
+  const idx = chapterIndex(state.node);
+  const el = document.createElement('div'); el.className = 'chapter-card';
+  el.innerHTML = `<div class="num">${ROMAN[idx] || ''}</div><div class="lab">${esc(lab)}</div><div class="nm">${esc(nm || '')}</div>
+    ${heal ? `<div class="heal">${icon('heart','sm')} Seasons pass. Your wounds close: +${heal} health.</div>` : ''}<div class="tap">Tap to continue</div>`;
+  const close = () => { if(!el.isConnected) return; el.classList.add('out'); setTimeout(() => el.remove(), 450); };
+  el.onclick = close; document.body.appendChild(el); setTimeout(close, SETTINGS.reduce ? 1400 : 3200);
+  SND.sfx('gong');
+}
+
+/* ════════════ RENDER ════════════ */
+function previewBubble(hero, svg){
+  let b = $('pv-bubble');
+  const visible = hero && hero.getBoundingClientRect().bottom > 90;
+  if(visible){ if(b) b.remove(); return; }
+  if(!b){ b = document.createElement('div'); b.id = 'pv-bubble'; b.className = 'pv-bubble'; document.body.appendChild(b); }
+  b.innerHTML = svg;
+}
+function render(){
+  const app = $('app');
+  FX.stop();
+  const pb = $('pv-bubble'); if(pb) pb.remove();
+  if(UI.screen === 'title') app.innerHTML = topbar() + renderTitle();
+  else if(state.phase === 'naming') app.innerHTML = topbar() + renderNaming();
+  else if(state.phase === 'outcome') app.innerHTML = topbar() + renderOutcome();
+  else if(state.node.startsWith('__ending_')) app.innerHTML = topbar() + renderEnding();
+  else app.innerHTML = topbar() + renderStory();
+  bind();
+  startBannerFX();
+  window.scrollTo({top:0, behavior: SETTINGS.reduce ? 'auto' : 'smooth'});
+}
+
+function renderTitle(){
+  const s = state, n = STORY.nodes[s.node];
+  const where = s.node.startsWith('__ending_') ? 'Saga complete' : n ? `${n.chapterShort} · ${esc(resolveTitle(n))}` : '';
+  const found = ENDING_ORDER.filter(k => META.endings[k]).length;
+  SND.ambience('cave');
+  return `<div class="title-hero"><h1>Dragon Saga</h1><div class="sub">The Hoard Eternal</div></div>
+    <div class="banner">${sceneSVG('cave')}<canvas data-fx="embers"></canvas><div class="hero-dragon" style="right:50%;transform:translateX(50%);width:70%">${dragonSVG(dragonLook(s))}</div></div>
+    ${s.dragonName ? `<div class="continue-card"><div class="p">${dragonSVG(dragonLook(s), {still:true})}</div><div><b>${esc(s.dragonName)}</b><small>${where}</small><small>${s.wealth} gold · ${s.infamy} infamy · ${s.health} health</small></div></div>
+      <button class="btn" id="t-cont">${icon('play')}Continue the saga</button>` : ''}
+    <div class="btn-row"><button class="btn ${s.dragonName ? 'ghost' : ''}" id="t-new">${icon('egg')}New hatching</button></div>
+    <div class="btn-row"><button class="btn ghost" id="t-end">${icon('trophy')}Endings ${found}/${ENDING_ORDER.length}</button></div>`;
 }
 
 function renderNaming(){
-  const chips = NAME_PRESETS.map(n => `<button class="name-chip" data-name="${n}">${n}</button>`).join("");
-  return `
-    <div class="scene">
-      <div class="node-eyebrow">Before It Begins</div>
-      <h2 class="node-title">What Shall We Call You?</h2>
-      <div class="scene-text">
-        <p>Before the shell cracks, before the first breath of smoke or shadow or gold, the world wants a name to attach to the legend that is about to begin. Choose your own, or let the mountain choose one for you.</p>
-      </div>
-      <input type="text" id="name-field" class="name-input" placeholder="Type your dragon's name…" maxlength="32" autocomplete="off">
-      <div class="name-divider">or pick one</div>
-      <div class="name-presets">${chips}</div>
-    </div>
-    <button class="continue-btn" id="name-begin-btn">Begin the Saga</button>
-  `;
+  return banner('cave', 'Before it begins', 'What Shall We Call You?', {creation:true, dragon: dragonSVG(dragonLook(state))}) +
+    paras(["Before the shell cracks, before the first breath of smoke or shadow or gold, the world wants a name to attach to the legend that is about to begin. Choose your own, or let the mountain choose one for you."]) +
+    `<input type="text" id="name-field" class="name-input" placeholder="Your dragon's name…" maxlength="32" autocomplete="off">
+     <div class="divider">or let the mountain choose</div>
+     <div class="presets">${NAME_PRESETS.map(n => `<button class="preset" data-name="${n}">${n}</button>`).join('')}</div>
+     <button class="btn" id="name-go">${icon('flame')}Begin the saga</button>`;
 }
 
-function renderImpactChips(impacts){
-  if(!impacts || impacts.length === 0) return "";
-  const chips = impacts.map(b => {
-    const sign = b.signed ? (b.value >= 0 ? '+' : '') : '+';
-    return `<span class="impact-chip ${b.cls}"><span class="chip-icon">${b.icon}</span><span>${sign}${b.value} ${b.label}</span></span>`;
-  }).join("");
-  return `<div class="impact-strip">${chips}</div>`;
+function renderStory(){
+  const node = STORY.nodes[state.node];
+  const choices = resolveChoices(node);
+  const creation = CREATION.has(state.node);
+  const sceneKey = SCENE_OF[state.node] || 'cave';
+  const look = dragonLook(state, UI.preview);
+  const head = banner(sceneKey, `${node.chapterShort} · ${node.part}`, esc(resolveTitle(node)), creation ? {creation:true, dragon: dragonSVG(look, {smoke: state.axis1 < -10})} : {});
+  const list = choices.map((c, i) => {
+    const locked = isLocked(c);
+    const special = !!c.requires && !locked;
+    return `<button class="choice ${locked ? 'locked' : ''} ${special ? 'special' : ''} ${UI.preview && UI.previewIdx === i ? 'preview' : ''}" data-idx="${i}" style="animation-delay:${.25 + i*.08}s" ${locked ? 'aria-disabled="true"' : ''}>
+      ${special ? `<span class="special-tag">${icon('key','sm')}Only your dragon could</span>` : ''}
+      <span class="c-label">${c.label}</span><span class="c-flavor">${c.flavor || ''}</span>
+      ${locked ? `<span class="lock-hint">${icon('lock','sm')}${esc(c.lockHint || 'Locked')}</span>` : ''}
+      ${SETTINGS.hints && !locked ? `<span class="c-hints">${choiceHints(c)}</span>` : ''}
+      ${creation && UI.preview && UI.previewIdx === i && TOUCH() ? '<span class="tap-again">Tap again to choose</span>' : ''}
+    </button>`;
+  }).join('');
+  return head + (creation ? '' : ledgerHTML()) + paras(resolveText(node.text)) + `<div class="choices">${list}</div>` +
+    `<div class="footer"><button class="small-btn" onclick="openJournal('path')">${icon('map','sm')}Your path so far</button></div>`;
 }
 
 function renderOutcome(){
-  const paras = (state.pendingOutcome || []).map(p => `<p>${p}</p>`).join("");
-  return `
-    <div class="scene">
-      ${renderImpactChips(state.pendingImpacts)}
-      <div class="scene-text">${paras}</div>
-    </div>
-    <button class="continue-btn" id="continue-btn">Continue</button>
-  `;
+  const prev = STORY.nodes[state.node];
+  const sceneKey = SCENE_OF[state.node] || 'cave';
+  const impacts = state.pendingImpacts || [];
+  setTimeout(() => outcomeEffects(impacts), 250);
+  return banner(sceneKey, prev ? `${prev.chapterShort} · Aftermath` : 'Aftermath', esc(prev ? resolveTitle(prev) : ''), CREATION.has(state.node) ? {creation:true, dragon: dragonSVG(dragonLook(state))} : {}) +
+    ledgerHTML() +
+    `<div class="chips">${impacts.map(chipHTML).join('')}</div>` + paras(state.pendingOutcome) +
+    `<button class="btn" id="cont-btn">${icon('arrow')}Continue</button>
+     ${state.undo ? `<div class="footer"><button class="small-btn" id="rewind-btn">${icon('rewind','sm')}Rewind this choice</button></div>` : ''}`;
+}
+function outcomeEffects(impacts){
+  const has = (k) => impacts.find(b => b.k === k);
+  const v = $('vignette');
+  if(has('hurt')){ SND.sfx('hurt'); if(!SETTINGS.reduce){ v.classList.add('hit'); $('app').classList.add('shake'); setTimeout(() => { v.classList.remove('hit'); $('app').classList.remove('shake'); }, 450); } try{ navigator.vibrate && navigator.vibrate([30, 40, 60]); }catch(e){} }
+  else if(has('heal')) SND.sfx('heal');
+  const h = has('hoard');
+  if(h && h.v > 0){ setTimeout(() => SND.sfx('coin'), 200); if(!SETTINGS.reduce) flyCoins(Math.min(14, 3 + Math.round(h.v / 5))); }
+  const inf = has('infamy');
+  if(inf && inf.v >= 10) setTimeout(() => SND.sfx('roar'), 450);
+}
+function flyCoins(n){
+  const target = document.querySelector('.hoard-svg'); if(!target) return;
+  const r = target.getBoundingClientRect();
+  for(let i = 0; i < n; i++){
+    const c = document.createElement('div'); c.className = 'coin-fly';
+    const sx = window.innerWidth/2 + (Math.random()-.5)*160, sy = window.innerHeight*.55 + (Math.random()-.5)*80;
+    c.style.left = sx + 'px'; c.style.top = sy + 'px';
+    c.style.setProperty('--dx', (r.left + r.width/2 - sx) + 'px'); c.style.setProperty('--dy', (r.top + r.height/2 - sy) + 'px');
+    c.style.animationDelay = (i*.05) + 's';
+    document.body.appendChild(c); setTimeout(() => c.remove(), 1400 + i*50);
+  }
 }
 
 function endingBonusParagraphs(){
-  const bonus = [];
+  const bonus = [], f = state.flags;
   bonus.push("Somewhere to the north, the wreckage of a black citadel that once belonged to a man named Malvorath Thorne has already become a byword for what happens to those who plot against you from the shadows — a warning stone requires no upkeep once it has done its work.");
-
-  if(state.flags.sorceressAlive){
-    bonus.push("Mirelle never did leave the mountain entirely. She keeps her own tower now, three peaks to the west, and visits often enough that the servants at your gate have long since stopped remarking on it.");
+  if(f.sorceressAlive) bonus.push("Mirelle never did leave the mountain entirely. She keeps her own tower now, three peaks to the west, and visits often enough that the servants at your gate have long since stopped remarking on it.");
+  if(f.goblinAllies === 'worship') bonus.push("In the ravine below, the goblin priesthood you never quite meant to found still leaves offerings at your door each new moon, their theology having survived — and outlived — several of their own kings.");
+  else if(f.goblinAllies === 'fear') bonus.push("Deep in the mountain's eastern warren, the goblins you broke to servitude generations ago still mine gold for a master they have never once tried to overthrow, fear having proven, in your case, a remarkably stable form of government.");
+  else if(f.goblinAllies === 'trust') bonus.push("In the ravine below, the goblin tribe you once chose to spare rather than conquer still trades freely at your mountain's foot, the last living creatures who remember you as something closer to a neighbor than a monster.");
+  if(f.aureliaFate === 'killed') bonus.push("The throne room where you finally killed Aurelia has been sealed and left empty ever since — no regent in the years since has ever quite worked up the nerve to sit in it.");
+  else if(f.aureliaFate === 'puppet') bonus.push("Aurelia still sits the throne, technically. The kingdom stopped asking what \"technically\" meant a long time ago, and has been considerably more peaceful for having stopped.");
+  else if(f.aureliaFate === 'ally'){
+    if(f.empireFate === 'conqueror') bonus.push("Empress Aurelia rules at your side over a realm considerably larger than the one her father ever left her, and considerably more honest, if nothing else, about how it got that way.");
+    else if(f.empireFate === 'protector') bonus.push("Empress Aurelia rules at your side still, and between the two of you, this has become the one realm on the continent that neighboring kingdoms have quietly agreed is simply not worth testing.");
+    else bonus.push("Empress Aurelia rules at your side still — an arrangement neither of you fully explained to the histories, and one neither of you has ever felt the need to.");
   }
-
-  if(state.flags.goblinAllies === 'worship'){
-    bonus.push("In the ravine below, the goblin priesthood you never quite meant to found still leaves offerings at your door each new moon, their theology having survived — and outlived — several of their own kings.");
-  } else if(state.flags.goblinAllies === 'fear'){
-    bonus.push("Deep in the mountain's eastern warren, the goblins you broke to servitude generations ago still mine gold for a master they have never once tried to overthrow, fear having proven, in your case, a remarkably stable form of government.");
-  } else if(state.flags.goblinAllies === 'trust'){
-    bonus.push("In the ravine below, the goblin tribe you once chose to spare rather than conquer still trades freely at your mountain's foot, the last living creatures who remember you as something closer to a neighbor than a monster.");
-  }
-
-  if(state.flags.aureliaFate === 'killed'){
-    bonus.push("The throne room where you finally killed Aurelia has been sealed and left empty ever since — no regent in the years since has ever quite worked up the nerve to sit in it.");
-  } else if(state.flags.aureliaFate === 'puppet'){
-    bonus.push("Aurelia still sits the throne, technically. The kingdom stopped asking what \"technically\" meant a long time ago, and has been considerably more peaceful for having stopped.");
-  } else if(state.flags.aureliaFate === 'ally'){
-    if(state.flags.empireFate === 'conqueror'){
-      bonus.push("Empress Aurelia rules at your side over a realm considerably larger than the one her father ever left her, and considerably more honest, if nothing else, about how it got that way.");
-    } else if(state.flags.empireFate === 'protector'){
-      bonus.push("Empress Aurelia rules at your side still, and between the two of you, this has become the one realm on the continent that neighboring kingdoms have quietly agreed is simply not worth testing.");
-    } else {
-      bonus.push("Empress Aurelia rules at your side still — an arrangement neither of you fully explained to the histories, and one neither of you has ever felt the need to.");
-    }
-  }
-
-  if(state.flags.capitalFate === 'purged'){
-    bonus.push("The council chamber where you once purged the last of the old regime has been rebuilt three times since, each new government a little more careful about what it says in rooms with a clear view of your mountain.");
-  } else if(state.flags.capitalFate === 'vassal'){
-    bonus.push("The Council of Regents still governs the capital, technically, in your name, in the particular hollow way governments do when everyone involved understands precisely whose permission actually matters.");
-  }
-
-  if(state.flags.vexarOutcome === 'victory'){
-    bonus.push("Vexar visits, now and then, on terms that have nothing left to do with dominance — the closest thing to family either of you has left, and, against every early prediction either of you would have made, something that has quietly come to resemble a friendship.");
-  } else if(state.flags.vexarOutcome === 'draw'){
-    bonus.push("You and Vexar never did settle which of you was stronger, in the end, and have somehow spent the years since deciding they preferred it that way — an unfinished argument neither sibling has ever felt the need to actually finish.");
-  } else if(state.flags.vexarOutcome === 'defeat'){
-    bonus.push("Vexar still holds, technically, that he could take you in a fair fight. You have never quite worked up the nerve to test that claim a third time — though you both privately suspect, these days, that the gap has closed considerably more than either of you says out loud.");
-  }
-
-  return bonus;
+  if(f.capitalFate === 'purged') bonus.push("The council chamber where you once purged the last of the old regime has been rebuilt three times since, each new government a little more careful about what it says in rooms with a clear view of your mountain.");
+  else if(f.capitalFate === 'vassal') bonus.push("The Council of Regents still governs the capital, technically, in your name, in the particular hollow way governments do when everyone involved understands precisely whose permission actually matters.");
+  if(f.vexarOutcome === 'victory') bonus.push("Vexar visits, now and then, on terms that have nothing left to do with dominance — the closest thing to family either of you has left, and, against every early prediction either of you would have made, something that has quietly come to resemble a friendship.");
+  else if(f.vexarOutcome === 'draw') bonus.push("You and Vexar never did settle which of you was stronger, in the end, and have somehow spent the years since deciding they preferred it that way — an unfinished argument neither sibling has ever felt the need to actually finish.");
+  else if(f.vexarOutcome === 'defeat') bonus.push("Vexar still holds, technically, that he could take you in a fair fight. You have never quite worked up the nerve to test that claim a third time — though you both privately suspect, these days, that the gap has closed considerably more than either of you says out loud.");
+  return bonus.concat(expansionEpilogue(state));
 }
 
-function renderEnding(ending){
-  const paras = ending.text.map(p => `<p>${p}</p>`).join("");
-  const bonusParas = endingBonusParagraphs().map(p => `<p>${p}</p>`).join("");
-  const nameLine = state.dragonName ? `<div class="dragon-name-line">${state.dragonName}</div>` : "";
-  return `
-    <div class="scene">
-      <div class="node-eyebrow">Chapter Four · Epilogue</div>
-      ${nameLine}
-      <div class="ending-badge">${ending.badge}</div>
-      <h2 class="node-title">${ending.title}</h2>
-      <div class="scene-text">${paras}${bonusParas}</div>
-    </div>
-    <div class="footer-controls">
-      <button class="restart-btn" id="restart-btn">Begin a New Hatching</button>
-    </div>
-  `;
+function renderEnding(){
+  const key = state.node.replace('__ending_', '');
+  const ending = ENDINGS[key];
+  if(!state.endingRecorded){
+    state.endingRecorded = true;
+    const first = recordEnding(key);
+    state.endingFirst = first;
+    saveGame();
+    setTimeout(() => { SND.sfx('end'); announce(checkAchievements(state, key)); }, 400);
+  }
+  const found = ENDING_ORDER.filter(k => META.endings[k]).length;
+  const early = key === 'fallenEarly';
+  const body = early ? ending.text : ending.text.concat(endingBonusParagraphs());
+  return banner(ENDING_SCENE[key] || 'night', 'Epilogue', esc(ending.title), {dragon: dragonSVG(dragonLook(state), {fixedScale:1})}) +
+    `<div class="end-card"><div class="name">${esc(state.dragonName || '')}</div><div class="badge">${icon('crown','sm')}${esc(ending.badge)}</div>
+      ${state.endingFirst ? '<div class="progress-line" style="color:var(--gold-hi)">A new ending discovered</div>' : ''}</div>` +
+    paras(body) +
+    `<div class="end-stats"><div class="stat-tile"><b>${state.wealth}</b><small>Gold</small></div><div class="stat-tile"><b>${state.infamy}</b><small>Infamy</small></div><div class="stat-tile"><b>${state.health}</b><small>Health</small></div></div>
+     <div class="progress-line">${icon('trophy','sm')} Endings discovered: <b>${found}</b> of ${ENDING_ORDER.length}</div>
+     <button class="btn gold" id="share-btn">${icon('share')}Share your legend</button>
+     <div class="btn-row"><button class="btn ghost" onclick="openJournal('endings')">${icon('book')}Journal</button><button class="btn" id="restart-btn">${icon('egg')}New hatching</button></div>`;
 }
 
-function render(){
-  const app = document.getElementById('app');
-
-  // Phase 0: choosing a name, shown once at the very start of a saga — no stat ledger yet
+function bind(){
+  const q = (s) => document.querySelector(s);
+  if(UI.screen === 'title'){
+    q('#t-cont') && (q('#t-cont').onclick = () => { UI.screen = null; render(); });
+    q('#t-new').onclick = () => { if(state.dragonName && !state.node.startsWith('__ending_') && !confirm('Start a new hatching? Your current saga will be lost.')) return; newSaga(true); };
+    q('#t-end').onclick = () => openJournal('endings');
+    return;
+  }
   if(state.phase === 'naming'){
-    let html = renderNaming();
-    app.innerHTML = html;
-    const field = document.getElementById('name-field');
-    field.focus();
-    document.querySelectorAll('.name-chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        field.value = chip.getAttribute('data-name');
-        document.querySelectorAll('.name-chip').forEach(c => c.classList.remove('selected'));
-        chip.classList.add('selected');
-      });
-    });
-    const begin = () => confirmName(field.value);
-    document.getElementById('name-begin-btn').addEventListener('click', begin);
-    field.addEventListener('keydown', (e) => { if(e.key === 'Enter') begin(); });
-    window.scrollTo({top:0, behavior:'smooth'});
+    const field = $('name-field');
+    document.querySelectorAll('.preset').forEach(b => b.onclick = () => { field.value = b.dataset.name; document.querySelectorAll('.preset').forEach(x => x.classList.toggle('on', x === b)); });
+    $('name-go').onclick = () => confirmName(field.value);
+    field.onkeydown = (e) => { if(e.key === 'Enter') confirmName(field.value); };
     return;
   }
-
-  let html = renderHud();
-
-  // Phase 1: showing the aftermath of the choice just made
   if(state.phase === 'outcome'){
-    html += renderOutcome();
-    app.innerHTML = html;
-    document.getElementById('continue-btn').addEventListener('click', continueStory);
-    window.scrollTo({top:0, behavior:'smooth'});
+    $('cont-btn').onclick = continueStory;
+    q('#rewind-btn') && (q('#rewind-btn').onclick = rewind);
     return;
   }
-
-  // Phase 2: a final ending screen
-  if(state.node.startsWith("__ending_")){
-    const key = state.node.replace("__ending_", "");
-    html += renderEnding(ENDINGS[key]);
-    app.innerHTML = html;
-    document.getElementById('restart-btn').addEventListener('click', restart);
-    window.scrollTo({top:0, behavior:'smooth'});
+  if(state.node.startsWith('__ending_')){
+    $('restart-btn').onclick = () => newSaga(true);
+    $('share-btn').onclick = shareCard;
     return;
   }
-
-  // Phase 3: a normal story scene with choices
-  const node = STORY.nodes[state.node];
-  const choices = resolveChoices(node);
-  html += renderScene(node);
-  html += `<div class="footer-controls"><button class="restart-btn" id="restart-btn-mid">Restart Saga</button></div>`;
-  app.innerHTML = html;
-
-  app.querySelectorAll('.choice-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const idx = parseInt(btn.getAttribute('data-idx'), 10);
-      applyChoice(choices[idx]);
-    });
+  const node = STORY.nodes[state.node], choices = resolveChoices(node), creation = CREATION.has(state.node);
+  document.querySelectorAll('.choice').forEach(btn => {
+    const i = +btn.dataset.idx, c = choices[i];
+    if(creation && !isLocked(c)){
+      const pv = () => { const fl = typeof c.setFlags === 'function' ? c.setFlags(state) : (c.setFlags || {}); UI.preview = fl; UI.previewIdx = i; const svg = dragonSVG(dragonLook(state, fl)); const hd = $('hero-dragon'); if(hd) hd.innerHTML = svg; previewBubble(hd, svg); document.querySelectorAll('.choice').forEach(b => b.classList.toggle('preview', b === btn)); };
+      btn.onmouseenter = () => { if(!TOUCH()) pv(); };
+      btn.onfocus = () => { if(!TOUCH()) pv(); };
+      btn.onclick = () => {
+        if(TOUCH() && UI.previewIdx !== i){ pv(); document.querySelectorAll('.tap-again').forEach(x => x.remove()); btn.insertAdjacentHTML('beforeend', '<span class="tap-again">Tap again to choose</span>'); return; }
+        UI.previewIdx = null; choose(c);
+      };
+    } else btn.onclick = () => { if(isLocked(c)){ btn.classList.add('shake'); setTimeout(() => btn.classList.remove('shake'), 450); return; } choose(c); };
   });
-  document.getElementById('restart-btn-mid').addEventListener('click', restart);
-
-  window.scrollTo({top:0, behavior:'smooth'});
 }
 
-/* ============ INIT ============ */
-(async function init(){
-  await tryLoad();
+/* ════════════ SHEETS: journal, settings ════════════ */
+function sheet(title, tabsHTML, body){
+  closeSheet();
+  const el = document.createElement('div'); el.className = 'overlay'; el.id = 'overlay';
+  el.innerHTML = `<div class="sheet"><div class="sheet-h"><h2>${title}</h2><button class="tbtn" onclick="closeSheet()" aria-label="Close">${icon('x')}</button></div>${tabsHTML}<div class="sheet-b" id="sheet-b">${body}</div></div>`;
+  el.onclick = (e) => { if(e.target === el) closeSheet(); };
+  document.body.appendChild(el);
+}
+function closeSheet(){ const o = $('overlay'); if(o) o.remove(); }
+
+function openJournal(tab = 'cast'){
+  const tabs = [['cast','dragon','Cast'],['path','map','Path'],['ach','trophy','Feats'],['endings','crown','Endings']];
+  sheet('Journal', `<div class="tabs">${tabs.map(([k, ic, l]) => `<button class="tab ${k===tab?'on':''}" onclick="openJournal('${k}')">${icon(ic,'sm')}${l}</button>`).join('')}</div>`, journalBody(tab));
+}
+function journalBody(tab){
+  const s = state, seen = new Set(s.visited || []);
+  if(tab === 'cast') return CAST.map(c => {
+    const met = seen.has(c.at);
+    return `<div class="cast ${met?'':'unknown'}"><div class="sigil">${icon(met ? c.icon : 'lock')}</div><div><b>${met ? esc(c.name) : 'Not yet met'}</b><p>${met ? esc(c.desc) : 'Someone waits further along your path.'}</p>${met && c.status(s) ? `<div class="st">${esc(c.status(s))}</div>` : ''}</div></div>`;
+  }).join('');
+  if(tab === 'path'){
+    if(!s.history.length) return '<p style="color:var(--parchment-dim)">Your story has not begun yet.</p>';
+    return `<div class="tl">${s.history.map(h => `<div class="tl-i"><small>${esc(h.chapter || '')}${h.title ? ' · ' + esc(h.title) : ''}</small><span>${esc(h.label).replace(/^"|"$/g,'')}</span></div>`).join('')}</div>`;
+  }
+  if(tab === 'ach'){
+    const n = ACHIEVEMENTS.filter(a => META.ach[a.id]).length;
+    return `<p class="progress-line">${n} of ${ACHIEVEMENTS.length} feats unlocked, across all your sagas.</p><div class="grid2">${ACHIEVEMENTS.map(a => { const on = !!META.ach[a.id];
+      return `<div class="tile ${on?'':'locked'}"><div class="t-ic">${icon(on ? a.icon : 'lock')}</div><b>${esc(a.title)}</b><small>${esc(a.desc)}</small></div>`; }).join('')}</div>`;
+  }
+  const n = ENDING_ORDER.filter(k => META.endings[k]).length;
+  const hint = {tyrant:'Rule through fear alone.', shadow:'Rule unseen, and stay unseen.', wise:'Seek understanding over dominion.', emperor:'Conquer the world with an equal at your side.',
+    protector:'Guard what you could have taken.', treaty:'Let gold do what fire could.', myth:'Leave the world wondering.', storm:'Refuse to be any one thing.', fallenEarly:'Burn too brightly.'};
+  return `<p class="progress-line">${n} of ${ENDING_ORDER.length} endings discovered · ${META.runs} saga${META.runs===1?'':'s'} completed</p><div class="grid2">${ENDING_ORDER.map(k => { const on = !!META.endings[k], e = ENDINGS[k];
+    return `<div class="tile ${on?'':'locked'}"><div class="t-ic">${icon(on ? 'crown' : 'lock')}</div><b>${on ? esc(e.badge) : '???'}</b><small>${on ? esc(e.title) + (META.endings[k] > 1 ? ` · ×${META.endings[k]}` : '') : esc(hint[k])}</small></div>`; }).join('')}</div>`;
+}
+
+function openSettings(){
+  const seg = (key, opts) => `<div class="seg">${opts.map(([v, l]) => `<button class="${SETTINGS[key]===v?'on':''}" onclick="setSetting('${key}','${v}')">${l}</button>`).join('')}</div>`;
+  const sw = (key) => `<button class="sw ${SETTINGS[key]?'on':''}" onclick="setSetting('${key}',${!SETTINGS[key]})" aria-label="${key}"></button>`;
+  sheet('Settings', '', `
+    <div class="set-row"><div><b>Sound</b><small>Ambience and effects, generated live.</small></div>${sw('sound')}</div>
+    <div class="set-row"><div><b>Volume</b></div><input type="range" min="0" max="1" step="0.05" value="${SETTINGS.volume}" oninput="SETTINGS.volume=+this.value;saveSettings()"></div>
+    <div class="set-row"><div><b>Text size</b></div>${seg('textSize', [['s','S'],['m','M'],['l','L']])}</div>
+    <div class="set-row"><div><b>Show stat hints</b><small>Reveal which way each choice pulls you. Spoils a little.</small></div>${sw('hints')}</div>
+    <div class="set-row"><div><b>Reduce motion</b><small>No particles, shakes or animations.</small></div>${sw('reduce')}</div>
+    <div class="btn-row"><button class="btn ghost" onclick="closeSheet();UI.screen='title';render()">${icon('scroll')}Title screen</button></div>
+    <div class="btn-row"><button class="btn ghost" onclick="newSaga()">${icon('egg')}Restart this saga</button></div>
+    <div class="btn-row"><button class="btn ghost" style="color:#d98a8a" onclick="resetProgress()">${icon('x')}Erase endings &amp; feats</button></div>
+    <p class="progress-line" style="margin-top:18px">Dragon Saga 2.0 · works offline · your saga saves automatically</p>`);
+}
+function setSetting(k, v){ SETTINGS[k] = v; saveSettings(); if(k === 'sound'){ SND.init(); } openSettings(); if(k === 'hints' || k === 'reduce' || k === 'textSize') render(); }
+function toggleSound(){ SETTINGS.sound = !SETTINGS.sound; saveSettings(); SND.init(); render(); }
+function resetProgress(){ if(!confirm('Erase all discovered endings and feats? Your current saga is kept.')) return; META = {endings:{}, ach:{}, runs:0}; saveMeta(); openSettings(); }
+
+/* ════════════ SHARE CARD ════════════ */
+async function shareCard(){
+  const key = state.node.replace('__ending_', ''), e = ENDINGS[key];
+  const W = 1080, H = 1350, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const x = cv.getContext('2d');
+  const g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#1d0f14'); g.addColorStop(.55, '#0c0a10'); g.addColorStop(1, '#160d07'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+  const rg = x.createRadialGradient(W/2, 520, 40, W/2, 520, 520); rg.addColorStop(0, 'rgba(228,104,47,.35)'); rg.addColorStop(1, 'rgba(228,104,47,0)'); x.fillStyle = rg; x.fillRect(0, 0, W, H);
+  x.strokeStyle = '#7d6a26'; x.lineWidth = 3; x.strokeRect(40, 40, W-80, H-80); x.strokeStyle = '#3a2c18'; x.strokeRect(56, 56, W-112, H-112);
+  try{
+    const svg = dragonSVG(dragonLook(state), {still:true, fixedScale:1}).replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" width="720" height="600" ');
+    const img = new Image(); img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    await img.decode(); x.drawImage(img, (W-720)/2, 200, 720, 600);
+  }catch(err){}
+  try{ await document.fonts.load('900 60px Cinzel'); }catch(err){}
+  x.textAlign = 'center';
+  x.fillStyle = '#c9a227'; x.font = '700 34px Cinzel, Georgia, serif'; x.fillText('DRAGON SAGA', W/2, 140);
+  x.fillStyle = '#a89e8c'; x.font = '500 30px Cinzel, Georgia, serif'; x.fillText((state.dragonName || '').toUpperCase(), W/2, 860);
+  x.fillStyle = '#f0c44a'; x.font = '900 58px Cinzel, Georgia, serif'; x.fillText(e.badge, W/2, 950);
+  x.fillStyle = '#ece3d3'; x.font = 'italic 40px Spectral, Georgia, serif'; x.fillText(e.title, W/2, 1015);
+  x.font = '600 34px Spectral, Georgia, serif'; x.fillStyle = '#d9a441';
+  x.fillText(`${state.wealth} gold   ·   ${state.infamy} infamy   ·   ${state.health} health`, W/2, 1110);
+  x.fillStyle = '#6a5d72'; x.font = '500 26px Cinzel, Georgia, serif'; x.fillText(`${ENDING_ORDER.filter(k => META.endings[k]).length} of ${ENDING_ORDER.length} endings discovered`, W/2, 1200);
+  const blob = await new Promise(r => cv.toBlob(r, 'image/png'));
+  const file = new File([blob], `dragon-saga-${(state.dragonName||'legend').replace(/\W+/g,'-').toLowerCase()}.png`, {type:'image/png'});
+  const text = `${state.dragonName} became ${e.badge} — "${e.title}". Which legend will your dragon become?`;
+  try{
+    if(navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file], text, title:'Dragon Saga'}); return; }
+  }catch(err){ if(err && err.name === 'AbortError') return; }
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = file.name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+}
+
+/* ════════════ INIT ════════════ */
+(function init(){
+  applySettings();
+  const saved = loadSave();
+  if(saved){ state = saved; if(state.phase !== 'naming') UI.screen = 'title'; }
+  else state = freshState();
+  if(!state.visited.includes(state.node)) state.visited.push(state.node);
   render();
 })();
 
-/* ============ SERVICE WORKER (offline support) ============ */
 if('serviceWorker' in navigator){
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(() => {
-      /* offline support just won't be available — game still runs fine online */
-    });
-  });
+  window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
 }
 </script>
 </body>
