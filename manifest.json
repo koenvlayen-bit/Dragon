@@ -1,7 +1,7 @@
 {
-  "name": "Dragon Saga: The Hoard Eternal",
-  "short_name": "Dragon Saga",
-  "description": "A branching text RPG. Hatch, hunt, conquer, and choose the legend your dragon becomes.",
+  "name": "Eternal Hoard – A Dragon's Tale",
+  "short_name": "Eternal Hoard",
+  "description": "A branching dragon RPG. Hatch, hunt, conquer, and choose the legend your dragon becomes.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -33,5 +33,6 @@
       "type": "image/png",
       "purpose": "maskable"
     }
-  ]
+  ],
+  "id": "./"
 }

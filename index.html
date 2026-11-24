@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Dragon Saga: The Hoard Eternal</title>
+<title>Eternal Hoard – A Dragon's Tale</title>
 <meta name="description" content="A branching text RPG. Hatch, hunt, conquer, and choose the legend your dragon becomes.">
 <meta name="theme-color" content="#0c0a10">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Dragon Saga">
+<meta name="apple-mobile-web-app-title" content="Eternal Hoard">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -303,6 +303,8 @@ input[type=range]{accent-color:var(--ember);width:120px}
 .ask-box p{margin:0;font-size:15px;color:var(--parchment-dim);line-height:1.55}
 .ask-box .btn-row{margin-top:18px}
 .ask-box .btn{padding:12px;font-size:13px}
+.ask-box textarea{width:100%;height:110px;margin-top:12px;border-radius:12px;background:#0f0b13;border:1px solid #3a2c40;color:var(--parchment);font-family:ui-monospace,monospace;font-size:11px;padding:10px;resize:none;outline:none;word-break:break-all}
+.ask-box textarea:focus{border-color:var(--gold)}
 body.reduce *{animation:none!important;transition:none!important}
 body.reduce .reveal p,body.reduce .choice,body.reduce .chip{opacity:1}
 @media (max-width:420px){ .ntitle{font-size:22px} .banner{height:190px} .banner.creation{height:250px} }
@@ -1914,6 +1916,7 @@ const ICONS = {
   gear:'<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>',
   rewind:'<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
   share:'<path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13"/>',
+  download:'<path d="M4 15v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-5M8 11l4 4 4-4M12 15V3"/>',
   lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
   key:'<circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/>',
   crown:'<path d="M11.56 3.27a.5.5 0 0 1 .88 0l2.95 5.6a1 1 0 0 0 1.52.29L21.18 5.5a.5.5 0 0 1 .8.52l-2.83 10.25a1 1 0 0 1-.96.73H5.81a1 1 0 0 1-.96-.73L2.02 6.02a.5.5 0 0 1 .8-.52l4.27 3.66a1 1 0 0 0 1.52-.29zM5 21h14"/>',
@@ -2680,9 +2683,9 @@ function toggleLedger(){ SETTINGS.ledger = SETTINGS.ledger === 'collapsed' ? 'op
 
 function topbar(){
   const n = STORY.nodes[state.node];
-  const sub = UI.screen === 'title' ? 'The Hoard Eternal' : state.phase === 'naming' ? 'Before it begins' : n ? `${n.chapterShort}` : 'Epilogue';
+  const sub = UI.screen === 'title' ? "A Dragon's Tale" : state.phase === 'naming' ? 'Before it begins' : n ? `${n.chapterShort}` : 'Epilogue';
   return `<div class="topbar">
-    <div class="tb-name"><div class="tb-title">${state.dragonName ? esc(state.dragonName) : 'Dragon Saga'}</div><div class="tb-sub">${esc(sub)}</div></div>
+    <div class="tb-name"><div class="tb-title">${state.dragonName ? esc(state.dragonName) : 'Eternal Hoard'}</div><div class="tb-sub">${esc(sub)}</div></div>
     <button class="tbtn" onclick="openJournal()" aria-label="Journal">${icon('book')}</button>
     <button class="tbtn" onclick="openSettings()" aria-label="Settings">${icon('gear')}</button>
   </div>`;
@@ -2800,7 +2803,7 @@ function renderTitle(){
   const s = state, n = STORY.nodes[s.node];
   const where = s.node.startsWith('__ending_') ? 'Saga complete' : n ? `${n.chapterShort} · ${esc(resolveTitle(n))}` : '';
   const found = ENDING_ORDER.filter(k => META.endings[k]).length;
-  return `<div class="title-hero"><h1>Dragon Saga</h1><div class="sub">The Hoard Eternal</div></div>
+  return `<div class="title-hero"><h1>Eternal Hoard</h1><div class="sub">A Dragon's Tale</div></div>
     <div class="banner">${sceneSVG('cave')}<canvas data-fx="embers"></canvas><div class="hero-dragon" style="right:50%;transform:translateX(50%);width:78%">${dragonArt(dragonLook(s), 'full', {fixedScale:1})}</div></div>
     ${s.dragonName ? `<div class="continue-card"><div class="p">${dragonArt(dragonLook(s), 'sm', {fixedScale:1})}</div><div><b>${esc(s.dragonName)}</b><small>${where}</small><small>${s.wealth} gold · ${s.infamy} infamy · ${s.health} health</small></div></div>
       <button class="btn" id="t-cont">${icon('play')}Continue the saga</button>` : ''}
@@ -3018,13 +3021,50 @@ function openSettings(){
     <div class="set-row"><div><b>Show stat hints</b><small>Reveal which way each choice pulls you. Spoils a little.</small></div>${sw('hints')}</div>
     <div class="set-row"><div><b>Battle cutscenes</b><small>Short scenes when you fight. Tap to skip.</small></div>${sw('cutscenes')}</div>
     <div class="set-row"><div><b>Reduce motion</b><small>No particles, shakes or animations.</small></div>${sw('reduce')}</div>
+    <div class="set-row"><div><b>Move your saga</b><small>Take your saga, endings and feats to another phone or browser.</small></div></div>
+    <div class="btn-row" style="margin-top:0"><button class="btn ghost" onclick="exportSaga()">${icon('share')}Export</button><button class="btn ghost" onclick="importSaga()">${icon('download')}Import</button></div>
     <div class="btn-row"><button class="btn ghost" onclick="closeSheet();UI.screen='title';render()">${icon('scroll')}Title screen</button></div>
     <div class="btn-row"><button class="btn ghost" onclick="newSaga()">${icon('egg')}Restart this saga</button></div>
     <div class="btn-row"><button class="btn ghost" style="color:#d98a8a" onclick="resetProgress()">${icon('x')}Erase endings &amp; feats</button></div>
-    <p class="progress-line" style="margin-top:18px">Dragon Saga 2.0 · works offline · your saga saves automatically</p>`);
+    <p class="progress-line" style="margin-top:18px">Eternal Hoard 2.1 · works offline · your saga saves automatically</p>`);
 }
 function setSetting(k, v){ SETTINGS[k] = v; saveSettings(); openSettings(); if(k === 'hints' || k === 'reduce' || k === 'textSize') render(); }
 async function resetProgress(){ if(!await ask('Erase all progress?', 'Every discovered ending and feat will be forgotten. Your current saga is kept.', 'Erase', true)) return; META = {endings:{}, ach:{}, runs:0}; saveMeta(); openSettings(); }
+
+/* ════════════ MOVE A SAGA (export / import) ════════════ */
+function modal(inner){ const el = document.createElement('div'); el.className = 'ask'; el.innerHTML = `<div class="ask-box">${inner}</div>`; el.onclick = (e) => { if(e.target === el) el.remove(); }; document.body.appendChild(el); return el; }
+function exportSaga(){
+  const payload = { v:1, s: Object.assign({}, state, {undo:null}), m: META };
+  const code = 'EH1:' + btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+  const el = modal(`<div class="ask-ic">${icon('share','lg')}</div><h3>Your saga, as a code</h3><p>Copy this code and paste it into <b>Import</b> on your other phone or browser.</p>
+    <textarea readonly>${code}</textarea><div class="btn-row"><button class="btn ghost" data-a="close">Close</button><button class="btn gold" data-a="copy">${icon('scroll','sm')}Copy</button></div>`);
+  el.querySelector('textarea').onclick = (e) => e.target.select();
+  el.querySelector('[data-a=close]').onclick = () => el.remove();
+  el.querySelector('[data-a=copy]').onclick = async (e) => {
+    try{ if(navigator.share && TOUCH()){ await navigator.share({title:'Eternal Hoard saga', text:code}); return; } }catch(err){ if(err && err.name === 'AbortError') return; }
+    try{ await navigator.clipboard.writeText(code); e.target.closest('button').textContent = 'Copied'; }catch(err){ el.querySelector('textarea').select(); }
+  };
+}
+function importSaga(){
+  const el = modal(`<div class="ask-ic">${icon('download','lg')}</div><h3>Bring a saga here</h3><p>Paste the code from <b>Export</b>. Your current saga on this device will be replaced; endings and feats are combined.</p>
+    <textarea placeholder="EH1:..."></textarea><div class="btn-row"><button class="btn ghost" data-a="close">Cancel</button><button class="btn" data-a="go">Import</button></div>`);
+  el.querySelector('[data-a=close]').onclick = () => el.remove();
+  el.querySelector('[data-a=go]').onclick = () => {
+    try{
+      const raw = el.querySelector('textarea').value.trim().replace(/\s+/g, '');
+      if(!raw.startsWith('EH1:')) throw new Error('code');
+      const data = JSON.parse(decodeURIComponent(escape(atob(raw.slice(4)))));
+      if(!data.s || !(STORY.nodes[data.s.node] || String(data.s.node).startsWith('__ending_'))) throw new Error('state');
+      state = migrate(data.s); state.undo = null; saveGame();
+      const m = data.m || {};
+      Object.entries(m.endings || {}).forEach(([k, v]) => { META.endings[k] = Math.max(META.endings[k] || 0, v); });
+      Object.entries(m.ach || {}).forEach(([k, v]) => { if(!META.ach[k]) META.ach[k] = v; });
+      META.runs = Math.max(META.runs || 0, m.runs || 0); saveMeta();
+      el.remove(); closeSheet(); UI.screen = 'title'; render();
+      toast('Saga imported', `Welcome back, ${state.dragonName || 'dragon'}.`, 'egg');
+    }catch(err){ el.querySelector('p').innerHTML = '<span style="color:#d98a8a">That code did not work. Copy the whole code, from EH1: to the end, and try again.</span>'; }
+  };
+}
 
 /* ════════════ SHARE CARD ════════════ */
 async function shareCard(){
@@ -3041,7 +3081,7 @@ async function shareCard(){
   }catch(err){}
   try{ await document.fonts.load('900 60px Cinzel'); }catch(err){}
   x.textAlign = 'center';
-  x.fillStyle = '#c9a227'; x.font = '700 34px Cinzel, Georgia, serif'; x.fillText('DRAGON SAGA', W/2, 140);
+  x.fillStyle = '#c9a227'; x.font = '700 34px Cinzel, Georgia, serif'; x.fillText('ETERNAL HOARD', W/2, 140);
   x.fillStyle = '#a89e8c'; x.font = '500 30px Cinzel, Georgia, serif'; x.fillText((state.dragonName || '').toUpperCase(), W/2, 860);
   x.fillStyle = '#f0c44a'; x.font = '900 58px Cinzel, Georgia, serif'; x.fillText(e.badge, W/2, 950);
   x.fillStyle = '#ece3d3'; x.font = 'italic 40px Spectral, Georgia, serif'; x.fillText(e.title, W/2, 1015);
@@ -3049,10 +3089,10 @@ async function shareCard(){
   x.fillText(`${state.wealth} gold   ·   ${state.infamy} infamy   ·   ${state.health} health`, W/2, 1110);
   x.fillStyle = '#6a5d72'; x.font = '500 26px Cinzel, Georgia, serif'; x.fillText(`${ENDING_ORDER.filter(k => META.endings[k]).length} of ${ENDING_ORDER.length} endings discovered`, W/2, 1200);
   const blob = await new Promise(r => cv.toBlob(r, 'image/png'));
-  const file = new File([blob], `dragon-saga-${(state.dragonName||'legend').replace(/\W+/g,'-').toLowerCase()}.png`, {type:'image/png'});
-  const text = `${state.dragonName} became ${e.badge} — "${e.title}". Which legend will your dragon become?`;
+  const file = new File([blob], `eternal-hoard-${(state.dragonName||'legend').replace(/\W+/g,'-').toLowerCase()}.png`, {type:'image/png'});
+  const text = `${state.dragonName} became ${e.badge} — "${e.title}". Which legend will your dragon become? https://eternalhoard.be`;
   try{
-    if(navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file], text, title:'Dragon Saga'}); return; }
+    if(navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file], text, title:'Eternal Hoard'}); return; }
   }catch(err){ if(err && err.name === 'AbortError') return; }
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = file.name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 3000);
 }

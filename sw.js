@@ -1,6 +1,6 @@
-// Choice of the Dragon — offline app-shell cache
+// Eternal Hoard — offline app-shell cache
 // Bump CACHE_NAME on every release so old, stale caches get thrown out automatically.
-const CACHE_NAME = 'dragon-saga-v8';
+const CACHE_NAME = 'dragon-saga-v9';
 const ASSETS = [
   './',
   './index.html',
