@@ -224,6 +224,74 @@ input[type=range]{accent-color:var(--ember);width:120px}
 .footer{display:flex;justify-content:center;margin-top:18px}
 .pv-bubble{position:fixed;right:12px;top:calc(62px + var(--safe-top));width:150px;height:126px;pointer-events:none;z-index:40;border-radius:22px;padding:6px;background:radial-gradient(circle at 50% 80%,#3a1a14,#120d10 70%);border:1px solid var(--gold-dim);box-shadow:0 16px 40px rgba(0,0,0,.7),0 0 30px rgba(228,104,47,.2);animation:fade .25s}
 
+
+/* ── painted dragon ── */
+.dragon-img{width:100%;height:100%;object-fit:contain;object-position:50% 100%;transform:scale(var(--sc,1));transform-origin:50% 100%;filter:drop-shadow(0 12px 18px rgba(0,0,0,.65));user-select:none;-webkit-user-drag:none;display:block}
+.dragon-img.egg{object-position:50% 70%;filter:drop-shadow(0 0 26px rgba(255,120,40,.55));animation:eggpulse 2.6s ease-in-out infinite;transform:scale(.72)}
+@keyframes eggpulse{50%{filter:drop-shadow(0 0 40px rgba(255,140,50,.85))}}
+.dragon-img.glow{animation:glowhide 3s ease-in-out infinite}
+@keyframes glowhide{0%,100%{filter:drop-shadow(0 12px 18px rgba(0,0,0,.65)) drop-shadow(0 0 6px rgba(127,232,255,.35))}50%{filter:drop-shadow(0 12px 18px rgba(0,0,0,.65)) drop-shadow(0 0 18px rgba(180,124,255,.7))}}
+.dragon-img.wounded{filter:drop-shadow(0 12px 18px rgba(0,0,0,.65)) drop-shadow(0 0 10px rgba(196,58,58,.6)) saturate(.8)}
+.banner .hero-dragon{display:flex;align-items:flex-end;justify-content:center}
+.banner.creation .hero-dragon{width:92%;max-width:520px;bottom:18px;height:86%}
+.banner:not(.creation) .hero-dragon{width:66%;right:0;bottom:4px}
+.medals{position:absolute;left:10px;bottom:10px;display:flex;gap:8px;z-index:3}
+.medal{width:34px;height:34px;border-radius:50%;overflow:hidden;border:2px solid var(--gold);box-shadow:0 4px 12px rgba(0,0,0,.6);background:#000;position:relative}
+.medal img{width:100%;height:100%;object-fit:cover;display:block}
+.medal.big{width:64px;height:64px;overflow:visible}
+.medal.big img{border-radius:50%}
+.medal.big span{position:absolute;left:50%;top:100%;transform:translateX(-50%);margin-top:3px;font-size:10px;letter-spacing:.5px;white-space:nowrap;color:var(--gold-hi);text-shadow:0 1px 4px #000}
+.banner.creation .medals{left:14px;bottom:auto;top:14px}
+.ledger .portrait{height:96px;position:relative}
+.ledger .portrait .medals{left:-4px;bottom:-6px;gap:3px}
+.ledger .portrait .medal{width:24px;height:24px;border-width:1.5px}
+.ledger.collapsed .portrait{height:48px}
+.continue-card .p{display:flex;align-items:flex-end}
+.pv-bubble .dragon-img{transform:none}
+.pv-bubble .medals{display:none}
+.your-dragon{display:flex;gap:14px;align-items:center;background:radial-gradient(ellipse at 30% 80%,#3a1a14,#17121c 70%);border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:6px}
+.yd-img{width:46%;height:120px;flex-shrink:0}
+.yd-txt b{font-family:'Cinzel',serif;font-size:17px;color:var(--gold-hi);display:block}
+.yd-txt small{display:block;font-size:12.5px;color:var(--parchment-dim);margin:3px 0 10px}
+.yd-txt .medals{position:static}
+.yd-txt .medal.big{width:46px;height:46px;margin-bottom:16px}
+.end-portrait .dragon-img{transform:none}
+
+/* ── cutscenes ── */
+.cs{position:fixed;inset:0;z-index:400;background:#000;display:flex;align-items:center;justify-content:center;animation:fade .35s;cursor:pointer}
+.cs.cs-out{animation:fadeout .4s forwards}
+.cs-stage{position:relative;width:min(100vw,960px);aspect-ratio:16/10;max-height:100vh;overflow:hidden;background:#0c0a10}
+.cs-stage::before,.cs-stage::after{content:'';position:absolute;left:0;right:0;height:9%;background:#000;z-index:6}
+.cs-stage::before{top:0}.cs-stage::after{bottom:0}
+.cs-bg{position:absolute;inset:0}
+.cs-bg .scene-svg{width:100%;height:100%;display:block;filter:brightness(.8)}
+.cs-sun{position:absolute;inset:0;opacity:0;background:radial-gradient(ellipse at 85% 20%,rgba(255,230,160,.85),rgba(255,180,90,.35) 40%,rgba(255,160,80,0) 75%);mix-blend-mode:screen;z-index:2}
+.cs-hero{position:absolute;left:-1%;bottom:8%;width:50%;aspect-ratio:1000/780;z-index:3}
+.cs-hero .dragon-img{transform:none;object-fit:fill}
+.cs-hero .medals{display:none}
+.cs-enemy{position:absolute;right:0;bottom:8%;width:46%;height:70%;z-index:2;display:flex;align-items:flex-end;justify-content:center}
+.cs-enemy.army,.cs-enemy.guard{width:62%;height:56%;right:-4%}
+.cs-enemy.citadel{width:46%;height:84%}
+.cs-svg{width:100%;height:100%;display:block;filter:drop-shadow(0 10px 18px rgba(0,0,0,.7))}
+.cs-svg.sil{filter:drop-shadow(0 0 10px rgba(255,190,120,.18)) drop-shadow(0 10px 18px rgba(0,0,0,.8))}
+.cs-enemy-img{width:100%;height:100%;object-fit:contain;object-position:50% 100%;transform:scaleX(-1);filter:brightness(.6) saturate(.85) contrast(1.15) drop-shadow(0 0 14px rgba(255,60,40,.35))}
+.cs-enemy.infernus{width:52%;height:82%}
+.cs-enemy-img.infernus{filter:sepia(.45) brightness(.55) contrast(1.25) drop-shadow(0 0 18px rgba(255,140,40,.35))}
+.cs-glint{animation:glint 1.2s ease-in-out infinite}@keyframes glint{50%{opacity:.4}}
+.cs-fx{position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none}
+.cs-flash{position:absolute;inset:0;background:#fff;opacity:0;z-index:5;pointer-events:none}
+.cs-cap{position:absolute;left:0;right:0;bottom:11%;z-index:7;text-align:center;padding:0 20px;pointer-events:none}
+.cs-cap span{display:inline-block;font-family:'Cinzel',serif;font-weight:700;font-size:clamp(16px,3.6vw,26px);letter-spacing:.5px;color:#fff3dc;text-shadow:0 2px 14px #000,0 0 30px rgba(0,0,0,.8);animation:capin .5s ease}
+@keyframes capin{from{opacity:0;transform:translateY(8px);letter-spacing:4px}}
+.cs-skip{position:fixed;top:calc(14px + var(--safe-top));right:14px;z-index:410;display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:99px;background:rgba(23,18,28,.75);border:1px solid var(--line);color:var(--parchment-dim);font-family:'Cinzel',serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase}
+.cs-ring{position:absolute;width:34%;aspect-ratio:1;transform:translate(-50%,-50%);border:2px solid;border-radius:50%;z-index:4;animation:ringspin 2.4s linear infinite,fade .5s;box-shadow:0 0 30px currentColor;opacity:.85}
+.cs-ring i{position:absolute;inset:14%;border:2px dashed;border-radius:50%;animation:ringspin 1.6s linear infinite reverse}
+@keyframes ringspin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.cs-ring i{animation-name:ringspin2}@keyframes ringspin2{to{transform:rotate(-360deg)}}
+.cs-gob{position:absolute;z-index:4;aspect-ratio:2/3}
+.cs-gob svg{width:100%;height:100%;display:block}
+@media (orientation:portrait){ .cs-stage{aspect-ratio:3/4;width:100vw;max-height:88vh} .cs-hero{width:92%;bottom:10%;left:-10%} .cs-enemy{width:64%;height:40%;bottom:auto;top:14%;right:-2%} .cs-enemy.army,.cs-enemy.guard{width:100%;height:30%;top:22%;right:-10%} .cs-enemy.citadel{width:70%;height:48%;top:10%} .cs-enemy.infernus{width:74%;height:44%;top:12%} .cs-cap{bottom:11%} }
+
 body.reduce *{animation:none!important;transition:none!important}
 body.reduce .reveal p,body.reduce .choice,body.reduce .chip{opacity:1}
 @media (max-width:420px){ .ntitle{font-size:22px} .banner{height:190px} .banner.creation{height:250px} }
@@ -1496,7 +1564,7 @@ function computeEnding(){
 }
 
 /* ── Extra epilogue lines for the new threads ── */
-function expansionEpilogue(s){
+var expansionEpilogue = function(s){
   const out = [];
   const f = s.flags;
   if(f.snikkit === 'steward') out.push("Snikkit kept your ledgers for the rest of his long, nervous, magnificent life, and trained three apprentices to keep them after him. The last entry in his own hand reads, simply: GOLD (VARIOUS). LARGER.");
@@ -1515,7 +1583,134 @@ function expansionEpilogue(s){
   if(f.aureliaTutor) out.push("Whatever else passed between you and Aurelia, you never forgot who taught you to read. The first book you ever finished on your own still sits at the top of your hoard, above the gold, where you can reach it.");
   if(f.interlude === 'sleep') out.push("The gold coin fused to your belly during the long winter sleep is still there, worn smooth now, the face on it long since rubbed away. You have never once considered removing it.");
   return out;
-}
+};
+
+/* =========================================================
+   GOBLIN ARC (v2.1)
+   Old Gnash and his warren get a real story: a troll under the
+   warren in Chapter One, and the ravine at war in Chapter Three.
+   ========================================================= */
+Object.assign(STORY.nodes, {
+  "1.3c": {
+    chapterShort:"Chapter One", chapter:"Chapter One — The Lone Wyrm", part:"Part III½",
+    title:"The Thing Under the Warren",
+    text: (s) => {
+      const ask = {
+        worship: "He does not ask, exactly. Priests do not ask gods for things; they pray, loudly, and then wait. He prays very loudly.",
+        fear: "He has come to beg, and he does it badly, as though begging is a muscle the warren has had to use far too often since you arrived.",
+        trust: "'I would not ask,' he says, very quietly, 'if there were anyone else left to ask.'"
+      }[s.flags.goblinAllies] || "";
+      return [
+        "Three nights later, the old chieftain comes up the ravine alone. By daylight you would have called him old; by torchlight, with ash rubbed into the scars of his face, he looks ancient. 'Gnash,' he says, by way of introduction — the first time he has offered you his name, and, you suspect, the first time in a long while he has offered it to anyone.",
+        "Something has broken into the lower warren from the old dwarven mine beneath it. The goblins call it the Grinder: a cave troll the size of a hut, grey as river stone, that heals faster than goblin spears can wound it. It has already eaten nine of them. It is working its way, tunnel by tunnel, toward the nurseries. " + ask,
+        "Behind him, at the mouth of the ravine, a hundred and fifty small faces are watching to see what kind of dragon you are going to be."
+      ];
+    },
+    choices: [
+      { label:"Go down into the tunnels and kill it yourself", flavor:"It is your mountain. Nothing eats anything here without your permission.",
+        stats:{axis1:-10, axis2:-6}, health:-10, infamy:6, next:"1.4a", setFlags:{goblinDeed:'slew'},
+        outcome:["The tunnels were dug for goblins, not dragons, and you fight the Grinder half-crouched, wings folded painfully tight, in a space where every swing of its stone club comes off the walls as well as off you. It hits like a falling cliff. You burn it; it heals. You burn it again; it heals slower. The third time, standing in the smoking dark with your own blood in your mouth, you do not stop burning until there is nothing left to heal.",
+        "When you finally crawl back out into the ravine, the whole warren is waiting, utterly silent. Then Gnash steps forward, pries one enormous blackened tooth from the ashes, and holds it up over his head, and the ravine erupts. They carry that tooth through the warren for a week. They are still, as far as you know, carrying it now."] },
+      { label:"Lure it up into the daylight", flavor:"Every goblin bedtime story agrees on one thing about trolls.",
+        stats:{axis2:10, axis3:4}, health:-3, next:"1.4a", setFlags:{goblinDeed:'sunlight'},
+        outcome:["You spend the night smashing open the old mine shaft where it meets the ravine, and the hour before dawn dragging a freshly killed goat back and forth across the tunnel mouth until the whole lower warren reeks of it. The Grinder comes, as trolls always come, nose-first and stupid with hunger, out into the grey half-light after the smell.",
+        "It is still roaring at you when the sun clears the ridge. The roar stops. Everything stops. Where a troll stood a heartbeat ago there is a statue of one, mid-lunge, mouth open, grey as the stone it came from. It stands at the mouth of the ravine to this day. The goblins hang laundry on it."] },
+      { label:"Teach the goblins to kill it themselves", flavor:"You will not always be here. They will need to know how.",
+        stats:{axis3:12, axis2:-4}, next:"1.4a", setFlags:{goblinDeed:'taught'},
+        outcome:["It takes three days. You teach them what fire does to a troll and what a troll does to fire, how to dig a pit it cannot climb out of, how to fight from tunnels too small for it to follow, how to make it chase the wrong noise. Gnash learns fastest of all. By the second day he is correcting your plans, and by the third he is usually right.",
+        "They lose two more goblins doing it. But they do it — with fire pots and pit stakes and a collapsing tunnel that drops half the mountain on the Grinder's head — and when it is done something in the warren has quietly changed. They stand a little straighter. They stop flinching at your shadow. Gnash starts calling the forty who fought 'the warband', and nobody, least of all you, argues."] },
+      { label:"Name your price first", flavor:"Protection has never once been free. Why should it start now?",
+        stats:{axis2:12, axis1:-4}, health:-8, wealth:25, infamy:4, next:"1.4a", setFlags:{goblinDeed:'paid'},
+        outcome:["You name a price: the warren's entire stash of silver, every coin they have hoarded against bad winters for three generations. Gnash looks at you for a long moment with an expression you cannot read. Then he nods, once, and goes to fetch it while the Grinder works its way another tunnel closer to the nurseries.",
+        "You kill it, in the end, efficiently and without much ceremony. The goblins are grateful. They are also, from that day on, very careful to keep a ledger — Gnash's own, in his own hand — of exactly what everything you have ever done for them has cost."] }
+    ]
+  },
+
+  "3.3c": {
+    chapterShort:"Chapter Three", chapter:"Chapter Three — The War of Mankind", part:"Part IV½",
+    title:"The Ravine Burns",
+    text: (s) => {
+      const deed = {
+        slew: "Gnash comes up the ravine at a dead run, the Grinder's blackened tooth bouncing on a cord around his neck.",
+        sunlight: "Gnash comes up the ravine at a dead run, past the troll statue at its mouth, still hung with the warren's laundry.",
+        taught: "Gnash's warband — sixty now, not forty — has already taken the high ledges over the ravine without being asked. Gnash himself comes up to you only to report, the way a captain reports to a general.",
+        paid: "Gnash comes up the ravine with a purse already in his hand. 'Same rate as last time,' he says flatly, and does not quite meet your eyes."
+      }[s.flags.goblinDeed] || "Gnash comes up the ravine at a dead run.";
+      return [
+        "Ostrovan's battalion does not come straight for your mountain. It comes, first, through the ravine — the only road wide enough for its wagons — and the warren sits squarely in its path. From the ridge you can see the vanguard already: three hundred soldiers with torches, moving the way soldiers move when they have been told to clear the approach and not to be particular about it.",
+        deed + " Behind him, below, the warren's cookfires are going out one by one as mothers snatch children indoors. There is very little time, and there are several ways to spend it."
+      ];
+    },
+    choices: [
+      { label:"Drop into the ravine and hold the warren", flavor:"Let the whole army learn, right here, what this mountain protects.",
+        stats:{axis2:-10, axis1:-4}, health:-10, infamy:6, next:"3.4", setFlags:{warren:'defended'},
+        outcome:["You land in the ravine between the vanguard and the warren hard enough to crack the road, and breathe fire along its whole width. The front ranks break. The ranks behind them break faster. By the time their officers have stopped screaming orders, the vanguard is a smoking mile back down the road and the warren is still standing behind you, every cookfire relit.",
+        "It costs you the element of surprise: Ostrovan now knows exactly where you are, and exactly how angry you get. You find you do not mind. The goblins carve that night into the wall of their great hall within the month. In the carving you are, inevitably, somewhat larger than life."] },
+      { label:"Carry them into your mountain's tunnels", flavor:"Let the soldiers find nothing but an empty ravine.",
+        stats:{axis3:8, axis2:-4}, next:"3.4", setFlags:{warren:'sheltered'},
+        outcome:["You clear the old collapsed passage between your lair and the ravine in a single furious hour, and the entire warren moves into your mountain overnight: a hundred and fifty goblins, their cookpots, their goats, their grandmothers, their opinions. The vanguard finds an empty ravine and burns it out of spite. It does not matter. Nobody was home.",
+        "Your mountain is considerably noisier now, and smells considerably more of goat. The goblins are grateful, and loud about it, and everywhere. You tell yourself it is temporary. Nobody, least of all the goblins, believes you."] },
+      { label:"Let it burn, and hit their flank while they're busy", flavor:"An army burning a village is an army not watching its sides.",
+        stats:{axis1:-8, axis2:10}, wealth:15, infamy:8, next:"3.4", setFlags:{warren:'lost'},
+        outcome:["You watch from the ridge while the vanguard pours into the warren with its torches, and you wait until every soldier in it is busy, and then you fall on its flank and its supply wagons like the end of the world. It works perfectly. The vanguard is shattered, its wagons are yours, and Ostrovan's whole battalion loses a day it cannot afford.",
+        "Most of the goblins got out in time. Not all of them. You do not look at Gnash's face afterwards, and he, very carefully, does not look at yours. When the smoke clears, the warren has simply gone — east, the scouts say, somewhere far from any mountain with a dragon on it."] },
+      { label:"Let Gnash's warband hold the ravine", flavor:"You taught them how. Now let them show you.",
+        requires:(s) => s.flags.goblinDeed === 'taught', lockHint:"Requires a warband you trained yourself",
+        stats:{axis3:6, axis2:-6}, infamy:4, next:"3.4", setFlags:{warren:'held'},
+        outcome:["You stay on the ridge, and you watch. The warband lets the vanguard into the ravine's narrowest bend and then closes it like a fist: fire pots from the ledges, a tunnel collapsing behind the rear ranks, pit stakes where the road had looked solid, sixty goblins who know every rock of this ravine fighting three hundred men who know none of it. You make exactly one pass at the end, to finish it. You barely need to.",
+        "When it is over, Gnash climbs the ridge to you, blood on his spear, and bows. Not the way he bowed the first day you met him — forehead in the dirt, terrified — but the way one commander bows to another. You find, somewhat to your surprise, that you return it."] }
+    ]
+  }
+});
+
+(function spliceGoblins(){
+  const N = STORY.nodes;
+  N["1.3c"].chapter = N["1.3b"].chapter; N["3.3c"].chapter = N["3.3"].chapter;
+  N["1.3b"].choices.forEach(c => { c.next = "1.3c"; });
+  N["3.3"].choices.forEach(c => { c.next = "3.3c"; });
+  // The battalion scene: the goblins' situation now depends on what happened in the ravine
+  const origText = N["3.4"].text;
+  N["3.4"].text = (s) => {
+    if(!s.flags.warren) return origText(s);
+    const keep = state.flags.goblinAllies; state.flags.goblinAllies = undefined;
+    let t; try{ t = origText(s); } finally { state.flags.goblinAllies = keep; }
+    const line = {
+      defended: " In the ravine behind you, the warren you held relights its cookfires one by one, and its goblins climb up onto the ledges to watch the rest of the army come.",
+      sheltered: " Somewhere in the tunnels beneath your feet, a hundred and fifty goblins are listening very hard and pretending not to be frightened.",
+      lost: " Below, where the warren stood, nothing moves but smoke.",
+      held: " On the ledges over the ravine, Gnash's warband has already taken up position again, without being asked."
+    }[s.flags.warren];
+    t = t.slice(); t[0] = t[0] + line; return t;
+  };
+  const rally = N["3.4"].choices[1];
+  rally.requires = (s) => s.flags.warren !== 'lost';
+  rally.lockHint = "The warren burned. The goblins will not answer.";
+  const origOut = rally.outcome;
+  rally.outcome = (s) => {
+    const base = typeof origOut === 'function' ? origOut(s) : origOut;
+    const extra = {
+      held: "Gnash's warband leads the charge, and the rest of the mountain's tribes follow it without question: they have seen what it did in the ravine.",
+      defended: "They come in greater numbers than you knew the mountain held. Every goblin in the warren you held remembers exactly who stood in front of it.",
+      sheltered: "The goblins who have been living in your tunnels pour out of them by the hundred, eager, at long last, to pay their rent."
+    }[s.flags.warren];
+    return extra ? base.concat([extra]) : base;
+  };
+})();
+
+const _expansionEpilogueV2 = expansionEpilogue;
+expansionEpilogue = function(s){
+  const out = _expansionEpilogueV2(s), f = s.flags;
+  const w = {
+    held: "Gnash's warband became the first goblin regiment in history to march under a realm's banner. It still carries a dragon on its standard, and still, by long tradition, salutes every shadow that crosses the ravine.",
+    defended: "In the goblins' great hall, rebuilt on the same spot, the carving of the night you dropped into the ravine has been retouched by every generation since. Each version makes you a little larger.",
+    sheltered: "Goblins still live in the lower halls of your mountain. They were only ever meant to stay until the war was over. Nobody has mentioned this in a very long time.",
+    lost: "The ravine where the warren stood is still blackened, and nothing grows there. Far to the east, a goblin tribe teaches its children one rule above all others: never trust a dragon that offers to help."
+  }[f.warren];
+  if(w) out.unshift(w);
+  if(f.goblinDeed === 'sunlight') out.push("The Grinder still stands at the mouth of the ravine, turned to stone mid-roar. The laundry on its arms is changed every washday.");
+  if(f.goblinDeed === 'paid') out.push("Gnash's ledger of debts outlived him. The last page is a single line in his shaky old hand: PAID IN FULL. You have never found out which of you he meant.");
+  return out;
+};
 /* ============ GAME STATE & CORE RULES ============
    Pure game logic: no DOM. The UI layer below calls into this. */
 
@@ -1661,6 +1856,8 @@ const ACHIEVEMENTS = [
   { id:'hatch',    icon:'egg',     title:'First Breath',            desc:'Break out of the egg.',                         test:(s) => !!s.flags.element },
   { id:'vexar',    icon:'sword',   title:'Sibling Rivalry, Settled', desc:'Defeat Vexar in the rematch.',                 test:(s) => s.flags.vexarOutcome === 'victory' },
   { id:'religion', icon:'flame',   title:'Accidental Religion',      desc:'Let the goblins worship you.',                 test:(s) => s.flags.goblinAllies === 'worship' },
+  { id:'sunrise',  icon:'star',    title:'Sunrise Statue',           desc:'Turn a troll to stone with nothing but patience.', test:(s) => s.flags.goblinDeed === 'sunlight' },
+  { id:'general',  icon:'goblin',  title:'Goblin General',           desc:'Let the warband you trained hold the ravine.',  test:(s) => s.flags.warren === 'held' },
   { id:'steward',  icon:'coins',   title:'Fiscal Responsibility',    desc:'Hire a goblin to count your gold.',            test:(s) => s.flags.snikkit === 'steward' },
   { id:'cowrite',  icon:'lute',    title:'Of Considerable Size',     desc:'Co-write the most famous song in the realm.',  test:(s) => s.flags.bard === 'cowrite' },
   { id:'locked',   icon:'key',     title:'Born For This',            desc:'Take a choice only your kind of dragon could.', test:(s) => (s.lockedTaken||0) > 0 },
@@ -1868,7 +2065,7 @@ function dragonSVG(look, opts = {}){
 /* ── Scene backdrops ── */
 const SCENE_OF = {
   "1.1":"cave","1.1a":"cave","1.1b":"cave","1.1c":"cave","1.1d":"cave","1.1e":"cave","1.1f":"cave",
-  "1.2":"plains","1.3":"warren","1.3b":"warren","1.4a":"peaks","1.4":"peaks",
+  "1.2":"plains","1.3":"warren","1.3b":"warren","1.3c":"warren","3.3c":"warren","1.4a":"peaks","1.4":"peaks",
   "2.1":"lair","2.1b":"lair","2.2":"road","2.3":"town","2.3b":"road","2.4a":"lair","2.4":"lair",
   "3.1":"foothills","3.1b":"foothills","3.2a":"cave","3.2":"cave","3.3a":"tower","3.3":"tower",
   "3.4":"battle","3.4b":"tower","3.4c":"lair","3.5":"peaks","3.6":"peaks",
@@ -1980,8 +2177,10 @@ function hoardSVG(w){
 const CAST = [
   { id:'vexar',   name:'Vexar',             icon:'dragon', at:'1.1e', desc:'Your brother. Hatched first, and has never once let you forget it.',
     status:(s) => ({victory:'Beaten, fairly, at last.', draw:'Still undecided. Possibly forever.', defeat:'Still the stronger. For now.'})[s.flags.vexarOutcome] || (s.flags.metVexar ? 'Out there somewhere, keeping score.' : '') },
-  { id:'chief',   name:'The Goblin Chieftain', icon:'goblin', at:'1.3', desc:'Scarred, wiry, and the bravest coward in the ravine.',
+  { id:'chief',   name:'Old Gnash',         icon:'goblin', at:'1.3', desc:'Goblin chieftain. More scars than teeth. The bravest coward in the ravine.',
     status:(s) => ({worship:'Now high priest of a faith he did not plan.', fear:'Mines gold for you. Does not sleep well.', trust:'A good neighbour, against all odds.'})[s.flags.goblinAllies] || '' },
+  { id:'grinder', name:'The Grinder',       icon:'skull',  at:'1.3c', desc:'A cave troll the size of a hut, grey as river stone.',
+    status:(s) => ({slew:'Burned to ash. Its tooth is a goblin relic.', sunlight:'A statue at the ravine mouth. Laundry included.', taught:'Killed by the goblins you trained.', paid:'Dead. The goblins paid for it.'})[s.flags.goblinDeed] || '' },
   { id:'infernus',name:'Infernus',          icon:'flame',  at:'1.4a', desc:'The elder wyrm who owned your mountain first.', status:() => 'Gone. The mountain is yours.' },
   { id:'snikkit', name:'Snikkit',           icon:'scroll', at:'2.1b', desc:'Goblin envoy. The only one in the warren who can count.',
     status:(s) => ({steward:'Steward of your hoard. Three colours of chalk.', herald:'Your herald. Prone to exaggeration.', scholar:'Bookish, curious, and usually right.', eaten:'Delicious. Deeply missed by the ledgers.'})[s.flags.snikkit] || '' },
@@ -1997,6 +2196,360 @@ const CAST = [
   { id:'emperor', name:'The Emperor',       icon:'laurel', at:'4.2a', desc:'Crowned ruler of the realm. Gout. Ceremony. Regret.', status:() => '' },
   { id:'vaneth',  name:'Dame Vaneth',       icon:'helm',   at:'5.1a', desc:'Captain of the Royal Guard. Rehearsed her speech in a mirror.', status:() => '' }
 ];
+
+/* ── Painted dragon (v2.1): your choices pick from 16 painted portraits ── */
+function dragonArt(look, size = 'full', opts = {}){
+  if(!look.hatched) return `<img class="dragon-img egg" src="art/egg.webp" alt="" draggable="false">`;
+  const horns = look.horns || 'none';
+  const sc = opts.fixedScale || [.8, .8, .87, .94, 1, 1, 1][look.stage] || 1;
+  const cls = ['dragon-img', look.texture === 'strange' ? 'glow' : '', look.health < 30 ? 'wounded' : ''].join(' ');
+  return `<img class="${cls}" style="--sc:${sc}" src="art/d-${look.color}-${horns}${size === 'sm' ? '-sm' : ''}.webp" alt="" draggable="false">`;
+}
+const HIDE_NAME = { armored:'Armoured scales', ridged:'Ridged plates', leathery:'Leathery hide', strange:'Glowing hide' };
+const TAIL_NAME = { club:'Club tail', whip:'Whip tail', venom:'Venom barb', fin:'Fin tail' };
+function medals(look, big){
+  const m = [];
+  if(look.texture) m.push(`<div class="medal ${big ? 'big' : ''}" title="${HIDE_NAME[look.texture]}"><img src="art/hide-${look.texture}.webp" alt="">${big ? `<span>${HIDE_NAME[look.texture]}</span>` : ''}</div>`);
+  if(look.tail) m.push(`<div class="medal ${big ? 'big' : ''}" title="${TAIL_NAME[look.tail]}"><img src="art/tail-${look.tail}.webp" alt="">${big ? `<span>${TAIL_NAME[look.tail]}</span>` : ''}</div>`);
+  return m.length ? `<div class="medals">${m.join('')}</div>` : '';
+}
+function heroArt(look){ return dragonArt(look, 'full') + medals(look, true); }
+function preloadArt(srcs){ srcs.forEach(s => { const i = new Image(); i.src = s; }); }
+/* ============ CUTSCENES ============
+   Short, skippable battle scenes. They play after you choose, before the
+   aftermath text, using your own painted dragon and the scene's backdrop. */
+
+const ENEMY_SVG = {
+  troll: `<svg viewBox="0 0 220 230" class="cs-svg sil"><defs><linearGradient id="trg" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a4234"/><stop offset=".5" stop-color="#191d16"/><stop offset="1" stop-color="#0b0d0a"/></linearGradient></defs>
+    <g stroke="#a9b893" stroke-opacity=".45" stroke-width="2.2" stroke-linejoin="round">
+    <path d="M160 226 L156 182 C 186 164 198 120 182 86 C 168 58 136 44 108 50 C 90 54 76 66 70 82 L56 84 C 44 86 40 98 46 104 L58 108 C 56 120 62 132 72 138 L66 176 C 62 196 52 210 44 226 L70 226 L84 188 L100 160 L118 164 L126 226Z" fill="url(#trg)"/>
+    <path d="M78 116 C 52 128 36 150 32 178 L48 182 C 52 162 64 146 84 138Z" fill="#141812"/>
+    <path d="M36 186 L14 54 L30 50 L52 182Z" fill="#1d1712"/><path d="M8 66 C 4 44 18 30 30 34 C 42 38 44 54 36 66 C 28 74 14 76 8 66Z" fill="#241c16"/>
+    <path d="M150 120 C 172 130 186 150 186 176 L170 178 C 168 160 160 146 144 138Z" fill="#141812"/></g>
+    <circle cx="70" cy="92" r="3.6" fill="#ffd04a" class="cs-glint"/><circle cx="84" cy="90" r="3.6" fill="#ffd04a" class="cs-glint"/>
+    <path d="M58 106 L64 112 L68 106 L72 112 L76 106" stroke="#cfd4c0" stroke-width="2" fill="none"/></svg>`,
+  knight: `<svg viewBox="0 0 200 220" class="cs-svg sil"><defs><linearGradient id="kng" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5a6372"/><stop offset=".45" stop-color="#1c2029"/><stop offset="1" stop-color="#0c0e13"/></linearGradient></defs>
+    <g stroke="#dfe7f3" stroke-opacity=".55" stroke-width="2" stroke-linejoin="round" fill="url(#kng)">
+    <path d="M82 216 L86 156 L76 110 C 74 90 86 80 100 80 C 116 80 126 90 124 110 L114 156 L118 216 L104 216 L100 168 L96 216Z"/>
+    <path d="M88 62 C 88 44 112 44 112 62 L112 82 L88 82Z"/>
+    <path d="M52 100 C 52 128 62 144 76 152 C 90 144 98 128 98 100Z"/></g>
+    <path d="M100 46 C 108 28 128 26 134 36 C 122 36 114 40 106 50" fill="#6b1416"/>
+    <path d="M92 66 H108" stroke="#ffcf6a" stroke-width="2" opacity=".8"/>
+    <path d="M75 108 V140 M64 120 H86" stroke="#c9a227" stroke-width="3.4" opacity=".85"/>
+    <path d="M126 106 L174 22" stroke="#f4f8ff" stroke-width="5" stroke-linecap="round" class="cs-glint" style="filter:drop-shadow(0 0 6px #cfe2ff)"/><path d="M118 114 L136 96" stroke="#c9a227" stroke-width="6" stroke-linecap="round"/></svg>`,
+  army: `<svg viewBox="0 0 400 200" class="cs-svg" preserveAspectRatio="xMidYMax meet">
+    ${[0,1,2].map(r => `<g transform="translate(${r*14} ${r*-18})" opacity="${1 - r*.25}">${Array.from({length:14}, (_, i) => `<g transform="translate(${60 + i*24} 170)"><path d="M-6 30 L-6 4 Q0 -6 6 4 L6 30Z" fill="#1a1418"/><circle cy="-4" r="6" fill="#2a2228"/><path d="M8 32 L8 -40" stroke="#5a4d52" stroke-width="2"/><path d="M8 -40 l-3 8 h6z" fill="#cfd4dc"/></g>`).join('')}</g>`).join('')}
+    <g transform="translate(330 120)"><path d="M-30 50 L30 50 L20 30 L-20 30Z" fill="#3a2a1e"/><path d="M0 30 L-36 -30" stroke="#4a3626" stroke-width="6"/><circle cx="-36" cy="-30" r="8" fill="#ff8a3d" class="cs-glint"/></g>
+    <g transform="translate(90 90)"><path d="M0 70 V0" stroke="#3a2a1e" stroke-width="3"/><path d="M0 0 h34 l-8 8 l8 8 h-34z" fill="#8a1f24"/></g>
+    <g transform="translate(250 80)"><path d="M0 80 V0" stroke="#3a2a1e" stroke-width="3"/><path d="M0 0 h34 l-8 8 l8 8 h-34z" fill="#2a4a8a"/></g></svg>`,
+  citadel: `<svg viewBox="0 0 300 260" class="cs-svg" preserveAspectRatio="xMidYMax meet">
+    <path d="M40 260 V150 L50 120 L60 150 V160 H100 V90 L112 40 L124 90 V160 H150 V70 L165 10 L180 70 V160 H206 V120 L216 96 L226 120 V260Z" fill="#07050a" stroke="#3a2350" stroke-width="2"/>
+    <circle cx="165" cy="40" r="4" fill="#b07cff" class="cs-glint"/><circle cx="112" cy="70" r="3" fill="#b07cff" class="cs-glint"/>
+    <g class="cs-wards" fill="none" stroke="#b07cff" stroke-width="2"><ellipse cx="135" cy="150" rx="120" ry="100" opacity=".5"/><ellipse cx="135" cy="150" rx="140" ry="118" opacity=".3"/><ellipse cx="135" cy="150" rx="100" ry="82" opacity=".6"/></g></svg>`,
+  guard: `<svg viewBox="0 0 400 200" class="cs-svg" preserveAspectRatio="xMidYMax meet">
+    ${Array.from({length:9}, (_, i) => `<g transform="translate(${70 + i*32} ${150 - (i%2)*6})"><path d="M-9 50 L-9 10 Q0 -2 9 10 L9 50Z" fill="#11141b" stroke="#c9d2e0" stroke-opacity=".45" stroke-width="1.5"/><path d="M-7 4 Q0 -12 7 4Z" fill="#1c212b" stroke="#c9d2e0" stroke-opacity=".45"/><path d="M-18 18 h22 M-18 14 v8" stroke="#6b5a3a" stroke-width="3"/></g>`).join('')}
+    <g transform="translate(200 120)"><path d="M-12 80 L-12 20 Q0 4 12 20 L12 80Z" fill="#1a1e27" stroke="#e8eef8" stroke-opacity=".6" stroke-width="2"/><path d="M-9 12 Q0 -8 9 12Z" fill="#1a1e27" stroke="#e8eef8" stroke-opacity=".6" stroke-width="2"/><path d="M0 -6 C 6 -16 16 -16 20 -10" stroke="#c9302c" stroke-width="4" fill="none"/>
+    <path d="M14 30 L40 -20" stroke="#f4f6fa" stroke-width="4" stroke-linecap="round" class="cs-glint"/></g></svg>`
+};
+
+/* Which battles have a cutscene, and what each choice looks like.
+   act names map to the routines in runAct() below. */
+const CUTSCENES = {
+  "1.1f": { enemy:'vexar', scene:'cave', lose:true, acts:[
+    ['clash', ["Vexar lunges.", "Pride meets a bigger brother."]],
+    ['feint', ["You dart left. He was waiting there.", "Close. Not close enough."]],
+    ['retreat', ["You lower your head.", "Live now. Grow. Come back."]] ] },
+  "1.3c": { enemy:'troll', scene:'warren', acts:[
+    ['clash', ["The Grinder fills the tunnel.", "Fire. Again. And again."]],
+    ['sunlight', ["It follows the smell of goat into the grey dawn.", "Then the sun clears the ridge."]],
+    ['horde', ["Fire pots. Pit stakes. Forty goblins.", "The warband is born."]],
+    ['clash', ["Paid in silver.", "Delivered in fire."]] ] },
+  "1.4": { enemy:'infernus', scene:'peaks', acts:[
+    ['fire', ["Infernus rises to meet you.", "Fire answers fire."]],
+    ['rockslide', ["You lead him under the overhang.", "The mountain does the rest."]],
+    null,
+    ['soar', ["Higher. Then higher still.", "He cannot follow where you go."]] ] },
+  "3.2": { enemy:'knight', scene:'cave', acts:[
+    ['duel', ["Sir Galahad raises his blade.", "Steel against scale."]],
+    ['rockslide', ["You strike the ceiling, not the knight.", "Stone falls like judgement."]],
+    null ] },
+  "3.3c": { enemy:'army', scene:'warren', acts:[
+    ['fire', ["You land between the torches and the warren.", "The vanguard breaks."]],
+    null,
+    ['flank', ["While the warren burns, you strike.", "Their flank never sees you coming."]],
+    ['horde', ["The warband closes the ravine like a fist.", "You barely need to help."]] ] },
+  "3.4": { enemy:'army', scene:'battle', acts:[
+    ['strafe', ["Above the battalion, out of reach of their spears.", "The supply lines burn."]],
+    ['horde', ["The mountain's tribes answer your call.", "The battalion breaks against them."]],
+    ['magic', ["A whisper in every soldier's ear.", "They turn on each other."]] ] },
+  "3.6": { enemy:'vexar', scene:'peaks', result:true, acts:[
+    ['clash', ["No more posturing.", "Two siblings, one sky."]],
+    ['feint', ["You remember the hitch in his wing.", "Everything you have learned, at once."]],
+    ['power', ["You simply rise to your full height.", "And let him see what you have become."]] ] },
+  "4.1": { enemy:'citadel', scene:'citadel', acts:[
+    ['fire', ["Two hundred years of wards.", "Raw fire and fury against all of them."]],
+    ['shadow', ["Through the old passages, unseen.", "You strike from within."]],
+    ['magic', ["Controlled. Precise. Relentless.", "The wards begin to crack."]],
+    ['word', ["You draw breath, and say the word.", "The wards come apart like wet paper."]],
+    ['batter', ["Nobody thought to ward the gate", "against a very large tail."]],
+    ['phase', ["The wards taste you, and hesitate.", "You walk straight through."]] ] },
+  "5.1": { enemy:'guard', scene:'palace', acts:[
+    ['fire', ["The Royal Guard holds the gate.", "For a moment."]],
+    ['shadow', ["Beneath the palace, in the smugglers' dark.", "You surface behind them."]],
+    ['duel', ["Dame Vaneth steps forward alone.", "She is better than you expected."]],
+    ['dive', ["A season of storm-flying.", "One dive."]] ] }
+};
+
+const CS = { skip:false, running:false };
+const csWait = (ms) => new Promise(r => { const t0 = performance.now(); const tick = () => { if(CS.skip || performance.now() - t0 >= ms) r(); else requestAnimationFrame(tick); }; tick(); });
+
+function enemyHTML(kind){
+  if(kind === 'vexar' || kind === 'infernus'){
+    const col = kind === 'infernus' ? 'gold-bronze' : (state.flags.skinColor === 'obsidian' ? 'crimson' : 'obsidian');
+    const horns = kind === 'infernus' ? 'crown' : 'spike';
+    return `<img src="art/d-${col}-${horns}.webp" class="cs-enemy-img ${kind}" alt="">`;
+  }
+  return ENEMY_SVG[kind] || '';
+}
+
+function shouldPlayCutscene(nodeId, idx){
+  const c = CUTSCENES[nodeId];
+  return !!(c && c.acts[idx] && SETTINGS.cutscenes !== false && !SETTINGS.reduce);
+}
+
+async function playCutscene(nodeId, idx){
+  const def = CUTSCENES[nodeId], [act, lines] = def.acts[idx];
+  CS.skip = false; CS.running = true;
+  const look = dragonLook(state);
+  const el = document.createElement('div'); el.className = 'cs';
+  el.innerHTML = `<div class="cs-stage" id="cs-stage">
+      <div class="cs-bg">${sceneSVG(def.scene)}</div>
+      <div class="cs-sun"></div>
+      <div class="cs-enemy ${def.enemy}" id="cs-enemy">${enemyHTML(def.enemy)}</div>
+      <div class="cs-hero" id="cs-hero">${dragonArt(look, 'full')}</div>
+      <canvas class="cs-fx" id="cs-fx"></canvas>
+      <div class="cs-flash" id="cs-flash"></div>
+      <div class="cs-cap" id="cs-cap"></div>
+    </div>
+    <button class="cs-skip" id="cs-skip">Skip ${icon('arrow','sm')}</button>`;
+  document.body.appendChild(el);
+  el.addEventListener('click', () => { CS.skip = true; });
+  const stage = $('cs-stage'), hero = $('cs-hero'), enemy = $('cs-enemy'), flash = $('cs-flash'), cap = $('cs-cap');
+  const fx = new CSFX($('cs-fx'));
+  const anim = (node, frames, ms, easing = 'cubic-bezier(.3,.8,.3,1)') => CS.skip ? null : node.animate(frames, {duration: ms, easing, fill: 'forwards'});
+  const say = (txt) => { cap.innerHTML = `<span>${esc(txt)}</span>`; };
+  const boom = (strength = 1) => {
+    if(CS.skip) return;
+    flash.animate([{opacity: .85 * strength}, {opacity: 0}], {duration: 380, easing: 'ease-out'});
+    stage.animate([{transform:'translate(0,0)'}, {transform:`translate(${-10*strength}px,${6*strength}px)`}, {transform:`translate(${9*strength}px,${-5*strength}px)`}, {transform:`translate(${-4*strength}px,${2*strength}px)`}, {transform:'translate(0,0)'}], {duration: 420});
+    try{ navigator.vibrate && navigator.vibrate(40 * strength); }catch(e){}
+  };
+  // positions (fractions of the stage) for effects; measured once everyone is in place
+  const P = { mouth:[.55,.52], foe:[.78,.6] };
+  const measure = () => {
+    const sr = stage.getBoundingClientRect(), img = hero.querySelector('img');
+    { const r = hero.getBoundingClientRect(); P.mouth = [(r.left + r.width*.95 - sr.left)/sr.width, (r.top + r.height*.6 - sr.top)/sr.height]; }
+    const er = enemy.getBoundingClientRect(); P.foe = [(er.left + er.width*.5 - sr.left)/sr.width, (er.top + er.height*.55 - sr.top)/sr.height];
+  };
+
+  // ── entrance ──
+  anim(stage.querySelector('.cs-bg'), [{transform:'scale(1.15)'}, {transform:'scale(1.02)'}], 6000, 'linear');
+  anim(hero, [{transform:'translateX(-60%)', opacity:0}, {transform:'translateX(0)', opacity:1}], 700);
+  anim(enemy, [{transform:'translateX(40%)', opacity:0}, {transform:'translateX(0)', opacity:1}], 800);
+  say(lines[0]);
+  await csWait(1000);
+  measure();
+
+  // ── the act itself ──
+  switch(act){
+    case 'fire':
+      anim(hero, [{transform:'translateX(0) scale(1)'}, {transform:'translateX(4%) scale(1.04)'}], 300);
+      fx.fire(P.mouth, P.foe, 1300); await csWait(500); boom(.6);
+      anim(enemy, [{filter:'brightness(1)'}, {filter:'brightness(1.8) sepia(.8) saturate(3) hue-rotate(-20deg)'}, {filter:'brightness(.7)'}], 1000);
+      await csWait(500); say(lines[1]); await csWait(500);
+      anim(enemy, [{transform:'translateX(0)', opacity:1}, {transform:'translateX(14%)', opacity:.35}], 700); break;
+    case 'clash':
+      anim(hero, [{transform:'translateX(0)'}, {transform:'translateX(22%) scale(1.05)'}], 320, 'cubic-bezier(.6,0,.9,.4)');
+      anim(enemy, [{transform:'translateX(0)'}, {transform:'translateX(-10%)'}], 320, 'cubic-bezier(.6,0,.9,.4)');
+      await csWait(320); boom(1); fx.sparks([.62,.52], 60); await csWait(250);
+      fx.fire(P.mouth.map((v, i) => i ? v : v + .15), P.foe, 700);
+      say(lines[1]); await csWait(500);
+      if(def.lose){ anim(hero, [{transform:'translateX(22%)'}, {transform:'translateX(-18%) rotate(-6deg)'}], 600); boom(.7); }
+      else { anim(hero, [{transform:'translateX(22%)'}, {transform:'translateX(6%)'}], 500); anim(enemy, [{transform:'translateX(-10%)', opacity:1}, {transform:'translateX(16%)', opacity:.3}], 700); }
+      break;
+    case 'feint': case 'shadow':
+      fx.smoke([.3,.62], 40);
+      anim(hero, [{opacity:1, filter:'brightness(1)'}, {opacity:0, filter:'brightness(.1)'}], 500); await csWait(700);
+      say(lines[1]);
+      hero.style.left = '30%';
+      anim(hero, [{opacity:0, transform:'translateX(10%)'}, {opacity:1, transform:'translateX(0)'}], 250); await csWait(250);
+      fx.slash([.62,.3], [.9,.78]); boom(.8); fx.sparks([.76,.52], 40);
+      if(def.lose){ await csWait(300); anim(hero, [{transform:'translateX(0)'}, {transform:'translateX(-40%) rotate(-8deg)', opacity:.6}], 600); }
+      else anim(enemy, [{transform:'translateX(0) rotate(0)'}, {transform:'translateX(10%) rotate(6deg)', opacity:.4}], 700);
+      break;
+    case 'retreat':
+      anim(enemy, [{transform:'scale(1)'}, {transform:'scale(1.15)'}], 500); fx.fire([.72,.42], [.4,.55], 700, true); boom(.5);
+      await csWait(600); say(lines[1]);
+      anim(hero, [{transform:'translateX(0)', opacity:1}, {transform:'translateX(-70%)', opacity:0}], 900, 'ease-in'); break;
+    case 'rockslide':
+      fx.rocks([.6,.95], 1400); await csWait(500); boom(1); await csWait(400); boom(.7); say(lines[1]);
+      anim(enemy, [{filter:'brightness(1)', transform:'translateY(0)'}, {filter:'brightness(.35)', transform:'translateY(10%)', opacity:.5}], 900);
+      fx.smoke([.76,.8], 50); break;
+    case 'sunlight':
+      anim(stage.querySelector('.cs-sun'), [{opacity:0}, {opacity:1}], 1400, 'ease-in');
+      anim(enemy, [{transform:'translateX(0)'}, {transform:'translateX(-12%)'}], 900);
+      await csWait(1100); say(lines[1]);
+      anim(enemy, [{filter:'none'}, {filter:'grayscale(1) brightness(.9) contrast(1.3)'}], 700); boom(.4);
+      fx.sparks([.7,.5], 30, '#fff3c2'); break;
+    case 'horde':
+      spawnGoblins(stage, 16); await csWait(900); fx.pots([.2,.9], P.foe, 6); await csWait(600); boom(.7); say(lines[1]);
+      anim(enemy, [{transform:'translateX(0)', opacity:1}, {transform:'translateX(12%) rotate(5deg)', opacity:.35}], 900); break;
+    case 'magic':
+      ring(stage, P.foe, '#b07cff'); await csWait(500); fx.beam(P.mouth, P.foe, '#c69cff', 1100); await csWait(600);
+      anim(enemy, [{filter:'none'}, {filter:'hue-rotate(220deg) saturate(2) brightness(1.2)'}], 600); say(lines[1]);
+      fx.sparks(P.foe, 50, '#d9b8ff'); boom(.5); break;
+    case 'strafe':
+      anim(hero, [{transform:'translate(-40%,-30%) scale(.55)', opacity:1}, {transform:'translate(120%,-30%) scale(.55)', opacity:1}], 1800, 'ease-in-out');
+      fx.rain([.25,.95], [.35,.85], 1500); await csWait(700); boom(.6); await csWait(500); say(lines[1]); boom(.6); break;
+    case 'soar':
+      anim(hero, [{transform:'translate(0,0) scale(1)'}, {transform:'translate(10%,-48%) scale(.45)'}], 1400, 'ease-out');
+      anim(enemy, [{transform:'translate(0,0)'}, {transform:'translate(-6%,-18%)'}, {transform:'translate(4%,12%)', opacity:.45}], 2000, 'ease-in-out');
+      await csWait(1100); say(lines[1]); break;
+    case 'duel':
+      anim(hero, [{transform:'translateX(0)'}, {transform:'translateX(14%)'}], 300); await csWait(300); boom(.8); fx.sparks([.6,.5], 50, '#e8f0ff');
+      await csWait(400); flash.style.background = '#c43a3a'; boom(.6); await csWait(300); flash.style.background = '#fff';
+      say(lines[1]); fx.fire(P.mouth.map((v, i) => i ? v : v + .1), P.foe, 800);
+      anim(enemy, [{transform:'translateX(0)', opacity:1}, {transform:'translateX(14%) rotate(8deg)', opacity:.4}], 800); break;
+    case 'power':
+      anim(hero, [{transform:'scale(1)', filter:'drop-shadow(0 0 0 #ffcf6a)'}, {transform:'scale(1.12)', filter:'drop-shadow(0 0 26px #ffcf6a)'}], 1100);
+      fx.sparks([.35,.55], 70, '#ffe08a'); await csWait(900); say(lines[1]); boom(.5); break;
+    case 'word':
+      await csWait(300); boom(1.2);
+      stage.querySelectorAll('.cs-wards ellipse').forEach((e, i) => e.animate([{transform:'scale(1)', opacity:.6}, {transform:`scale(${1.3 + i*.2})`, opacity:0}], {duration:900, delay:i*120, fill:'forwards'}));
+      fx.sparks([.72,.55], 80, '#d9b8ff'); say(lines[1]); await csWait(600);
+      anim(enemy, [{filter:'none'}, {filter:'brightness(.5)'}], 600); break;
+    case 'batter':
+      for(let i = 0; i < 3 && !CS.skip; i++){
+        anim(hero, [{transform:'translateX(0)'}, {transform:'translateX(16%)'}, {transform:'translateX(0)'}], 380, 'ease-in-out');
+        await csWait(200); boom(.9); fx.rocks([.68,.82], 300, true); await csWait(260);
+      }
+      say(lines[1]); anim(enemy, [{transform:'translateY(0)'}, {transform:'translateY(6%)', filter:'brightness(.6)'}], 500); break;
+    case 'phase':
+      anim(hero, [{filter:'none', opacity:1}, {filter:'drop-shadow(0 0 16px #7fe8ff) brightness(1.3)', opacity:.7}], 600);
+      await csWait(500); anim(hero, [{transform:'translateX(0)'}, {transform:'translateX(38%)'}], 1300, 'ease-in-out');
+      stage.querySelectorAll('.cs-wards ellipse').forEach(e => e.animate([{opacity:.6}, {opacity:.1}, {opacity:.6}, {opacity:.15}], {duration:1300}));
+      await csWait(800); say(lines[1]); break;
+    case 'dive':
+      hero.style.opacity = 0; await csWait(150);
+      anim(hero, [{transform:'translate(-30%,-90%) rotate(30deg) scale(.7)', opacity:1}, {transform:'translate(35%,0) rotate(8deg) scale(1)', opacity:1}], 650, 'cubic-bezier(.7,0,1,.6)');
+      await csWait(650); boom(1.2); fx.sparks([.7,.7], 70); say(lines[1]);
+      anim(enemy, [{transform:'translateY(0)', opacity:1}, {transform:'translateY(10%)', opacity:.3}], 700); break;
+    case 'flank':
+      anim(hero, [{transform:'translate(-50%,8%) scale(.8)'}, {transform:'translate(70%,8%) scale(.8)'}], 1500, 'ease-in-out');
+      fx.fire([.2,.8], [.95,.86], 1300); await csWait(800); boom(.7); say(lines[1]); break;
+  }
+
+  // ── the rematch with Vexar ends the way the dice fell ──
+  if(def.result && !CS.skip){
+    await csWait(400);
+    const r = state.flags.vexarOutcome;
+    if(r === 'victory'){ say('Vexar yields.'); anim(enemy, [{transform:'translateX(0)', opacity:1}, {transform:'translateX(10%) translateY(8%) rotate(4deg)', opacity:.5}], 800); }
+    else if(r === 'defeat'){ say('Not yet. Not quite yet.'); anim(hero, [{transform:'translateX(0)'}, {transform:'translateX(-24%) rotate(-6deg)', opacity:.6}], 800); boom(.6); }
+    else { say('Neither of you gives an inch.'); anim(hero, [{transform:'translateX(0)'}, {transform:'translateX(-8%)'}], 700); anim(enemy, [{transform:'translateX(0)'}, {transform:'translateX(8%)'}], 700); }
+  }
+
+  await csWait(1400);
+  fx.stop();
+  el.classList.add('cs-out');
+  await new Promise(r => setTimeout(r, CS.skip ? 120 : 420));
+  el.remove(); CS.running = false;
+}
+
+function ring(stage, at, color){
+  const r = document.createElement('div'); r.className = 'cs-ring';
+  r.style.left = (at[0]*100) + '%'; r.style.top = (at[1]*100) + '%'; r.style.borderColor = color;
+  r.innerHTML = `<i style="border-color:${color}"></i>`;
+  stage.appendChild(r);
+}
+function spawnGoblins(stage, n){
+  for(let i = 0; i < n; i++){
+    const g = document.createElement('div'); g.className = 'cs-gob';
+    g.innerHTML = `<svg viewBox="0 0 20 30"><path d="M6 30 L7 18 C3 16 2 12 4 9 C2 7 0 5 1 4 C3 5 5 6 6 7 C8 5 12 5 14 7 C15 6 17 5 19 4 C20 5 18 7 16 9 C18 12 17 16 13 18 L14 30 L11 30 L10 22 L9 30Z" fill="#2c3a22"/><path d="M15 18 L22 6" stroke="#8a7a5a" stroke-width="1.6"/><circle cx="8" cy="11" r="1" fill="#ffcf4a"/><circle cx="12" cy="11" r="1" fill="#ffcf4a"/></svg>`;
+    const y = 78 + Math.random()*14, d = 900 + Math.random()*700;
+    g.style.top = y + '%'; g.style.left = '-6%'; g.style.width = (22 + Math.random()*10) + 'px';
+    stage.appendChild(g);
+    g.animate([{left:'-6%'}, {left:(56 + Math.random()*22) + '%'}], {duration:d, delay:i*70, easing:'ease-out', fill:'forwards'});
+    g.animate([{transform:'translateY(0)'}, {transform:'translateY(-4px)'}, {transform:'translateY(0)'}], {duration:220, iterations:Infinity});
+  }
+}
+
+/* Particle effects for cutscenes */
+class CSFX {
+  constructor(cv){
+    this.cv = cv; this.ps = []; this.alive = true; this.lines = [];
+    const dpr = Math.min(2, window.devicePixelRatio || 1); this.dpr = dpr;
+    cv.width = cv.clientWidth * dpr; cv.height = cv.clientHeight * dpr;
+    this.ctx = cv.getContext('2d');
+    const loop = () => { if(!this.alive) return; this.step(); requestAnimationFrame(loop); };
+    loop();
+  }
+  W(){ return this.cv.width; } H(){ return this.cv.height; }
+  add(p){ this.ps.push(Object.assign({life:1, decay:.02, r:3, g:0, glow:0}, p)); }
+  fire(from, to, ms, reverse){
+    const t0 = performance.now(), W = this.W(), H = this.H();
+    const emit = () => {
+      if(!this.alive || performance.now() - t0 > ms) return;
+      for(let i = 0; i < 9; i++){
+        const sx = from[0]*W, sy = from[1]*H, tx = to[0]*W, ty = to[1]*H;
+        const ang = Math.atan2(ty - sy, tx - sx) + (Math.random() - .5) * .35, sp = (9 + Math.random()*7) * this.dpr;
+        this.add({x:sx, y:sy, vx:Math.cos(ang)*sp, vy:Math.sin(ang)*sp, r:(4 + Math.random()*8)*this.dpr, decay:.022 + Math.random()*.02, grow:.25*this.dpr,
+          col: reverse ? ['#b48cff','#7a4dff','#e0c8ff'][i%3] : ['#fff1b0','#ffb347','#ff6a1a','#ff3d00'][i%4], glow:18});
+      }
+      requestAnimationFrame(emit);
+    };
+    emit();
+  }
+  beam(from, to, col, ms){ this.lines.push({from, to, col, t0:performance.now(), ms}); for(let i = 0; i < 30; i++) setTimeout(() => this.sparks(to, 3, col), i*30); }
+  sparks(at, n, col){ const x = at[0]*this.W(), y = at[1]*this.H();
+    for(let i = 0; i < n; i++){ const a = Math.random()*6.28, sp = (3 + Math.random()*9)*this.dpr;
+      this.add({x, y, vx:Math.cos(a)*sp, vy:Math.sin(a)*sp - 2*this.dpr, g:.25*this.dpr, r:(1 + Math.random()*2.2)*this.dpr, decay:.025, col: col || ['#fff7d6','#ffd166','#ff9a3d'][i%3], glow:10}); } }
+  smoke(at, n){ const x = at[0]*this.W(), y = at[1]*this.H();
+    for(let i = 0; i < n; i++) this.add({x:x + (Math.random()-.5)*80*this.dpr, y:y + (Math.random()-.5)*40*this.dpr, vx:(Math.random()-.5)*1.2*this.dpr, vy:-Math.random()*1.4*this.dpr, r:(14 + Math.random()*26)*this.dpr, grow:.4*this.dpr, decay:.012, col:'rgba(40,34,40,.55)'}); }
+  rocks(xr, ms, burst){ const t0 = performance.now(), W = this.W(), H = this.H();
+    const emit = () => { if(!this.alive || performance.now() - t0 > ms) return;
+      for(let i = 0; i < (burst ? 6 : 3); i++) this.add({x:(xr[0] + Math.random()*(xr[1]-xr[0]))*W, y: burst ? H*.7 : -20, vx:(Math.random()-.5)*(burst ? 10 : 2)*this.dpr, vy:(burst ? -6 - Math.random()*6 : 4 + Math.random()*6)*this.dpr, g:.5*this.dpr, r:(4 + Math.random()*9)*this.dpr, decay:.012, col:['#5a4a40','#3a302a','#7a6656'][i%3], rock:true});
+      requestAnimationFrame(emit); };
+    emit(); }
+  rain(xr, yr, ms){ const t0 = performance.now(), W = this.W(), H = this.H();
+    const emit = () => { if(!this.alive || performance.now() - t0 > ms) return;
+      for(let i = 0; i < 5; i++) this.add({x:(xr[0] + Math.random()*(xr[1]-xr[0]))*W, y:H*.1, vx:(Math.random()-.3)*2*this.dpr, vy:(9 + Math.random()*6)*this.dpr, r:(3 + Math.random()*6)*this.dpr, decay:.018, col:['#ffb347','#ff6a1a','#fff1b0'][i%3], glow:16, floor:(yr[0] + Math.random()*(yr[1]-yr[0]))*H});
+      requestAnimationFrame(emit); };
+    emit(); }
+  pots(from, to, n){ for(let i = 0; i < n; i++) setTimeout(() => { if(!this.alive) return; const W = this.W(), H = this.H();
+      const sx = (from[0] + Math.random()*.25)*W, sy = from[1]*H, tx = (to[0] + (Math.random()-.5)*.15)*W, ty = to[1]*H, T = 40;
+      this.add({x:sx, y:sy, vx:(tx - sx)/T, vy:(ty - sy)/T - .5*.35*this.dpr*T, g:.35*this.dpr, r:5*this.dpr, decay:1/T, col:'#ff9a3d', glow:14, onEnd:[to[0], to[1]]}); }, i*120); }
+  slash(a, b){ this.lines.push({from:a, to:b, col:'#ffffff', t0:performance.now(), ms:300, w:6}); }
+  step(){
+    const c = this.ctx, W = this.W(), H = this.H(); c.clearRect(0, 0, W, H);
+    c.globalCompositeOperation = 'lighter';
+    const now = performance.now();
+    this.lines = this.lines.filter(l => now - l.t0 < l.ms);
+    this.lines.forEach(l => { const k = 1 - (now - l.t0)/l.ms; c.strokeStyle = l.col; c.globalAlpha = k; c.lineWidth = (l.w || 5 + Math.random()*4)*this.dpr; c.shadowColor = l.col; c.shadowBlur = 20*this.dpr;
+      c.beginPath(); c.moveTo(l.from[0]*W, l.from[1]*H); c.lineTo(l.to[0]*W, l.to[1]*H); c.stroke(); });
+    const next = [];
+    for(const p of this.ps){
+      p.x += p.vx; p.y += p.vy; p.vy += p.g; p.r += (p.grow || 0); p.life -= p.decay;
+      if(p.floor && p.y > p.floor){ this.sparks([p.x/W, p.y/H], 4); p.life = 0; }
+      if(p.life <= 0){ if(p.onEnd){ this.sparks(p.onEnd, 14); this.fire([p.onEnd[0], p.onEnd[1] + .05], [p.onEnd[0], p.onEnd[1] - .1], 120); } continue; }
+      c.globalCompositeOperation = (p.rock || p.col.startsWith('rgba')) ? 'source-over' : 'lighter';
+      c.globalAlpha = Math.max(0, Math.min(1, p.life)); c.fillStyle = p.col; c.shadowColor = p.col; c.shadowBlur = p.glow ? p.glow*this.dpr : 0;
+      c.beginPath(); c.arc(p.x, p.y, Math.max(.5, p.r), 0, 6.283); c.fill();
+      next.push(p);
+    }
+    this.ps = next; c.globalAlpha = 1; c.shadowBlur = 0;
+  }
+  stop(){ this.alive = false; }
+}
 /* ============ UI LAYER ============ */
 
 const $ = (id) => document.getElementById(id);
@@ -2005,7 +2558,7 @@ const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V'];
 const CREATION = new Set(['1.1','1.1a','1.1b','1.1c','1.1d']);
 
 /* ── settings ── */
-const SETTINGS = (() => { try{ return Object.assign({textSize:'m', reduce:false, hints:false, ledger:'open'}, JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}')); }catch(e){ return {textSize:'m', reduce:false, hints:false, ledger:'open'}; } })();
+const SETTINGS = (() => { try{ return Object.assign({textSize:'m', reduce:false, hints:false, ledger:'open', cutscenes:true}, JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}')); }catch(e){ return {textSize:'m', reduce:false, hints:false, ledger:'open', cutscenes:true}; } })();
 function saveSettings(){ try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(SETTINGS)); }catch(e){} applySettings(); }
 function applySettings(){
   document.documentElement.style.setProperty('--fs', {s:'16px', m:'18px', l:'20.5px'}[SETTINGS.textSize] || '18px');
@@ -2099,7 +2652,7 @@ function ledgerHTML(){
   const s = state, col = SETTINGS.ledger === 'collapsed';
   const hp = s.health, hpCol = hp > 60 ? 'var(--ok)' : hp > 30 ? 'var(--gold-hi)' : 'var(--danger)';
   return `<div class="ledger ${col?'collapsed':''}" id="ledger">
-    <div><div class="portrait" onclick="toggleLedger()" title="Toggle ledger">${dragonSVG(dragonLook(s), {still: col})}</div>
+    <div><div class="portrait" onclick="toggleLedger()" title="Toggle ledger">${dragonArt(dragonLook(s), 'sm')}${col ? '' : medals(dragonLook(s))}</div>
       <div class="hoard">${hoardSVG(s.wealth)}</div><div class="hoard-n">${s.wealth} gold</div></div>
     <div class="bars">
       ${axisBar(s.axis1, 'flame', 'Brutality', 'var(--c-brutality)', 'feather', 'Finesse', 'var(--c-finesse)')}
@@ -2151,13 +2704,19 @@ const UI = { screen:null, preview:null, lastPointer:'mouse' };
 const TOUCH = () => UI.lastPointer === 'touch' || (window.matchMedia && matchMedia('(hover: none)').matches);
 document.addEventListener('pointerdown', (e) => { UI.lastPointer = e.pointerType || 'mouse'; }, true);
 
-function choose(choice){
-  if(isLocked(choice)) return;
+function choose(choice, idx){
+  if(isLocked(choice) || CS.running) return;
+  const nodeId = state.node;
   state.undo = JSON.stringify(Object.assign({}, state, {undo:null}));
   applyChoiceCore(state, choice);
   saveGame();
-  announce(checkAchievements(state));
   UI.preview = null; UI.previewIdx = null;
+  const fresh = checkAchievements(state);
+  if(shouldPlayCutscene(nodeId, idx)){
+    playCutscene(nodeId, idx).then(() => { render(); announce(fresh); });
+    return;
+  }
+  announce(fresh);
   render();
 }
 function continueStory(){
@@ -2228,15 +2787,15 @@ function renderTitle(){
   const where = s.node.startsWith('__ending_') ? 'Saga complete' : n ? `${n.chapterShort} · ${esc(resolveTitle(n))}` : '';
   const found = ENDING_ORDER.filter(k => META.endings[k]).length;
   return `<div class="title-hero"><h1>Dragon Saga</h1><div class="sub">The Hoard Eternal</div></div>
-    <div class="banner">${sceneSVG('cave')}<canvas data-fx="embers"></canvas><div class="hero-dragon" style="right:50%;transform:translateX(50%);width:70%">${dragonSVG(dragonLook(s))}</div></div>
-    ${s.dragonName ? `<div class="continue-card"><div class="p">${dragonSVG(dragonLook(s), {still:true})}</div><div><b>${esc(s.dragonName)}</b><small>${where}</small><small>${s.wealth} gold · ${s.infamy} infamy · ${s.health} health</small></div></div>
+    <div class="banner">${sceneSVG('cave')}<canvas data-fx="embers"></canvas><div class="hero-dragon" style="right:50%;transform:translateX(50%);width:78%">${dragonArt(dragonLook(s), 'full', {fixedScale:1})}</div></div>
+    ${s.dragonName ? `<div class="continue-card"><div class="p">${dragonArt(dragonLook(s), 'sm', {fixedScale:1})}</div><div><b>${esc(s.dragonName)}</b><small>${where}</small><small>${s.wealth} gold · ${s.infamy} infamy · ${s.health} health</small></div></div>
       <button class="btn" id="t-cont">${icon('play')}Continue the saga</button>` : ''}
     <div class="btn-row"><button class="btn ${s.dragonName ? 'ghost' : ''}" id="t-new">${icon('egg')}New hatching</button></div>
     <div class="btn-row"><button class="btn ghost" id="t-end">${icon('trophy')}Endings ${found}/${ENDING_ORDER.length}</button></div>`;
 }
 
 function renderNaming(){
-  return banner('cave', 'Before it begins', 'What Shall We Call You?', {creation:true, dragon: dragonSVG(dragonLook(state))}) +
+  return banner('cave', 'Before it begins', 'What Shall We Call You?', {creation:true, dragon: dragonArt(dragonLook(state))}) +
     paras(["Before the shell cracks, before the first breath of smoke or shadow or gold, the world wants a name to attach to the legend that is about to begin. Choose your own, or let the mountain choose one for you."]) +
     `<input type="text" id="name-field" class="name-input" placeholder="Your dragon's name…" maxlength="32" autocomplete="off">
      <div class="divider">or let the mountain choose</div>
@@ -2250,7 +2809,7 @@ function renderStory(){
   const creation = CREATION.has(state.node);
   const sceneKey = SCENE_OF[state.node] || 'cave';
   const look = dragonLook(state, UI.preview);
-  const head = banner(sceneKey, `${node.chapterShort} · ${node.part}`, esc(resolveTitle(node)), creation ? {creation:true, dragon: dragonSVG(look, {smoke: state.axis1 < -10})} : {});
+  const head = banner(sceneKey, `${node.chapterShort} · ${node.part}`, esc(resolveTitle(node)), creation ? {creation:true, dragon: heroArt(look)} : {});
   const list = choices.map((c, i) => {
     const locked = isLocked(c);
     const special = !!c.requires && !locked;
@@ -2271,7 +2830,7 @@ function renderOutcome(){
   const sceneKey = SCENE_OF[state.node] || 'cave';
   const impacts = state.pendingImpacts || [];
   setTimeout(() => outcomeEffects(impacts), 250);
-  return banner(sceneKey, prev ? `${prev.chapterShort} · Aftermath` : 'Aftermath', esc(prev ? resolveTitle(prev) : ''), CREATION.has(state.node) ? {creation:true, dragon: dragonSVG(dragonLook(state))} : {}) +
+  return banner(sceneKey, prev ? `${prev.chapterShort} · Aftermath` : 'Aftermath', esc(prev ? resolveTitle(prev) : ''), CREATION.has(state.node) ? {creation:true, dragon: heroArt(dragonLook(state))} : {}) +
     ledgerHTML() +
     `<div class="chips">${impacts.map(chipHTML).join('')}</div>` + paras(state.pendingOutcome) +
     `<button class="btn" id="cont-btn">${icon('arrow')}Continue</button>
@@ -2332,7 +2891,7 @@ function renderEnding(){
   const found = ENDING_ORDER.filter(k => META.endings[k]).length;
   const early = key === 'fallenEarly';
   const body = early ? ending.text : ending.text.concat(endingBonusParagraphs());
-  return banner(ENDING_SCENE[key] || 'night', 'Epilogue', esc(ending.title), {dragon: dragonSVG(dragonLook(state), {fixedScale:1})}) +
+  return banner(ENDING_SCENE[key] || 'night', 'Epilogue', esc(ending.title), {dragon: dragonArt(dragonLook(state), 'full', {fixedScale:1})}) +
     `<div class="end-card"><div class="name">${esc(state.dragonName || '')}</div><div class="badge">${icon('crown','sm')}${esc(ending.badge)}</div>
       ${state.endingFirst ? '<div class="progress-line" style="color:var(--gold-hi)">A new ending discovered</div>' : ''}</div>` +
     paras(body) +
@@ -2368,17 +2927,18 @@ function bind(){
     return;
   }
   const node = STORY.nodes[state.node], choices = resolveChoices(node), creation = CREATION.has(state.node);
+  if(creation) preloadArt(choices.map(c => { const fl = typeof c.setFlags === 'function' ? c.setFlags(state) : (c.setFlags || {}); const l = dragonLook(state, fl); return l.hatched ? `art/d-${l.color}-${l.horns || 'none'}.webp` : 'art/egg.webp'; }));
   document.querySelectorAll('.choice').forEach(btn => {
     const i = +btn.dataset.idx, c = choices[i];
     if(creation && !isLocked(c)){
-      const pv = () => { const fl = typeof c.setFlags === 'function' ? c.setFlags(state) : (c.setFlags || {}); UI.preview = fl; UI.previewIdx = i; const svg = dragonSVG(dragonLook(state, fl)); const hd = $('hero-dragon'); if(hd) hd.innerHTML = svg; previewBubble(hd, svg); document.querySelectorAll('.choice').forEach(b => b.classList.toggle('preview', b === btn)); };
+      const pv = () => { const fl = typeof c.setFlags === 'function' ? c.setFlags(state) : (c.setFlags || {}); UI.preview = fl; UI.previewIdx = i; const svg = heroArt(dragonLook(state, fl)); const hd = $('hero-dragon'); if(hd) hd.innerHTML = svg; previewBubble(hd, svg); document.querySelectorAll('.choice').forEach(b => b.classList.toggle('preview', b === btn)); };
       btn.onmouseenter = () => { if(!TOUCH()) pv(); };
       btn.onfocus = () => { if(!TOUCH()) pv(); };
       btn.onclick = () => {
         if(TOUCH() && UI.previewIdx !== i){ pv(); document.querySelectorAll('.tap-again').forEach(x => x.remove()); btn.insertAdjacentHTML('beforeend', '<span class="tap-again">Tap again to choose</span>'); return; }
-        UI.previewIdx = null; choose(c);
+        UI.previewIdx = null; choose(c, i);
       };
-    } else btn.onclick = () => { if(isLocked(c)){ btn.classList.add('shake'); setTimeout(() => btn.classList.remove('shake'), 450); return; } choose(c); };
+    } else btn.onclick = () => { if(isLocked(c)){ btn.classList.add('shake'); setTimeout(() => btn.classList.remove('shake'), 450); return; } choose(c, i); };
   });
 }
 
@@ -2396,9 +2956,17 @@ function openJournal(tab = 'cast'){
   const tabs = [['cast','dragon','Cast'],['path','map','Path'],['ach','trophy','Feats'],['endings','crown','Endings']];
   sheet('Journal', `<div class="tabs">${tabs.map(([k, ic, l]) => `<button class="tab ${k===tab?'on':''}" onclick="openJournal('${k}')">${icon(ic,'sm')}${l}</button>`).join('')}</div>`, journalBody(tab));
 }
+function yourDragonCard(){
+  const look = dragonLook(state);
+  if(!state.dragonName || !look.hatched) return '';
+  const COL = {'crimson':'Deep crimson', 'obsidian':'Obsidian black', 'storm-grey':'Storm-grey', 'gold-bronze':'Molten gold-and-bronze'};
+  const HORN = {ram:'Ram horns', spike:'Twin spikes', crown:'Antler crown', none:'No horns'};
+  return `<div class="your-dragon"><div class="yd-img">${dragonArt(look, 'full', {fixedScale:1})}</div>
+    <div class="yd-txt"><b>${esc(state.dragonName)}</b><small>${[COL[look.color], look.horns ? HORN[look.horns] : '', look.texture ? HIDE_NAME[look.texture] : '', look.tail ? TAIL_NAME[look.tail] : ''].filter(Boolean).join(' · ')}</small>${medals(look, true)}</div></div>`;
+}
 function journalBody(tab){
   const s = state, seen = new Set(s.visited || []);
-  if(tab === 'cast') return CAST.map(c => {
+  if(tab === 'cast') return yourDragonCard() + CAST.map(c => {
     const met = seen.has(c.at);
     return `<div class="cast ${met?'':'unknown'}"><div class="sigil">${icon(met ? c.icon : 'lock')}</div><div><b>${met ? esc(c.name) : 'Not yet met'}</b><p>${met ? esc(c.desc) : 'Someone waits further along your path.'}</p>${met && c.status(s) ? `<div class="st">${esc(c.status(s))}</div>` : ''}</div></div>`;
   }).join('');
@@ -2424,6 +2992,7 @@ function openSettings(){
   sheet('Settings', '', `
     <div class="set-row"><div><b>Text size</b></div>${seg('textSize', [['s','S'],['m','M'],['l','L']])}</div>
     <div class="set-row"><div><b>Show stat hints</b><small>Reveal which way each choice pulls you. Spoils a little.</small></div>${sw('hints')}</div>
+    <div class="set-row"><div><b>Battle cutscenes</b><small>Short scenes when you fight. Tap to skip.</small></div>${sw('cutscenes')}</div>
     <div class="set-row"><div><b>Reduce motion</b><small>No particles, shakes or animations.</small></div>${sw('reduce')}</div>
     <div class="btn-row"><button class="btn ghost" onclick="closeSheet();UI.screen='title';render()">${icon('scroll')}Title screen</button></div>
     <div class="btn-row"><button class="btn ghost" onclick="newSaga()">${icon('egg')}Restart this saga</button></div>
@@ -2442,9 +3011,9 @@ async function shareCard(){
   const rg = x.createRadialGradient(W/2, 520, 40, W/2, 520, 520); rg.addColorStop(0, 'rgba(228,104,47,.35)'); rg.addColorStop(1, 'rgba(228,104,47,0)'); x.fillStyle = rg; x.fillRect(0, 0, W, H);
   x.strokeStyle = '#7d6a26'; x.lineWidth = 3; x.strokeRect(40, 40, W-80, H-80); x.strokeStyle = '#3a2c18'; x.strokeRect(56, 56, W-112, H-112);
   try{
-    const svg = dragonSVG(dragonLook(state), {still:true, fixedScale:1}).replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" width="720" height="600" ');
-    const img = new Image(); img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-    await img.decode(); x.drawImage(img, (W-720)/2, 200, 720, 600);
+    const look = dragonLook(state), img = new Image();
+    img.src = `art/d-${look.color}-${look.horns || 'none'}.webp`;
+    await img.decode(); const w = 880, h = w * img.naturalHeight / img.naturalWidth; x.drawImage(img, (W-w)/2, 790 - h, w, h);
   }catch(err){}
   try{ await document.fonts.load('900 60px Cinzel'); }catch(err){}
   x.textAlign = 'center';

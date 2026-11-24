@@ -1,6 +1,6 @@
 // Choice of the Dragon — offline app-shell cache
 // Bump CACHE_NAME on every release so old, stale caches get thrown out automatically.
-const CACHE_NAME = 'dragon-saga-v5';
+const CACHE_NAME = 'dragon-saga-v6';
 const ASSETS = [
   './',
   './index.html',
@@ -9,7 +9,24 @@ const ASSETS = [
   './icon-512.png',
   './icon-192-maskable.png',
   './icon-512-maskable.png',
-  './apple-touch-icon.png'
+  './apple-touch-icon.png',
+  './art/d-crimson-crown-sm.webp',
+  './art/d-crimson-none-sm.webp',
+  './art/d-crimson-ram-sm.webp',
+  './art/d-crimson-spike-sm.webp',
+  './art/d-gold-bronze-crown-sm.webp',
+  './art/d-gold-bronze-none-sm.webp',
+  './art/d-gold-bronze-ram-sm.webp',
+  './art/d-gold-bronze-spike-sm.webp',
+  './art/d-obsidian-crown-sm.webp',
+  './art/d-obsidian-none-sm.webp',
+  './art/d-obsidian-ram-sm.webp',
+  './art/d-obsidian-spike-sm.webp',
+  './art/d-storm-grey-crown-sm.webp',
+  './art/d-storm-grey-none-sm.webp',
+  './art/d-storm-grey-ram-sm.webp',
+  './art/d-storm-grey-spike-sm.webp',
+  './art/egg.webp'
 ];
 
 self.addEventListener('install', (event) => {
