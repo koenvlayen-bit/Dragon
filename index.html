@@ -248,6 +248,10 @@ input[type=range]{accent-color:var(--ember);width:120px}
 .ledger.collapsed .portrait{height:48px}
 .continue-card .p{display:flex;align-items:flex-end}
 .pv-bubble .dragon-img{transform:none}
+.pv-bubble.attr{width:auto;height:auto;padding:0;background:none;border:none;box-shadow:none;display:flex;flex-direction:column;align-items:center;gap:4px}
+.pv-medal{width:104px;height:104px;border-radius:50%;overflow:hidden;border:3px solid var(--gold);box-shadow:0 10px 30px rgba(0,0,0,.75),0 0 24px rgba(201,162,39,.35);background:#000}
+.pv-medal img{width:100%;height:100%;object-fit:cover;display:block}
+.pv-bubble.attr span{font-family:'Cinzel',serif;font-size:12px;letter-spacing:.5px;color:var(--gold-hi);background:rgba(12,10,16,.85);padding:2px 9px;border-radius:99px;border:1px solid var(--gold-dim)}
 .pv-bubble .medals{display:none}
 .your-dragon{display:flex;gap:14px;align-items:center;background:radial-gradient(ellipse at 30% 80%,#3a1a14,#17121c 70%);border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:6px}
 .yd-img{width:46%;height:120px;flex-shrink:0}
@@ -2357,7 +2361,7 @@ async function playCutscene(nodeId, idx){
   anim(hero, [{transform:'translateX(-60%)', opacity:0}, {transform:'translateX(0)', opacity:1}], 700);
   anim(enemy, [{transform:'translateX(40%)', opacity:0}, {transform:'translateX(0)', opacity:1}], 800);
   say(lines[0]);
-  await csWait(1000);
+  await csWait(2000);
   measure();
 
   // ── the act itself ──
@@ -2458,7 +2462,7 @@ async function playCutscene(nodeId, idx){
     else { say('Neither of you gives an inch.'); anim(hero, [{transform:'translateX(0)'}, {transform:'translateX(-8%)'}], 700); anim(enemy, [{transform:'translateX(0)'}, {transform:'translateX(8%)'}], 700); }
   }
 
-  await csWait(1400);
+  await csWait(2400);
   fx.stop();
   el.classList.add('cs-out');
   await new Promise(r => setTimeout(r, CS.skip ? 120 : 420));
@@ -2761,12 +2765,15 @@ function showChapterCard(node, heal){
 }
 
 /* ════════════ RENDER ════════════ */
-function previewBubble(hero, svg){
+function previewBubble(hero, look){
   let b = $('pv-bubble');
   const visible = hero && hero.getBoundingClientRect().bottom > 90;
   if(visible){ if(b) b.remove(); return; }
-  if(!b){ b = document.createElement('div'); b.id = 'pv-bubble'; b.className = 'pv-bubble'; document.body.appendChild(b); }
-  b.innerHTML = svg;
+  if(!b){ b = document.createElement('div'); b.id = 'pv-bubble'; document.body.appendChild(b); }
+  // While choosing hide or tail, the attribute is what changes, so that is what follows you down
+  const attr = state.node === '1.1b' ? ['hide', look.texture, HIDE_NAME[look.texture]] : state.node === '1.1d' ? ['tail', look.tail, TAIL_NAME[look.tail]] : null;
+  if(attr && attr[1]){ b.className = 'pv-bubble attr'; b.innerHTML = `<div class="pv-medal"><img src="art/${attr[0]}-${attr[1]}.webp" alt=""></div><span>${esc(attr[2])}</span>`; }
+  else { b.className = 'pv-bubble'; b.innerHTML = dragonArt(look); }
 }
 function render(){
   const app = $('app');
@@ -2931,7 +2938,7 @@ function bind(){
   document.querySelectorAll('.choice').forEach(btn => {
     const i = +btn.dataset.idx, c = choices[i];
     if(creation && !isLocked(c)){
-      const pv = () => { const fl = typeof c.setFlags === 'function' ? c.setFlags(state) : (c.setFlags || {}); UI.preview = fl; UI.previewIdx = i; const svg = heroArt(dragonLook(state, fl)); const hd = $('hero-dragon'); if(hd) hd.innerHTML = svg; previewBubble(hd, svg); document.querySelectorAll('.choice').forEach(b => b.classList.toggle('preview', b === btn)); };
+      const pv = () => { const fl = typeof c.setFlags === 'function' ? c.setFlags(state) : (c.setFlags || {}); UI.preview = fl; UI.previewIdx = i; const lk = dragonLook(state, fl); const hd = $('hero-dragon'); if(hd) hd.innerHTML = heroArt(lk); previewBubble(hd, lk); document.querySelectorAll('.choice').forEach(b => b.classList.toggle('preview', b === btn)); };
       btn.onmouseenter = () => { if(!TOUCH()) pv(); };
       btn.onfocus = () => { if(!TOUCH()) pv(); };
       btn.onclick = () => {
