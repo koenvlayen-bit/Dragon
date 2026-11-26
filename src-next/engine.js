@@ -36,6 +36,7 @@ function warmAt(id, s = S){
   return dist(p, LAIR) <= radius(s);
 }
 function placeState(id, s = S){
+  if((s.chapter || 1) >= 3) return placeState3(id, s);
   if(PLACES[id].kind === 'village'){
     const st = s.places[id];
     if(st === 'lost') return 'lost';
@@ -81,6 +82,13 @@ function applyFx(fx, s = S){
 function season(s = S){ return SEASONS[s.season]; }
 function tribute(s = S){
   let g = 0; const lines = [];
+  if((s.chapter || 1) >= 3){
+    if(s.c3.greywater === 'free'){ g += 12; lines.push(['Greywater sends thanks', '+12']); }
+    if(s.flags.shaft){ g += 14; lines.push(['The Deep Shaft digs for you', '+14']); }
+    if(perk('song', s)){ g += 12; lines.push(['The gold sings to you', '+12']); }
+    if(s.flags.signed){ g += 200; lines.push(['The Ledger pays, as agreed', '+200']); }
+    return { g, lines };
+  }
   VILLAGES.forEach(v => { const st = placeState(v, s); if(st === 'kindled' || st === 'warm' || st === 'saved'){ const t = 6 + Math.floor(s.hope / 10); g += t; lines.push([`${PLACES[v].name} sends tribute`, `+${t}`]); } });
   const gob = { allied:10, vassal:14, terrified:8 }[s.flags.goblins];
   if(gob){ g += gob; lines.push(['The goblins dig gold', `+${gob}`]); }
@@ -110,13 +118,15 @@ function endSeason(s = S){
     });
     if(rep.villages.every(x => x.ok)) unlock('hearths');
   }
-  if(s.season < SEASONS.length) s.flights = SEASONS[s.season].flights;
+  if((s.chapter || 1) >= 3){ const add = Math.floor(s.gold / 60); s.c3.greed = clamp(s.c3.greed + add, 0, 100); if(add) rep.lines.push({ t:'Your hoard grows heavier', v:`Greed +${add}`, good:false }); if(s.c3.greed >= 50){ s.hope = clamp(s.hope - 5, 0, 100); rep.lines.push({ t:'People whisper that you are no better than the bank', v:'Hope −5', good:false }); } }
+  if(s.season < SEAS(s).length) s.flights = SEAS(s)[s.season].flights;
   s.hunted = -1;
   return rep;
 }
 
 /* ── What waits at each place ── */
 function eventAt(id, s = S){
+  if((s.chapter || 1) >= 3) return eventAt3(id, s);
   if((s.chapter || 1) >= 2) return eventAt2(id, s);
   const f = s.flags, d = s.done, se = s.season;
   switch(id){

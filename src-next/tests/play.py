@@ -14,7 +14,10 @@ with sync_playwright() as p:
     def shot(n):
         if shots: pg.screenshot(path=f'/var/tmp/eh-next/shots/{n}.png', full_page=True)
     shot('00_title')
-    pg.click('[data-a=new]'); pg.wait_for_timeout(200)
+    if '--start3' in sys.argv:
+        pg.evaluate("()=>{S=freshState();S.name='Testwing';S.stage=2;S.hp=S.maxHp=110;S.flags.goblins='allied';S.flags.vexar=(Math.random()<.5?'fled':'freed');S.flags.chainsLore=true;S.hope=45;startChapter3();}")
+    else:
+        pg.click('[data-a=new]'); pg.wait_for_timeout(200)
     steps=0; seen=set(); battles=0
     while steps<1200:
         steps+=1
@@ -59,10 +62,10 @@ with sync_playwright() as p:
                 pg.wait_for_timeout(150)
         elif scr=='map':
             if shots and ('map%d'%st['season']) not in seen: seen.add('map%d'%st['season']); shot('map_%d'%st['season'])
-            evs=pg.evaluate("Object.keys(PLACES).filter(id=>eventAt(id))")
+            evs=pg.evaluate("Object.keys(PL()).filter(id=>eventAt(id))")
             # sometimes visit lair to buy
             if rnd.random()<.3:
-                pg.click('[data-a=sel][data-v=lair]'); pg.click('[data-a=lair]'); pg.wait_for_timeout(50)
+                lid=pg.evaluate("Object.keys(PL()).find(k=>PL()[k].kind==='lair')"); pg.click(f'[data-a=sel][data-v={lid}]'); pg.click('[data-a=lair]'); pg.wait_for_timeout(50)
                 if shots and 'lair' not in seen: seen.add('lair'); shot('lair')
                 for u in ['vents','pool','forge']:
                     bb=pg.locator(f'[data-a=buy][data-v={u}]:not([disabled])')
@@ -84,6 +87,6 @@ with sync_playwright() as p:
             break
         else:
             log.append('unknown '+scr); break
-    final=pg.evaluate("({chapter:S.chapter, vexar:S.flags.vexar, ysolde:S.flags.ysolde, screen:S.screen, hope:S.hope, dread:S.dread, wild:S.wild, gold:S.gold, places:S.places, stage:S.stage, hp:S.hp, max:S.maxHp, flags:S.flags, done:Object.keys(S.done)})")
+    final=pg.evaluate("({c3:S.c3, last:S.flags.last, chapter:S.chapter, vexar:S.flags.vexar, ysolde:S.flags.ysolde, screen:S.screen, hope:S.hope, dread:S.dread, wild:S.wild, gold:S.gold, places:S.places, stage:S.stage, hp:S.hp, max:S.maxHp, flags:S.flags, done:Object.keys(S.done)})")
     b.close()
 print(json.dumps({'seed':seed,'steps':steps,'battles':battles,'final':final,'errors':errors[:5],'log':log}))

@@ -21,7 +21,7 @@ function fxChips(list){ return list && list.length ? `<div class="fx">${list.map
 /* ── top bar ── */
 function topbar(){
   if(!S.name) return '';
-  const se = SEASONS[Math.min(S.season, 3)], fl = se.flights;
+  const se = SEAS()[Math.min(S.season, SEAS().length - 1)], fl = se.flights;
   const pips = Array.from({ length: fl }, (_, i) => `<i class="${i < S.flights ? 'on' : ''}"></i>`).join('');
   return `<div class="bar">
     <div class="bar-top"><span class="bar-name">${esc(S.name)} · ${STAGES[S.stage]}</span><span class="bar-season">${se.name}<span class="pips" title="Flights left">${pips}</span></span></div>
@@ -41,7 +41,7 @@ function vTitle(){
       <button class="btn ghost" data-a="feats">Feats ${Object.keys(META.ach).length}/${ACH.length}</button>
     </div>
     ${UI.feats ? `<div class="stack" style="text-align:left">${ACH.map(a => `<div class="line ${META.ach[a.id] ? 'good' : ''}"><span><b style="font-family:var(--f-d)">${a.t}</b><br><span class="muted small">${a.d}</span></span><b>${META.ach[a.id] ? '✓' : ''}</b></div>`).join('')}</div>` : ''}
-    <p class="note">Chapters one and two · early preview<br><a href="../" style="color:var(--dim)">Play the original saga</a></p>
+    <p class="note">Three chapters · early preview<br><a href="../" style="color:var(--dim)">Play the original saga</a></p>
   </div>`;
 }
 
@@ -72,7 +72,7 @@ function vScene(){
     <h2>${tx(R(sc.title))}</h2>
     ${fxChips(pend)}
     <div class="prose">${text.map(p => `<p class="${p.startsWith('"') ? 'say' : ''}">${tx(p)}</p>`).join('')}</div>
-    <div class="choices">${sc.choices.map((c, i) => {
+    <div class="choices">${R(sc.choices).map((c, i) => {
       const locked = c.req && !c.req(S);
       return `<button class="choice ${c.fight ? 'fight' : ''} ${locked ? 'locked' : ''}" data-a="choose" data-i="${i}" ${locked ? 'disabled' : ''}><span class="t">${tx(c.t)}</span>${c.h ? `<span class="h">${tx(c.h)}</span>` : ''}</button>`;
     }).join('')}</div>
@@ -99,22 +99,22 @@ const MAP_SVG = `<svg class="base" viewBox="0 0 300 200" preserveAspectRatio="no
 <path d="M0 30 C60 24 120 20 180 22 C230 24 270 18 300 14" fill="none" stroke="#cfe3ef" stroke-opacity=".15" stroke-width="1" stroke-dasharray="3 4"/>
 </svg>`;
 function vMap(){
-  const sel = S.sel || 'kettle', P = PLACES[sel];
-  const pins = Object.entries(PLACES).filter(([id, p]) => !p.ch || p.ch <= (S.chapter || 1)).map(([id, p]) => {
+  const PLs = PL(); const sel = PLs[S.sel] ? S.sel : Object.keys(PLs)[1], P = PLs[sel]; const ch3 = (S.chapter || 1) >= 3;
+  const pins = Object.entries(PLs).filter(([id, p]) => !p.ch || p.ch <= (S.chapter || 1)).map(([id, p]) => {
     const st = placeState(id), ev = eventAt(id);
-    const cls = [id === 'lair' ? 'lair' : '', st === 'warm' || st === 'kindled' || st === 'saved' ? 'warm' : '', st === 'lost' ? 'lost' : '', st === 'locked' ? 'locked' : '', ev && S.flights > 0 ? 'event' : '', id === sel ? 'sel' : ''].join(' ');
+    const cls = [p.kind === 'lair' ? 'lair' : '', ['warm','kindled','saved','free','ally','reclaimed','fallen'].includes(st) ? 'warm' : '', st === 'lost' ? 'lost' : '', st === 'locked' ? 'locked' : '', ev && S.flights > 0 ? 'event' : '', id === sel ? 'sel' : ''].join(' ');
     return `<button class="pin ${cls}" style="left:${p.x}%;top:${p.y}%" data-a="sel" data-v="${id}" aria-label="${esc(p.name)}"><span class="dot">${p.icon}</span><span class="nm">${esc(p.name)}</span>${ev && S.flights > 0 ? '<span class="ex"></span>' : ''}</button>`;
   }).join('');
   const st = placeState(sel), ev = eventAt(sel);
-  const tagTxt = { warm:'Warm', kindled:'Kindled', saved:'Saved', frozen:'Frozen', lost:'Lost', locked:'Chapter 2' }[st];
-  const tagCls = { warm:'warm', kindled:'warm', saved:'warm', frozen:'frozen', lost:'lost', locked:'frozen' }[st];
+  const tagTxt = { warm: ch3 ? 'Yours' : 'Warm', kindled:'Kindled', saved:'Saved', frozen:'Frozen', lost:'Lost', locked:'Chapter 2', sealed:'Sealed vault', reclaimed:'Reclaimed', free:'Free', indebted:'In debt', ally:'Allies', site:'Open', ledger:'The Ledger', fallen:'Fallen' }[st] || st;
+  const tagCls = { warm:'warm', kindled:'warm', saved:'warm', frozen:'frozen', lost:'lost', locked:'frozen', reclaimed:'warm', free:'ally', ally:'ally', fallen:'warm' }[st] || 'frozen';
   let extra = '';
   if(sel === 'warren' && S.flags.goblins) extra = `<span class="tag ally">${{ allied:'Allies', vassal:'Vassals', terrified:'Terrified' }[S.flags.goblins]}</span>`;
   let info;
-  if(sel === 'lair'){
-    info = `<p class="muted small">Your hoard is your hearth. The more gold you sleep on, the further your warmth reaches. Warmth range is ${glowLevel()} now.</p><button class="btn primary" data-a="lair">Enter your lair</button>`;
+  if(P.kind === 'lair'){
+    info = `<p class="muted small">${ch3 ? 'Your new lair. Rest, build and listen to the gold.' : `Your hoard is your hearth. The more gold you sleep on, the further your warmth reaches. Warmth range is ${glowLevel()} now.`}</p><button class="btn primary" data-a="lair">Enter your lair</button>`;
   } else {
-    const d = Math.round(dist(P, LAIR));
+    const d = Math.round(dist(P, ch3 ? LAIR3 : LAIR));
     info = `<p class="muted small">${esc(P.blurb || '')}</p>
       ${P.kind === 'village' && st === 'frozen' ? `<p class="small" style="color:var(--frost)">Outside your warmth (distance ${d}, your range ${glowLevel()}). Kindle it, or grow your hoard, before winter.</p>` : ''}
       <p class="small" style="color:${ev ? 'var(--gold-hi)' : 'var(--faint)'}">${ev ? '✦ ' + esc(ev.label) : 'Nothing calls you here this season.'}</p>
@@ -122,17 +122,18 @@ function vMap(){
   }
   const m = (label, v, col) => `<div class="meter"><span class="label">${label}</span><b>${v}</b><span class="mv"><i style="width:${v}%;background:${col}"></i></span></div>`;
   return `<div class="mapview fade-in">
-    <div class="vis"><div class="mapbox" id="mapbox">${MAP_SVG}<img class="base" src="${ART.bg('A2')}" alt="" onerror="this.remove()" style="object-fit:cover"><canvas id="frost"></canvas>${pins}</div></div><div class="col">
+    <div class="vis"><div class="mapbox" id="mapbox">${MAP_SVG}<img class="base" src="${ART.bg(ch3 ? 'A12' : 'A2')}" alt="" onerror="this.remove()" style="object-fit:cover"><canvas id="frost"></canvas>${pins}</div></div><div class="col">
     <div class="mapinfo"><h3>${esc(P.name)}<span style="display:flex;gap:6px">${extra}<span class="tag ${tagCls}">${tagTxt}</span></span></h3>${info}</div>
-    <div class="meters">${m('Hope', S.hope, 'var(--hope)')}${m('Dread', S.dread, 'var(--dread)')}${m('Wildness', S.wild, 'var(--wild)')}</div>
+    <div class="meters">${m('Hope', S.hope, 'var(--hope)')}${m('Dread', S.dread, 'var(--dread)')}${ch3 ? m('Greed', S.c3.greed, 'var(--gold-hi)') : m('Wildness', S.wild, 'var(--wild)')}</div>
     <button class="btn ghost" data-a="endseason">${UI.confirmEnd ? 'Tap again: let the season turn' : S.flights > 0 ? `Let the season turn (${S.flights} flight${S.flights > 1 ? 's' : ''} unused)` : 'Let the season turn'}</button>
-    ${(S.chapter || 1) >= 2 ? `<p class="hint">${S.season < 2 ? `${2 - S.season} season${2 - S.season > 1 ? 's' : ''} until the Grey Hold opens.` : 'The Grey Hold is open. The bell is ringing.'}</p>` : S.season < 3 ? `<p class="hint">${3 - S.season} season${3 - S.season > 1 ? 's' : ''} until winter. Villages outside your warmth when it comes will be lost.</p>` : ''}
+    ${ch3 ? `<p class="hint">${S.season < 2 ? `${2 - S.season} season${2 - S.season > 1 ? 's' : ''} until the Great Vault.` : 'The Great Vault is waiting under Ledgerhall.'} Bounty on your head: ${100 + S.c3.bounty * 5} crowns.</p>` : (S.chapter || 1) >= 2 ? `<p class="hint">${S.season < 2 ? `${2 - S.season} season${2 - S.season > 1 ? 's' : ''} until the Grey Hold opens.` : 'The Grey Hold is open. The bell is ringing.'}</p>` : S.season < 3 ? `<p class="hint">${3 - S.season} season${3 - S.season > 1 ? 's' : ''} until winter. Villages outside your warmth when it comes will be lost.</p>` : ''}
   </div></div>`;
 }
 
 let frostTex = null, shownR = null;
 function drawFrost(){
   const box = document.getElementById('mapbox'), cv = document.getElementById('frost'); if(!box || !cv) return;
+  if((S.chapter || 1) >= 3){ cv.width = 1; cv.height = 1; return; }
   const W = box.clientWidth, H = box.clientHeight, dpr = Math.min(2, devicePixelRatio || 1);
   cv.width = W * dpr; cv.height = H * dpr;
   const x = cv.getContext('2d'); x.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -165,12 +166,13 @@ function drawFrost(){
 }
 
 function vLair(){
+  const ch3 = (S.chapter || 1) >= 3;
   const restHeal = S.upgrades.pool ? S.maxHp - S.hp : Math.min(S.maxHp - S.hp, Math.round(S.maxHp * .5));
   return `<div class="lair fade-in">
-    <div class="vis">${plate('A3', null, 'Your lair')}
-    <div class="hoardbox"><div class="big g"><div class="label">Hoard</div><div class="n">◆ ${S.gold}</div></div><div class="big w"><div class="label">Warmth range</div><div class="n">☀ ${glowLevel()}</div></div></div></div><div class="col">
-    <p class="muted small" style="margin:0">Every 12 gold in your hoard pushes your warmth one step further (up to 16). Upgrades cost gold, but their warmth is permanent.</p>
-    ${UPGRADES.map(u => {
+    <div class="vis">${plate(ch3 ? 'A16' : 'A3', null, ch3 ? 'The Hollow Crown' : 'Your lair')}
+    <div class="hoardbox"><div class="big g"><div class="label">Hoard</div><div class="n">◆ ${S.gold}</div></div>${ch3 ? `<div class="big w"><div class="label">Memories</div><div class="n">✧ ${S.c3.perks.length}</div></div>` : `<div class="big w"><div class="label">Warmth range</div><div class="n">☀ ${glowLevel()}</div></div>`}</div></div><div class="col">
+    ${ch3 ? (S.c3.perks.length ? `<div class="stack">${S.c3.perks.map(k => `<div class="ach"><b>${PERKS[k].t}</b><span class="muted small">${PERKS[k].d}</span></div>`).join('')}</div>` : '<p class="muted small" style="margin:0">Reclaim dragon gold from the Ledger\'s vaults and listen to it. Each hoard gives back one ancestral memory.</p>') : '<p class="muted small" style="margin:0">Every 12 gold in your hoard pushes your warmth one step further (up to 16). Upgrades cost gold, but their warmth is permanent.</p>'}
+    ${UPGRADES.filter(u => !(ch3 && u.id === 'vents')).map(u => {
       const lvl = S.upgrades[u.id], maxed = lvl >= u.max, cost = u.cost[lvl], ok = !maxed && S.gold >= cost && (!u.req || u.req(S));
       return `<div class="upg"><h4>${u.name} ${u.max > 1 ? `<span class="lvl">${lvl}/${u.max}</span>` : ''}</h4><p>${esc(u.d(lvl))}${u.req && !u.req(S) ? `<br><i>${u.reqText}</i>` : ''}</p><button class="buy" data-a="buy" data-v="${u.id}" ${ok ? '' : 'disabled'}>${maxed ? 'Built' : `◆ ${cost}`}</button></div>`;
     }).join('')}
@@ -216,16 +218,23 @@ function vReport(){
     <h2>${r.villages.length ? 'The frost returns' : 'The season turns'}</h2>
     ${r.villages.length ? `<div class="lines">${r.villages.map(v => `<div class="line ${v.ok ? 'good' : 'bad'}"><span>${PLACES[v.v].name}</span><b>${v.ok ? 'Survives the winter' : 'Lost to the frost'}</b></div>`).join('')}</div>` : ''}
     <div class="lines">${r.lines.map(l => `<div class="line ${l.good ? 'good' : 'bad'}"><span>${esc(l.t)}</span><b>${esc(l.v)}</b></div>`).join('') || '<div class="line"><span>A quiet season.</span><b></b></div>'}</div>
-    <button class="btn primary" data-a="nextseason">${SEASONS[S.season] ? SEASONS[S.season].name : 'Continue'}</button>
+    <button class="btn primary" data-a="nextseason">${SEAS()[S.season] ? SEAS()[S.season].name : 'Continue'}</button>
   </div>`;
 }
 
 function vEnd(){
-  const ch2 = (S.chapter || 1) >= 2;
+  const ch3 = (S.chapter || 1) >= 3, ch2 = (S.chapter || 1) === 2;
   const saved = VILLAGES.filter(v => S.places[v] === 'saved' || S.places[v] === 'kindled');
   const got = ACH.filter(a => META.ach[a.id]);
   const line = (k, v, good) => `<div class="line ${good ? 'good' : ''}"><span>${k}</span><b>${v}</b></div>`;
-  const lines = ch2 ? [
+  const lines = ch3 ? [
+    line('The Last Hoard', { returned:'Given back to the people', burned:'The books burned', kept:'Kept. All of it.' }[S.flags.last] || 'Unknown', S.flags.last === 'returned'),
+    line('Vexar', S.flags.vexar === 'freed' ? 'At your side' : 'Gone', S.flags.vexar === 'freed'),
+    line('Memories', S.c3.perks.map(k => PERKS[k].t).join(', ') || 'None'),
+    line('Greed', S.c3.greed),
+    line('Hoard', `◆ ${S.gold}`),
+    line('Hope · Dread', `${S.hope} · ${S.dread}`),
+  ] : ch2 ? [
     line('Vexar', { freed:'Freed, your brother', fled:'Fled north, still chained' }[S.flags.vexar] || 'Unknown', S.flags.vexar === 'freed'),
     line('Ysolde Marr', { spared:'Spared', exiled:'Exiled north', burned:'Burned with her tower' }[S.flags.ysolde] || 'Unknown'),
     line('Lord Harrow', { pact:'Took his gold', burned:'Burned his ice', warned:'Warned him' }[S.flags.harrow] || 'Never met'),
@@ -240,14 +249,17 @@ function vEnd(){
     line('Aurelia', { free:'Walked free', held:'Your guest' }[S.flags.aurelia] || 'Never met'),
   ];
   return `<div class="summary fade-in">
-    ${plate('A7', ch2 && S.flags.vexar === 'freed' ? 'V5' : null, ch2 ? 'End of chapter two' : 'End of chapter one')}
-    <div class="label">The Last Warmth · Chapter ${ch2 ? 'two' : 'one'}</div>
-    <h2>${esc(S.name)}, ${ch2 ? 'who silenced the bell' : STAGES[S.stage].toLowerCase() + ' of the Spring'}</h2>
+    ${plate(ch3 ? 'A13' : 'A7', (ch2 || ch3) && S.flags.vexar === 'freed' ? 'V5' : null, ch3 ? 'End of chapter three' : ch2 ? 'End of chapter two' : 'End of chapter one')}
+    <div class="label">Eternal Hoard · Chapter ${ch3 ? 'three' : ch2 ? 'two' : 'one'}</div>
+    <h2>${esc(S.name)}, ${ch3 ? { returned:'who gave the gold back', burned:'who burned the debts', kept:'the Eternal Hoard' }[S.flags.last] || 'of the south' : ch2 ? 'who silenced the bell' : STAGES[S.stage].toLowerCase() + ' of the Spring'}</h2>
     <div class="lines">${lines.join('')}</div>
     <div class="label">Feats unlocked · ${got.length}/${ACH.length}</div>
     <div class="stack">${got.map(a => `<div class="ach"><b>${a.t}</b><span class="muted small">${a.d}</span></div>`).join('')}</div>
-    ${ch2 ? `<p class="muted">The next campaign, <i>The Gilded Debt</i>, takes you south to Veyrmark and the Ledger that paid for the Quench. It is being written.</p>
+    ${ch3 ? `<p class="muted">The tablet in the vault says <i>Covenant</i>. The last campaign, <i>The Hundredth Year</i>, goes back three hundred years, to the peace that broke and started all of this. It is being written.</p>
       <button class="btn primary" data-a="new">Start a new saga</button>`
+    : ch2 ? `<p class="muted">The Ledger's coins lead south, to Veyrmark. Everything you did comes with you.</p>
+      <button class="btn primary" data-a="ch3">Continue to chapter three</button>
+      <button class="btn" data-a="new">Start a new saga</button>`
     : `<p class="muted">Your choices carry over: the villages you saved, the goblins, Aurelia, Mirelle and the scale.</p>
       <button class="btn primary" data-a="ch2">Continue to chapter two</button>
       <button class="btn" data-a="new">Play chapter one again</button>`}
@@ -304,9 +316,9 @@ function navigate(go){
   goMap();
 }
 function choose(i){
-  const sc = SCENES[S.scene], c = sc.choices[i]; if(!c || (c.req && !c.req(S))) return;
-  if(c.fight){ startBattle(c.fight.enc, c.fight.win, c.fight.lose); render(); return scrollTo(0, 0); }
-  if(c.refund) S.flights = Math.min(SEASONS[S.season].flights, S.flights + 1);
+  const sc = SCENES[S.scene], c = R(sc.choices)[i]; if(!c || (c.req && !c.req(S))) return;
+  if(c.fight){ if(c.fx) applyFx(c.fx); startBattle(c.fight.enc, c.fight.win, c.fight.lose); render(); return scrollTo(0, 0); }
+  if(c.refund) S.flights = Math.min(SEAS()[S.season].flights, S.flights + 1);
   const shown = applyFx(c.fx);
   if(c.out){ S.out = { text:c.out, fx:shown, go:c.go }; S.screen = 'out'; render(); return scrollTo(0, 0); }
   if(shown.length && (!c.go || c.go === 'map')) setTimeout(() => toastText(shown.map(x => x.t).join(' · ')), 50);
@@ -314,14 +326,17 @@ function choose(i){
   navigate(c.go);
 }
 function goMap(){
-  if((S.chapter || 1) >= 2){
+  if((S.chapter || 1) >= 3){
+    if(S.season === 1 && !S.done.bounty && S.c3.bounty >= 10 && S.flights <= 2){ S.done.bounty = true; S.flights = Math.max(0, S.flights - 1); return openScene('bounty'); }
+  } else if((S.chapter || 1) >= 2){
     if(S.season === 1 && !S.done.siege && S.flights <= 2){ S.done.siege = true; S.flights = Math.max(0, S.flights - 1); return openScene('siege'); }
   } else if(S.season === 2 && !S.done.raid && S.flights <= 2){ S.done.raid = true; S.flights = Math.max(0, S.flights - 1); return openScene('raid'); }
   if(S.flights <= 0) return turnSeason();
   S.screen = 'map'; UI.confirmEnd = false; render();
 }
 function turnSeason(){
-  if((S.chapter || 1) >= 2 && S.season >= 2) return openScene(S.done.hold ? 'ch2end' : 'holdApproach');
+  if((S.chapter || 1) >= 3 && S.season >= 2) return openScene(S.done.great ? 'ch3end' : 'greatVault');
+  if((S.chapter || 1) === 2 && S.season >= 2) return openScene(S.done.hold ? 'ch2end' : 'holdApproach');
   if(S.season >= 3) return openScene(S.done.grinder ? 'ending' : 'grinderAttack');
   S.report = endSeason(); S.screen = 'report'; render(); scrollTo(0, 0);
 }
@@ -336,6 +351,7 @@ document.addEventListener('click', (e) => {
   if(a !== 'endseason') UI.confirmEnd = false;
   switch(a){
     case 'ch2': startChapter2(); scrollTo(0, 0); break;
+    case 'ch3': startChapter3(); scrollTo(0, 0); break;
     case 'new': S = freshState(); UI.nameDraft = ''; S.screen = 'scene'; openScene('egg'); break;
     case 'continue': { const l = load(); if(l){ S = l; if(S.screen === 'battle' && !S.battle) S.screen = 'map'; if(S.battle) S.battle.busy = false; render(); } break; }
     case 'title': S.screen = 'title'; render(); break;
@@ -357,7 +373,7 @@ document.addEventListener('click', (e) => {
     case 'buy': { const u = UPGRADES.find(x => x.id === v), l = S.upgrades[v], c = u.cost[l]; if(l < u.max && S.gold >= c && (!u.req || u.req(S))){ S.gold -= c; S.upgrades[v]++; if(v === 'pool'){ S.maxHp += 15; S.hp += 15; } toastText(`${u.name} built`); render(); } break; }
     case 'rest': if(S.flights > 0){ S.flights--; S.hp = S.upgrades.pool ? S.maxHp : Math.min(S.maxHp, S.hp + Math.round(S.maxHp * .5)); toastText('You sleep on your hoard.'); if(S.flights <= 0) goMap(); else render(); } break;
     case 'endseason': if(!UI.confirmEnd){ UI.confirmEnd = true; render(); } else { UI.confirmEnd = false; S.flights = 0; goMap(); } break;
-    case 'nextseason': S.report = null; openScene(((S.chapter || 1) >= 2 ? SEASON_OPEN_2 : { 1:'summer', 2:'ashfall', 3:'winter' })[S.season] || 'ending'); break;
+    case 'nextseason': S.report = null; openScene(((S.chapter || 1) >= 3 ? SEASON_OPEN_3 : (S.chapter || 1) >= 2 ? SEASON_OPEN_2 : { 1:'summer', 2:'ashfall', 3:'winter' })[S.season] || 'ending'); break;
     case 'tgt': if(S.battle && !S.battle.busy){ S.battle.tgt = +el.dataset.i; render(); } break;
     case 'act': if(v === 'struggle') playerAct('struggle'); else playerAct(v); break;
   }

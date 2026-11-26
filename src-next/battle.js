@@ -5,6 +5,7 @@ const rnd = () => Math.random();
 function pow(){ return STAGE_POW[S.stage] * (1 + S.wild / 200); }
 function startBattle(encId, win, lose){
   if(encId === '__pines') encId = S.season >= 2 ? 'pack' : 'wolves';
+  if(encId === '__great') encId = S.flags.vexar === 'fled' ? 'vexarGilt' : 'auditor';
   const enc = ENCOUNTERS[encId];
   const hpScale = 1 + S.season * 0.12 + ((S.chapter || 1) >= 2 ? .3 : 0);
   const foes = enc.foes.map((k, i) => {
@@ -14,6 +15,7 @@ function startBattle(encId, win, lose){
   const B = { enc:encId, breakAt:enc.breakAt || 0, redeem:!!enc.redeem, bg:enc.bg, flee:enc.flee, foes, tgt:0, turn:1, win, lose, busy:false, log:'', dawn:enc.dawn || 0,
     me:{ heat:4, st:{} } };
   if(S.flags.ward) B.me.st.block = 8;
+  if(perk('hide')) B.me.st.block = (B.me.st.block || 0) + 8;
   foes.forEach(f => {
     if(f.tags.includes('beast') && S.dread >= 35) f.st.fear = 2;
     if(f.tags.includes('human') && S.dread >= 60) f.st.fear = 2;
@@ -53,7 +55,7 @@ function intentView(f){
 function actions(B){
   const L = S.look, forge = S.upgrades.forge;
   const t = B.foes[B.tgt];
-  const canDevour = t && t.hp > 0 && !t.tags.includes('boss') && t.hp <= t.max * .25;
+  const canDevour = t && t.hp > 0 && !t.tags.includes('boss') && !t.tags.includes('construct') && t.hp <= t.max * (perk('hunger') ? .35 : .25);
   const list = [
     { id:'claw',   name:'Claw',  d:`${Math.round((5 + forge * 3) * pow())} damage`, cost:0 },
     { id:'breath', name:BREATH[L.element].name, d:BREATH[L.element].d, cost:4, cls:'breath' },
@@ -62,6 +64,7 @@ function actions(B){
     { id:'roar',   name:'Roar',  d:'Enemies hit 30% softer for 2 turns', cost:1 },
   ];
   if(B.redeem && t && t.hp > 0 && t.hp <= t.max * .5 && canRedeem()) list.unshift({ id:'offer', name:'Offer your fire', d:'Breathe warmth into his chains, not into him', cost:4, cls:'breath' });
+  if((S.chapter || 1) >= 3 && S.flags.vexar === 'freed' && !B.vexarUsed && B.enc !== 'vexarGilt') list.push({ id:'vexar', name:'Call Vexar', d:'Cold fire on every enemy. Once per fight.', cost:0, cls:'breath' });
   if(canDevour) list.push({ id:'devour', name:'Devour', d:'Finish it. Heal 10.', cost:0 });
   else if(B.flee) list.push({ id:'flee', name:'Fly away', d:'Leave the fight', cost:0 });
   return list;
@@ -70,6 +73,7 @@ function actions(B){
 function hit(B, f, amount, opts = {}){
   if(f.hp <= 0) return 0;
   let d = Math.max(0, Math.round(amount));
+  if(opts.breath && perk('breath')) d += 3;
   if(opts.breath && f.tags.includes('frost')) d = Math.round(d * 1.5);
   if(f.st.block){ const a = Math.min(f.st.block, d); f.st.block -= a; d -= a; if(a) fx('blk', f, `⛨${a}`); }
   f.hp = Math.max(0, f.hp - d);
@@ -101,7 +105,7 @@ async function playerAct(id){
     case 'tail': {
       const tb = S.upgrades.forge * 2;
       anim('claw', t);
-      if(S.look.tail === 'club'){ const d = hit(B, t, (6 + tb) * P - chillPen); if(t.hp > 0 && !t.st.stunImmune && !t.tags.includes('boss')){ t.st.stun = 1; B.log = `Your tail club lands: ${d}. ${t.name} is stunned.`; } else B.log = `Your tail club lands: ${d}.${t.tags.includes('boss') ? ' Too big to stun.' : ''}`; }
+      if(S.look.tail === 'club'){ const d = hit(B, t, (6 + tb) * P - chillPen); if(t.hp > 0 && !t.st.stunImmune && !t.tags.includes('boss') && !t.tags.includes('construct')){ t.st.stun = 1; B.log = `Your tail club lands: ${d}. ${t.name} is stunned.`; } else B.log = `Your tail club lands: ${d}.${t.tags.includes('boss') ? ' Too big to stun.' : ''}`; }
       if(S.look.tail === 'whip'){ let d = 0; for(let k = 0; k < 3; k++) d += hit(B, t, (3 + tb / 2) * P - chillPen / 2); B.log = `Three lashes: ${d} damage.`; }
       if(S.look.tail === 'venom'){ const d = hit(B, t, (3 + tb) * P); if(t.hp > 0) t.st.poison = (t.st.poison || 0) + 4; B.log = `The barb sinks in: ${d}, and poison.`; }
       if(S.look.tail === 'fin'){ let tot = 0; alive(B).forEach(f => tot += hit(B, f, (4 + tb) * P - chillPen)); me.st.evade = 1; B.log = `You sweep the field: ${tot} damage. You will dodge the next blow.`; }
@@ -117,11 +121,12 @@ async function playerAct(id){
       break; }
     case 'roar': alive(B).forEach(f => f.st.fear = 2); S.wild = clamp(S.wild + 1, 0, 100); B.log = 'You roar. The mountain answers. They falter.'; anim('roar'); break;
     case 'devour': {
-      t.hp = 0; S.hp = Math.min(S.maxHp, S.hp + 10); S.wild = clamp(S.wild + 3, 0, 100);
+      t.hp = 0; S.hp = Math.min(S.maxHp, S.hp + (perk('hunger') ? 16 : 10)); S.wild = clamp(S.wild + 3, 0, 100);
       if(t.tags.includes('human')){ S.dread = clamp(S.dread + 4, 0, 100); S.hope = clamp(S.hope - 2, 0, 100); }
       fx('heal', 'me', '+10'); B.log = `You finish ${t.name} the old way.`; break; }
     case 'flee': B.busy = false; return endBattle(B, 'fled');
-    case 'offer': S.flags.vexarFreed = true; B.log = 'You breathe on the chains. Not on him. On the chains.'; anim('breath', t); render(); await sleep(900); return endBattle(B, 'win');
+    case 'vexar': B.vexarUsed = true; alive(B).forEach(f => { hit(B, f, 12 * P); f.st.fear = 1; }); B.log = 'Vexar dives out of the dark and breathes. The cold fire takes them all.'; anim('breath'); break;
+    case 'offer': if(B.enc === 'vexarGilt') S.flags.giltFreed = true; else S.flags.vexarFreed = true; B.log = 'You breathe on the chains. Not on him. On the chains.'; anim('breath', t); render(); await sleep(900); return endBattle(B, 'win');
   }
   render();
   await sleep(420);
@@ -150,9 +155,11 @@ async function enemyPhase(B){
     };
     switch(f.intent){
       case 'howl': alive(B).forEach(x => x.st.fury = (x.st.fury || 0) + 1); B.log = 'The wolves howl, and their eyes go bright.'; break;
-      case 'shield': case 'rime': case 'brood': f.st.block = m.blk; B.log = `${f.name} ${m.t}.`; break;
+      case 'shield': case 'rime': case 'brood': case 'grind': f.st.block = m.blk; B.log = `${f.name} ${m.t}.`; break;
       case 'windup': B.log = 'The Grinder raises his club high. Brace yourself.'; break;
       case 'douse': { const d = strike(m.dmg); if(d >= 0){ me.st.soak = 2; me.heat = Math.max(0, me.heat - 1); B.log = `${f.name} douses you in ice water (${d}). Your fire sputters.`; } break; }
+      case 'tithe': { const d = strike(m.dmg); if(d >= 0){ me.heat = Math.max(0, me.heat - 2); B.log = `${f.name} takes a tithe of your fire (${d}). You lose 2 heat.`; } break; }
+      case 'audit': { const d = strike(m.dmg); if(d >= 0){ me.heat = 0; B.log = `The Auditor reads your debts aloud (${d}). Your fire goes out.`; } break; }
       case 'chill': case 'coldfire': { const d = strike(m.dmg); if(d >= 0){ me.st.chill = 2; B.log = `Frost creeps over your scales (${d}). You feel slow.`; } break; }
       case 'chain': case 'net': case 'vchains': { const d = strike(m.dmg); if(d >= 0){ me.st.stun = 1; B.log = `Iron chains snap around your wings (${d}). You lose your next turn.`; } break; }
       case 'mend': { const w = alive(B).filter(x => x !== f).sort((a, b) => a.hp / a.max - b.hp / b.max)[0]; if(w){ w.hp = Math.min(w.max, w.hp + 10); fx('heal', w, '+10'); B.log = `${f.name} mends ${w.name}.`; } break; }
@@ -173,7 +180,7 @@ async function enemyPhase(B){
   });
   ['chill','soak'].forEach(k => { if(me.st[k]){ me.st[k]--; if(!me.st[k]) delete me.st[k]; } });
   delete me.st.thorns;
-  const regen = 2 - (me.st.chill ? 1 : 0) + (me.st.heatNext || 0); delete me.st.heatNext;
+  const regen = 2 + (perk('furnace') ? 1 : 0) - (me.st.chill ? 1 : 0) + (me.st.heatNext || 0); delete me.st.heatNext;
   me.heat = Math.min(10, me.heat + regen);
   me.st.block = 0;
   B.turn++;

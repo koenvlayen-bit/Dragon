@@ -18,7 +18,7 @@ cat <<'H'
 H
 cat style.css
 echo '</style></head><body><div id="app"></div><script>'
-cat sil.js data.js engine.js story.js chapter2.js battle.js ui.js
+cat sil.js data.js engine.js story.js chapter2.js chapter3.js battle.js ui.js
 echo '</script></body></html>'
 } > "$OUT"
 node -e "const fs=require('fs');const h=fs.readFileSync('$OUT','utf8');const js=h.split('<script>')[1].split('</script>')[0];new Function(js);console.log('syntax ok',Math.round(h.length/1024)+'KB')"

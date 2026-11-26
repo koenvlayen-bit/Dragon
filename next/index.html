@@ -429,6 +429,7 @@ function warmAt(id, s = S){
   return dist(p, LAIR) <= radius(s);
 }
 function placeState(id, s = S){
+  if((s.chapter || 1) >= 3) return placeState3(id, s);
   if(PLACES[id].kind === 'village'){
     const st = s.places[id];
     if(st === 'lost') return 'lost';
@@ -474,6 +475,13 @@ function applyFx(fx, s = S){
 function season(s = S){ return SEASONS[s.season]; }
 function tribute(s = S){
   let g = 0; const lines = [];
+  if((s.chapter || 1) >= 3){
+    if(s.c3.greywater === 'free'){ g += 12; lines.push(['Greywater sends thanks', '+12']); }
+    if(s.flags.shaft){ g += 14; lines.push(['The Deep Shaft digs for you', '+14']); }
+    if(perk('song', s)){ g += 12; lines.push(['The gold sings to you', '+12']); }
+    if(s.flags.signed){ g += 200; lines.push(['The Ledger pays, as agreed', '+200']); }
+    return { g, lines };
+  }
   VILLAGES.forEach(v => { const st = placeState(v, s); if(st === 'kindled' || st === 'warm' || st === 'saved'){ const t = 6 + Math.floor(s.hope / 10); g += t; lines.push([`${PLACES[v].name} sends tribute`, `+${t}`]); } });
   const gob = { allied:10, vassal:14, terrified:8 }[s.flags.goblins];
   if(gob){ g += gob; lines.push(['The goblins dig gold', `+${gob}`]); }
@@ -503,13 +511,15 @@ function endSeason(s = S){
     });
     if(rep.villages.every(x => x.ok)) unlock('hearths');
   }
-  if(s.season < SEASONS.length) s.flights = SEASONS[s.season].flights;
+  if((s.chapter || 1) >= 3){ const add = Math.floor(s.gold / 60); s.c3.greed = clamp(s.c3.greed + add, 0, 100); if(add) rep.lines.push({ t:'Your hoard grows heavier', v:`Greed +${add}`, good:false }); if(s.c3.greed >= 50){ s.hope = clamp(s.hope - 5, 0, 100); rep.lines.push({ t:'People whisper that you are no better than the bank', v:'Hope −5', good:false }); } }
+  if(s.season < SEAS(s).length) s.flights = SEAS(s)[s.season].flights;
   s.hunted = -1;
   return rep;
 }
 
 /* ── What waits at each place ── */
 function eventAt(id, s = S){
+  if((s.chapter || 1) >= 3) return eventAt3(id, s);
   if((s.chapter || 1) >= 2) return eventAt2(id, s);
   const f = s.flags, d = s.done, se = s.season;
   switch(id){
@@ -1070,6 +1080,265 @@ ch2end: { bg:'A7', place:'The Grey Hold', title:'The Bell Falls Silent',
   ],
   choices:[ { t:'End of chapter two', fx:{ ach:'bell' }, go:'end' } ] },
 });
+/* ═══════════ CHAPTER THREE · THE GILDED DEBT ═══════════ */
+const SEASONS3 = [ { id:'harvest', name:'Harvest', flights:3 }, { id:'rains', name:'The Rains', flights:3 }, { id:'frost', name:'First Frost', flights:3 } ];
+function SEAS(s = S){ return (s.chapter || 1) >= 3 ? SEASONS3 : SEASONS; }
+function PL(s = S){ return (s.chapter || 1) >= 3 ? PLACES3 : PLACES; }
+const LAIR3 = { x:22, y:78 };
+const PLACES3 = {
+  crown:      { name:'The Hollow Crown', x:22, y:78, icon:'♨', kind:'lair', blurb:'An ancient dragon tomb inside a hollow hill. The bones are old. The hoard around them is older.' },
+  greywater:  { name:'Greywater',  x:45, y:68, icon:'⌂', kind:'town',  blurb:'A river village drowning in debt. Every roof has a Ledger mark painted on the door.' },
+  road:       { name:'The Gold Road', x:44, y:44, icon:'⇄', kind:'site', blurb:'Treasure wagons roll from the mint to the capital every week, guarded by coin-knights.' },
+  tarrow:     { name:'Tarrow Mint', x:18, y:38, icon:'◎', kind:'vault', blurb:'Chimneys, furnaces, and a vault where dragon gold is melted into crowns.' },
+  shaft:      { name:'The Deep Shaft', x:20, y:14, icon:'◒', kind:'site', blurb:'Goblin mines in the north-western hills, dug under contract to the Ledger.' },
+  assay:      { name:'The Old Assay', x:7,  y:57, icon:'✧', kind:'site', blurb:'A ruined tower on the moor where the Ledger once tested gold. Someone still lives there.' },
+  ledgerhall: { name:'Ledgerhall', x:64, y:44, icon:'♜', kind:'city',  blurb:'The capital, and under its golden dome, the Ledger. Every debt in the realm is written here.' },
+  saltbridge: { name:'Saltbridge', x:82, y:80, icon:'◎', kind:'vault', blurb:'The harbour. Its customs house keeps a vault for everything that comes in by sea.' },
+};
+Object.assign(ENEMIES, {
+  coinknight: { name:'Coin-Knight',    art:'V7', sil:'knight', hp:36, tags:['human'], moves:['mace','tithe','shield','mace'], silver:30 },
+  golem:      { name:'Vault Guardian', art:'V8', sil:'troll',  hp:72, tags:['construct'], moves:['windup','slam','grind'] },
+  auditor:    { name:'The Auditor',    art:'V8', sil:'troll',  hp:170, tags:['construct','boss'], moves:['audit','windup','smash','grind','mace'] },
+  vexarGilt:  { name:'Vexar, in gold chains', art:'V5', sil:'troll', hp:140, tags:['frost','boss','dragon'], moves:['coldfire','wingbeat','vchains','brood','coldfire'] },
+});
+Object.assign(MOVES, {
+  mace:  { k:'atk', dmg:10, t:'swings a gilded mace' },
+  tithe: { k:'spc', dmg:3,  t:'takes a tithe of your fire', label:'Tithe' },
+  slam:  { k:'atk', dmg:15, t:'brings both fists down' },
+  grind: { k:'def', blk:16, t:'locks its gears', label:'Lock' },
+  audit: { k:'spc', dmg:6,  t:'reads your debts aloud', label:'Audit' },
+});
+Object.assign(ENCOUNTERS, {
+  tithemen:  { foes:['coinknight'], bg:'A14', flee:false },
+  caravan:   { foes:['coinknight','coinknight'], bg:'A14', flee:true },
+  mint:      { foes:['golem'], bg:'A15', flee:false },
+  customs:   { foes:['coinknight','golem'], bg:'A17', flee:false },
+  bounty:    { foes:['coinknight','hunter','coinknight'], bg:'A16', flee:false },
+  auditor:   { foes:['auditor'], bg:'A15', flee:false },
+  vexarGilt: { foes:['vexarGilt'], bg:'A15', flee:false, redeem:true },
+});
+Object.assign(BG_FALLBACK, {
+  A12:'linear-gradient(180deg,#3a2e18,#1a140a)',
+  A13:'radial-gradient(40% 40% at 60% 30%,rgba(240,196,74,.35),transparent 70%),linear-gradient(180deg,#2a2236,#120e16)',
+  A14:'linear-gradient(180deg,#e0a050 0%,#7a5420 45%,#2a1c0c)',
+  A15:'radial-gradient(50% 40% at 50% 70%,rgba(240,196,74,.4),transparent 70%),linear-gradient(180deg,#1a160e,#0a0806)',
+  A16:'radial-gradient(30% 30% at 50% 20%,rgba(255,220,150,.3),transparent 70%),linear-gradient(180deg,#2a2016,#100c08)',
+  A17:'radial-gradient(30% 20% at 60% 60%,rgba(240,160,80,.35),transparent 70%),linear-gradient(180deg,#1c2a3a,#0a1018)',
+});
+Object.assign(PEOPLE, { P7:{ name:'Oriel Vance', mono:'O' }, P8:{ name:'Madam Selk', mono:'S' }, Q:{ name:'Brother Quill', mono:'Q' } });
+ACH.push(
+  { id:'memory3',  t:'Blood Remembers',   d:'Reclaim three ancestral memories.' },
+  { id:'debtfree', t:'Debts Forgiven',    d:'Burn the Ledger\'s books.' },
+  { id:'returned', t:'Gilded Liberation', d:'Give the Last Hoard back to the people.' },
+  { id:'eternal',  t:'The Eternal Hoard', d:'Keep every coin of the Last Hoard.' },
+  { id:'unsigned', t:'Read the Small Print', d:'Refuse to sign the Ledger.' },
+);
+
+const PERKS = {
+  furnace:  { t:'Deep Furnace',   d:'+1 heat every turn.' },
+  breath:   { t:"Mother's Breath", d:'Your breath hits 3 harder.' },
+  hide:     { t:'Gilded Hide',     d:'Start every fight with 8 block.' },
+  hunger:   { t:'Old Hunger',      d:'Devour works below 35% and heals 16.' },
+  song:     { t:'Song of Gold',    d:'+12 gold every season.' },
+  longlife: { t:'Long Memory',     d:'+15 max health.' },
+};
+const perk = (id, s = S) => !!(s.c3 && s.c3.perks.includes(id));
+function offerPerks(){
+  const left = Object.keys(PERKS).filter(k => !S.c3.perks.includes(k));
+  const a = left.splice(Math.floor(Math.random() * left.length), 1)[0], b = left[Math.floor(Math.random() * left.length)];
+  S.c3.offer = [a, b].filter(Boolean);
+}
+
+function startChapter3(){
+  S.chapter = 3; S.season = 0; S.flights = 3; S.done = {}; S.hunted = -1; S.chapterDone = false;
+  S.c3 = { perks:[], greed:10, bounty:0, offer:[], vaults:{ tarrow:'sealed', saltbridge:'sealed' }, greywater:'indebted' };
+  S.sel = 'greywater'; S.hp = S.maxHp;
+  openScene('ch3open');
+}
+function placeState3(id, s = S){
+  const k = PLACES3[id].kind;
+  if(k === 'lair') return 'warm';
+  if(k === 'vault') return s.c3.vaults[id] === 'open' ? 'reclaimed' : 'sealed';
+  if(id === 'greywater') return s.c3.greywater === 'free' ? 'free' : 'indebted';
+  if(id === 'shaft') return s.flags.shaft ? 'ally' : 'site';
+  if(id === 'ledgerhall') return s.done.great ? 'fallen' : 'ledger';
+  return 'site';
+}
+function eventAt3(id, s = S){
+  const d = s.done, se = s.season, f = s.flags;
+  switch(id){
+    case 'greywater': if(!d.greywater) return { scene:'greywater', label:'The tithe-men are collecting.' }; return null;
+    case 'road': if(d['caravan' + se]) return null; return { scene:'caravan', label: d.selk ? 'A treasure convoy is on the road.' : 'Wagons, and an old woman with a lot of rings.' };
+    case 'shaft': if(!d.shaft) return { scene:'shaft', label:'The rock here sings. So do the goblins.' }; return null;
+    case 'assay': if(!d.quill) return { scene:'quill', label:'A light in the ruined tower.' }; return null;
+    case 'tarrow': if(s.c3.vaults.tarrow === 'sealed' && (f.vaultsKnown || se >= 1)) return { scene:'tarrow', label:'The mint vault. Your blood is in there.' }; return null;
+    case 'saltbridge': if(s.c3.vaults.saltbridge === 'sealed' && (f.vaultsKnown || se >= 1)) return { scene:'saltbridge', label:'The customs vault at the harbour.' }; return null;
+    case 'ledgerhall':
+      if(!d.oriel) return { scene:'oriel', label:'An invitation, sealed in gold wax.' };
+      if(se === 2 && !d.great) return { scene:'greatVault', label:'The Great Vault. It is time.' };
+      return null;
+  }
+  return null;
+}
+const SEASON_OPEN_3 = { 1:'ch3rains', 2:'ch3frost' };
+
+Object.assign(SCENES, {
+ch3open: { bg:'A16', place:'The Hollow Crown', title:'South, Following the Gold',
+  text: (s) => [
+    'You fly south for nine days with a Ledger coin in your claws, and the coin hums louder every day. On the tenth morning the snow ends, and below you lies Veyrmark: gold fields, white roads, and a marble city with a dome that catches the sun like a hoard.',
+    'The coin leads you to a hollow hill in the south-west. Inside, curled around a scatter of dusty gold, lie the bones of a dragon bigger than any living thing you have seen. The coins in the dust hum the same note as the one in your claws.',
+    s.flags.vexar === 'freed' ? 'Vexar lands beside you and goes very still. "This was a dragon\'s lair," he says. "Before the Ledger." He touches the skull with one claw, gently. "We should sleep here."' : 'You sleep there that night, in the curve of the old ribs. You dream in someone else\'s memories.',
+    s.flags.goblins === 'allied' ? 'In the morning Snikkit climbs out of your saddle-bag, where he has apparently been for nine days. "Somebody," he says, "has to count."' : '',
+  ].filter(Boolean),
+  choices:[ { t:'Look out over Veyrmark', fx:{ note:'A new map: Veyrmark' }, go:'map' } ] },
+
+greywater: { bg:'A14', place:'Greywater', title:'Every Door Marked',
+  text:[
+    'In Greywater every door has the same mark painted on it: an open book and a quill. The Ledger\'s mark. It means: this house owes.',
+    'Two coin-knights in gilded plate are walking the street with a scribe, collecting. A family stands outside their house while the knights carry out the table, the chairs, the cradle.',
+    '"Debts are sacred," the scribe tells the father, not unkindly. "Sacred things must be paid."',
+  ],
+  choices:[
+    { t:'Pay their debt from your hoard', h:'40 gold. Greed falls, hope rises.', req:(s) => s.gold >= 40, fx:(s) => { s.c3.greed = Math.max(0, s.c3.greed - 10); s.c3.greywater = 'free'; return { gold:-40, hope:12, done:'greywater', note:'Greywater is free of the Ledger' }; },
+      out:['You drop forty gold on the scribe\'s ledger. He stares at it, then at you, then writes PAID IN FULL with a hand that is shaking badly.','By evening someone has painted over every Ledger mark in Greywater. In its place, rough and red: a dragon.'] },
+    { t:'Throw the knights out', fight:{ enc:'tithemen', win:'greywaterWon', lose:'defeat' } },
+    { t:'This is not your fight', fx:{ done:'greywater', hope:-4 }, out:['The cradle goes onto the cart. The family watches you leave. So does the scribe, and he writes down which way you flew.'] },
+  ] },
+greywaterWon: { bg:'A14', place:'Greywater', title:'Paid in Fire',
+  text:['The coin-knight goes into the river in his gilded plate and comes out much less gilded. The scribe drops his ledger and runs.','Greywater burns the ledger in the square that night and dances around it.'],
+  choices:[ { t:'Fly home', fx:(s) => { s.c3.greywater = 'free'; s.c3.bounty += 10; return { hope:10, dread:3, done:'greywater', note:'Bounty on your head rises' }; } } ] },
+
+caravan: { bg:'A14', who:'P8', place:'The Gold Road', title: (s) => s.done.selk ? 'Treasure Wagons' : 'Madam Selk',
+  text: (s) => s.done.selk ? [
+    'Six iron-banded wagons roll towards Ledgerhall, guarded by coin-knights. Every wagon hums. Every coin in them was once a dragon\'s.',
+    s.flags.selk ? 'Madam Selk was right about the time and the road. She is always right about roads.' : '',
+  ].filter(Boolean) : [
+    'An old woman sits on the lead wagon of a caravan that is very obviously not a Ledger caravan: painted wheels, goats, a parrot. She watches you land and does not stop knitting.',
+    '"Madam Selk," she says. "Forty years on these roads. I know when every Ledger convoy leaves the mint, which knights are drunk and which bridges are rotten." She holds up the knitting. "Information has a price. A cut of what you take. Fair?"',
+  ],
+  choices:[
+    { t:'Deal: she gets a cut', req:(s) => !s.done.selk, fx:{ flags:{ selk:true, vaultsKnown:true }, done:'selk', note:'Selk will report the convoys and the vaults' },
+      out:['"Lovely," says Selk. "First thing for free: the mint at Tarrow and the customs house at Saltbridge both keep dragon gold in their vaults. Old gold. Yours, I suspect." She tilts her head. "You can hear it, can\'t you."'] },
+    { t:'No deals', req:(s) => !s.done.selk, fx:{ done:'selk' }, out:['"Suit yourself," says Selk, and drives on. The parrot says something rude about dragons.'] },
+    { t:'Raid the convoy', req:(s) => !!s.done.selk, fight:{ enc:'caravan', win:'caravanWon', lose:'defeat' } },
+    { t:'Let it pass', req:(s) => !!s.done.selk, go:'map', refund:true },
+  ] },
+caravanWon: { bg:'A14', place:'The Gold Road', title:'Wagons on Their Sides',
+  text:['The convoy lies scattered across the road, wheels still turning. The gold is warm by the time you have gathered it.'],
+  choices:[ { t:'Fly home', fx:(s) => { s.done['caravan' + s.season] = true; s.c3.bounty += 8; s.c3.greed += 6; const cut = s.flags.selk ? 15 : 0; return { gold:55 - cut, note: cut ? 'Selk takes her cut' : 'The Ledger raises your bounty' }; } } ] },
+
+shaft: { bg:'A5', who:'P1', place:'The Deep Shaft', title: (s) => s.flags.goblins ? 'Cousins' : 'The Deep Shaft',
+  text: (s) => [
+    'The goblins of the Deep Shaft dig for the Ledger, under a contract nobody can read because the Ledger wrote it. They are thin, and grey with dust, and they sing while they work: the same note the coins sing.',
+    s.flags.goblins ? 'Their forewoman takes one look at Snikkit and shrieks. "Gnash\'s nephew! The one who can count!" Snikkit turns a dignified purple.' : 'Their forewoman, a goblin with a pickaxe taller than she is, looks at you for a long time. "You hear it too," she says. "The singing."',
+    '"The contract says we dig until the debt is paid," she says. "The debt is never paid."',
+  ],
+  choices:[
+    { t:'Buy out their contract', h:'50 gold. They dig for you instead.', req:(s) => s.gold >= 50, fx:{ gold:-50, flags:{ shaft:true, vaultsKnown:true }, done:'shaft', hope:6 },
+      out:['The forewoman tears the contract in half, then in quarters, then eats a quarter for good measure. The Deep Shaft is yours. They will dig gold, and they will tell you where every vault in Veyrmark sings loudest.'] },
+    { t:'Tell them to walk out', h:'Free. The Ledger will notice.', fx:(s) => { s.c3.bounty += 8; return { flags:{ shaft:true, vaultsKnown:true }, done:'shaft', hope:8, dread:2 }; },
+      out:['They walk out singing, four hundred goblins with pickaxes, straight past the Ledger\'s overseer, who wisely says nothing at all.'] },
+  ] },
+
+quill: { bg:'A6', who:'Q', place:'The Old Assay', title:'Brother Quill',
+  text:[
+    'The ruined tower is full of books, and the books are full of numbers, and in the middle of them sits an old man with ink up to his elbows.',
+    '"Brother Quill. Former assayer to the Ledger. Former believer." He shows you a page. "Every coin the Ledger owns, listed. Weight, purity, origin. Origin." His finger taps a column. "Dragon. Dragon. Dragon. Three hundred years of stolen hoards, and they kept the receipts."',
+    '"Gold remembers," he says. "If you listen to it right, it will tell you who it belonged to. And what they knew."',
+  ],
+  choices:[ { t:'Teach me to listen', h:'Your first ancestral memory.', fx:(s) => { offerPerks(); return { done:'quill', flags:{ vaultsKnown:true } }; }, go:'memory' } ] },
+
+memory: { bg:'A16', place:'A memory', title:'The Gold Remembers',
+  text:['You lie on the old gold and listen. Under the humming there are voices, and under the voices there are lives: dragons who flew before the Quench, who knew things you were never taught.','Two memories rise. You can only hold one.'],
+  choices: (s) => (s.c3.offer || []).map(k => ({ t:PERKS[k].t, h:PERKS[k].d, fx:(st) => { st.c3.perks.push(k); if(k === 'longlife'){ st.maxHp += 15; st.hp += 15; } if(st.c3.perks.length >= 3) unlock('memory3'); return { note:`Memory: ${PERKS[k].t}` }; } })) },
+
+tarrow: { bg:'A15', place:'Tarrow Mint', title:'The Furnaces of Tarrow',
+  text:['Under the mint, behind a round iron door, the vault of Tarrow holds the gold that has not yet been melted into crowns. You can hear it from the street: a chorus, all on one note.','In front of the door stands a guardian of brass and coins, older than the Ledger. Its keyhole chest begins to glow.'],
+  choices:[ { t:'Break the vault', fight:{ enc:'mint', win:'tarrowWon', lose:'defeat' } } ] },
+tarrowWon: { bg:'A15', place:'Tarrow Mint', title:'Unmelted',
+  text:['The guardian comes apart in a rain of coins. Behind it, the vault: and in the vault, a hoard that has been waiting for you for three hundred years.'],
+  choices:[ { t:'Take it home, and listen', fx:(s) => { s.c3.vaults.tarrow = 'open'; s.c3.bounty += 10; offerPerks(); return { gold:70 }; }, go:'memory' } ] },
+saltbridge: { bg:'A17', place:'Saltbridge', title:'The Customs House',
+  text: (s) => [
+    'Saltbridge\'s customs house stands on the quay like a fist. Its vault is underneath, below the waterline, where the Ledger keeps what comes in from the sea.',
+    s.flags.selk ? 'Madam Selk has one of her nephews on the night watch. The side door is unlocked. The guardian is not.' : 'A coin-knight paces the quay. Below, something heavy turns its gears.',
+  ],
+  choices:[ { t:'Go in', fight:{ enc:'customs', win:'saltbridgeWon', lose:'defeat' } } ] },
+saltbridgeWon: { bg:'A17', place:'Saltbridge', title:'Below the Waterline',
+  text:['The vault floods as you break it, and the gold comes up out of the black water singing.'],
+  choices:[ { t:'Take it home, and listen', fx:(s) => { s.c3.vaults.saltbridge = 'open'; s.c3.bounty += 10; offerPerks(); return { gold:80 }; }, go:'memory' } ] },
+
+oriel: { bg:'A13', who:'P7', place:'Ledgerhall', title:'An Invitation',
+  text:[
+    'The invitation is delivered by a coin-knight who does not draw his mace. It is written in gold ink: Assayer-General Oriel Vance requests the pleasure of a conversation.',
+    'She meets you on the steps of the golden dome, alone, with a ledger under her arm. "We are not the Quench," she says. "We do not hate you. We do not hate anything. We simply keep accounts."',
+    '"So, an account. Sign your name in the Ledger, and you will be paid two hundred gold every season, for as long as you live. In return you will not touch our vaults." She opens the book. There is a line waiting, and a quill. "It is a very good offer. It is a very long life."',
+  ],
+  choices:[
+    { t:'Sign', h:'Gold every season. Read the small print?', fx:{ flags:{ signed:true }, done:'oriel', gold:60 },
+      out:['You sign. The ink is warm. Oriel Vance smiles for the first time and closes the book very gently.','Only later does Snikkit read the clause on the next page, the one in very small letters: a dragon who signs the Ledger is itself an asset of the Ledger, to be collected upon default.'] },
+    { t:'Refuse', fx:{ done:'oriel', hope:4, ach:'unsigned' }, out:['"A pity," says Oriel Vance, and means it. "Debts are sacred, dragon. Even the ones you refuse to owe."'] },
+    { t:'Burn the book in her hands', fx:(s) => { s.c3.bounty += 15; return { done:'oriel', dread:10, wild:5 }; },
+      out:['The book goes up in your fire. Oriel Vance does not let go of it until it is ash. Then she looks at her burned hands, and then at you, and writes something on her cuff with a finger of soot.','Every coin-knight in Veyrmark is looking for you by nightfall.'] },
+  ] },
+
+bounty: { bg:'A16', place:'The Hollow Crown', title:'Collectors',
+  text: (s) => [`The Ledger has put a price on your head: ${100 + s.c3.bounty * 5} crowns. The collectors come at night, into your hollow hill, with nets and gilded maces.`],
+  choices:[ { t:'Defend your lair', fight:{ enc:'bounty', win:'bountyWon', lose:'defeat' } } ] },
+bountyWon: { bg:'A16', place:'The Hollow Crown', title:'Returned to Sender',
+  text:['You send the collectors back to Ledgerhall without their maces, their nets or, in one case, their trousers.'],
+  choices:[ { t:'Rest', fx:{ gold:30, dread:4, done:'bounty' } } ] },
+
+ch3rains: { bg:'A13', place:'Veyrmark', title:'The Rains',
+  text: (s) => [
+    'The autumn rains come, and with them, news. The Ledger has doubled the guard on every road. The price of bread in Ledgerhall has risen twice in a month: there is less gold in circulation than there used to be, and everyone knows why.',
+    s.c3.greed >= 40 ? 'In Greywater, people have started saying the dragon is no better than the bank. Just bigger.' : 'In Greywater, children play dragon-and-knights in the mud, and the dragon always wins.',
+  ],
+  choices:[ { t:'Fly', go:'map' } ] },
+ch3frost: { bg:'A13', who:'P7', place:'Ledgerhall', title:'First Frost',
+  text: (s) => [
+    'The first frost silvers the golden dome. Oriel Vance has closed the city gates.',
+    s.flags.signed ? 'A letter arrives under gold seal: the Ledger finds you in breach of contract, and will be collecting the asset in person.' : 'A letter arrives under gold seal. It contains a single line: Come and audit us, then.',
+    'Under Ledgerhall lies the Great Vault, and in it, they say, the Last Hoard: the gold of every dragon the Quench ever drowned.',
+  ],
+  choices:[ { t:'Fly', go:'map' } ] },
+
+greatVault: { bg:'A15', who:'P7', place:'The Great Vault', title:'The Last Hoard',
+  text: (s) => [
+    'The Great Vault is not a room. It is a cathedral underground: gold in hills, in drifts, in rivers, under a ceiling painted with every dragon the Quench drowned, and beside each dragon, its weight in crowns.',
+    'Oriel Vance stands on a balcony of ledgers. "Three hundred years of accounts," she says. "Every coin a dragon. Every dragon a coin. It balances. It always balances."',
+    s.flags.vexar === 'fled' ? 'Below her, chained in gold instead of iron, crouches Vexar. The Ledger bought him from what was left of the Quench. "An asset," says Oriel Vance, "to collect an asset."' : s.flags.vexar === 'freed' ? 'Behind you, Vexar\'s breath goes blue in the dark. From the far end of the vault, something enormous and brass begins to turn its gears. "The Auditor," says Oriel Vance. "It has never once been wrong."' : 'From the far end of the vault, something enormous and brass begins to turn its gears. "The Auditor," says Oriel Vance. "It has never once been wrong."',
+  ],
+  choices:[ { t:'Fight', fx:{ done:'great' }, fight:{ enc:'__great', win:'greatWon', lose:'greatLost' } } ] },
+greatWon: { bg:'A15', who:'P7', place:'The Great Vault', title: (s) => s.flags.giltFreed ? 'Brothers' : 'The Accounts Close',
+  text: (s) => s.flags.giltFreed ? [
+    'Gold chains melt the way iron ones do, if the fire is given and not taken. Vexar shakes them off and looks at you, and then up at Oriel Vance on her balcony, and for the first time in his life his breath is not blue. It is the colour of yours.',
+  ] : [
+    'The last of your enemies falls, and the vault is silent but for the humming of three hundred years of gold.',
+  ],
+  choices:[ { t:'Climb to the balcony', fx:(s) => s.flags.giltFreed ? { hope:12, flags:{ vexar:'freed' }, ach:'brother' } : {}, go:'lastHoard' } ] },
+greatLost: { bg:'A15', who:'P7', place:'The Great Vault', title:'Collected',
+  text:['You wake in chains of gold, in a cage of gold, while Oriel Vance writes the date in her ledger. It takes Snikkit, the goblins of the Deep Shaft and half of Greywater three days to dig you out.','When they do, Oriel Vance is waiting at the vault door, alone. She has not run. Accountants do not run.'],
+  choices:[ { t:'Face her', fx:{ hope:-6 }, go:'lastHoard' } ] },
+lastHoard: { bg:'A15', who:'P7', place:'The Great Vault', title:'The Eternal Hoard',
+  text:[
+    'Oriel Vance closes her ledger. "Well," she says. "It is yours. Every coin. What will you do with it? Lend it out? Spend it? Sleep on it, like your mother did?" She smiles thinly. "Or will you burn the books and let the whole realm forget what it owes? Choose carefully. Whoever holds this gold holds Veyrmark."',
+  ],
+  choices:[
+    { t:'Give it back to the people', h:'Every village, every debt. Greed falls to nothing.', fx:(s) => { s.c3.greed = 0; return { hope:20, gold:100, flags:{ last:'returned' }, ach:'returned' }; }, go:'ch3end' },
+    { t:'Burn the Ledger\'s books', h:'All debts forgotten. The realm in chaos, and free.', fx:{ hope:12, dread:8, gold:300, flags:{ last:'burned' }, ach:'debtfree' }, go:'ch3end' },
+    { t:'Keep it. All of it.', h:'The Eternal Hoard. You become the bank.', fx:(s) => { s.c3.greed = 100; return { gold:1000, dread:15, hope:-10, flags:{ last:'kept' }, ach:'eternal' }; }, go:'ch3end' },
+  ] },
+ch3end: { bg:'A13', place:'Ledgerhall', title:'The Gilded Debt',
+  text: (s) => [
+    { returned:'For a month, every village in Veyrmark wakes up to find gold on its doorstep, warm to the touch. The golden dome is turned into a granary. Oriel Vance is given a desk in it, and a ledger, and the job of counting bread.',
+      burned:'The Ledger burns for a week, and with it every debt in Veyrmark. Nobody knows who owns what anymore. Nobody owes anybody. It is chaos, and it is the happiest chaos the south has ever known.',
+      kept:'You sleep on the Last Hoard under the golden dome, and Veyrmark learns to pay its debts to you instead. The gold is very warm. The realm is very quiet. Some nights, very faintly, you hear the coins singing your mother\'s name, and you cannot remember whether they ever sang anything else.' }[s.flags.last],
+    'Deep in the vault, under the last drift of gold, you find one thing that is not a coin: a stone tablet, older than the Ledger and older than the Quench, carved with a single word in the old tongue of dragons and men.',
+    'Covenant.',
+  ],
+  choices:[ { t:'End of chapter three', go:'end' } ] },
+});
 /* ═══════════ BATTLE ═══════════ */
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 const rnd = () => Math.random();
@@ -1077,6 +1346,7 @@ const rnd = () => Math.random();
 function pow(){ return STAGE_POW[S.stage] * (1 + S.wild / 200); }
 function startBattle(encId, win, lose){
   if(encId === '__pines') encId = S.season >= 2 ? 'pack' : 'wolves';
+  if(encId === '__great') encId = S.flags.vexar === 'fled' ? 'vexarGilt' : 'auditor';
   const enc = ENCOUNTERS[encId];
   const hpScale = 1 + S.season * 0.12 + ((S.chapter || 1) >= 2 ? .3 : 0);
   const foes = enc.foes.map((k, i) => {
@@ -1086,6 +1356,7 @@ function startBattle(encId, win, lose){
   const B = { enc:encId, breakAt:enc.breakAt || 0, redeem:!!enc.redeem, bg:enc.bg, flee:enc.flee, foes, tgt:0, turn:1, win, lose, busy:false, log:'', dawn:enc.dawn || 0,
     me:{ heat:4, st:{} } };
   if(S.flags.ward) B.me.st.block = 8;
+  if(perk('hide')) B.me.st.block = (B.me.st.block || 0) + 8;
   foes.forEach(f => {
     if(f.tags.includes('beast') && S.dread >= 35) f.st.fear = 2;
     if(f.tags.includes('human') && S.dread >= 60) f.st.fear = 2;
@@ -1125,7 +1396,7 @@ function intentView(f){
 function actions(B){
   const L = S.look, forge = S.upgrades.forge;
   const t = B.foes[B.tgt];
-  const canDevour = t && t.hp > 0 && !t.tags.includes('boss') && t.hp <= t.max * .25;
+  const canDevour = t && t.hp > 0 && !t.tags.includes('boss') && !t.tags.includes('construct') && t.hp <= t.max * (perk('hunger') ? .35 : .25);
   const list = [
     { id:'claw',   name:'Claw',  d:`${Math.round((5 + forge * 3) * pow())} damage`, cost:0 },
     { id:'breath', name:BREATH[L.element].name, d:BREATH[L.element].d, cost:4, cls:'breath' },
@@ -1134,6 +1405,7 @@ function actions(B){
     { id:'roar',   name:'Roar',  d:'Enemies hit 30% softer for 2 turns', cost:1 },
   ];
   if(B.redeem && t && t.hp > 0 && t.hp <= t.max * .5 && canRedeem()) list.unshift({ id:'offer', name:'Offer your fire', d:'Breathe warmth into his chains, not into him', cost:4, cls:'breath' });
+  if((S.chapter || 1) >= 3 && S.flags.vexar === 'freed' && !B.vexarUsed && B.enc !== 'vexarGilt') list.push({ id:'vexar', name:'Call Vexar', d:'Cold fire on every enemy. Once per fight.', cost:0, cls:'breath' });
   if(canDevour) list.push({ id:'devour', name:'Devour', d:'Finish it. Heal 10.', cost:0 });
   else if(B.flee) list.push({ id:'flee', name:'Fly away', d:'Leave the fight', cost:0 });
   return list;
@@ -1142,6 +1414,7 @@ function actions(B){
 function hit(B, f, amount, opts = {}){
   if(f.hp <= 0) return 0;
   let d = Math.max(0, Math.round(amount));
+  if(opts.breath && perk('breath')) d += 3;
   if(opts.breath && f.tags.includes('frost')) d = Math.round(d * 1.5);
   if(f.st.block){ const a = Math.min(f.st.block, d); f.st.block -= a; d -= a; if(a) fx('blk', f, `⛨${a}`); }
   f.hp = Math.max(0, f.hp - d);
@@ -1173,7 +1446,7 @@ async function playerAct(id){
     case 'tail': {
       const tb = S.upgrades.forge * 2;
       anim('claw', t);
-      if(S.look.tail === 'club'){ const d = hit(B, t, (6 + tb) * P - chillPen); if(t.hp > 0 && !t.st.stunImmune && !t.tags.includes('boss')){ t.st.stun = 1; B.log = `Your tail club lands: ${d}. ${t.name} is stunned.`; } else B.log = `Your tail club lands: ${d}.${t.tags.includes('boss') ? ' Too big to stun.' : ''}`; }
+      if(S.look.tail === 'club'){ const d = hit(B, t, (6 + tb) * P - chillPen); if(t.hp > 0 && !t.st.stunImmune && !t.tags.includes('boss') && !t.tags.includes('construct')){ t.st.stun = 1; B.log = `Your tail club lands: ${d}. ${t.name} is stunned.`; } else B.log = `Your tail club lands: ${d}.${t.tags.includes('boss') ? ' Too big to stun.' : ''}`; }
       if(S.look.tail === 'whip'){ let d = 0; for(let k = 0; k < 3; k++) d += hit(B, t, (3 + tb / 2) * P - chillPen / 2); B.log = `Three lashes: ${d} damage.`; }
       if(S.look.tail === 'venom'){ const d = hit(B, t, (3 + tb) * P); if(t.hp > 0) t.st.poison = (t.st.poison || 0) + 4; B.log = `The barb sinks in: ${d}, and poison.`; }
       if(S.look.tail === 'fin'){ let tot = 0; alive(B).forEach(f => tot += hit(B, f, (4 + tb) * P - chillPen)); me.st.evade = 1; B.log = `You sweep the field: ${tot} damage. You will dodge the next blow.`; }
@@ -1189,11 +1462,12 @@ async function playerAct(id){
       break; }
     case 'roar': alive(B).forEach(f => f.st.fear = 2); S.wild = clamp(S.wild + 1, 0, 100); B.log = 'You roar. The mountain answers. They falter.'; anim('roar'); break;
     case 'devour': {
-      t.hp = 0; S.hp = Math.min(S.maxHp, S.hp + 10); S.wild = clamp(S.wild + 3, 0, 100);
+      t.hp = 0; S.hp = Math.min(S.maxHp, S.hp + (perk('hunger') ? 16 : 10)); S.wild = clamp(S.wild + 3, 0, 100);
       if(t.tags.includes('human')){ S.dread = clamp(S.dread + 4, 0, 100); S.hope = clamp(S.hope - 2, 0, 100); }
       fx('heal', 'me', '+10'); B.log = `You finish ${t.name} the old way.`; break; }
     case 'flee': B.busy = false; return endBattle(B, 'fled');
-    case 'offer': S.flags.vexarFreed = true; B.log = 'You breathe on the chains. Not on him. On the chains.'; anim('breath', t); render(); await sleep(900); return endBattle(B, 'win');
+    case 'vexar': B.vexarUsed = true; alive(B).forEach(f => { hit(B, f, 12 * P); f.st.fear = 1; }); B.log = 'Vexar dives out of the dark and breathes. The cold fire takes them all.'; anim('breath'); break;
+    case 'offer': if(B.enc === 'vexarGilt') S.flags.giltFreed = true; else S.flags.vexarFreed = true; B.log = 'You breathe on the chains. Not on him. On the chains.'; anim('breath', t); render(); await sleep(900); return endBattle(B, 'win');
   }
   render();
   await sleep(420);
@@ -1222,9 +1496,11 @@ async function enemyPhase(B){
     };
     switch(f.intent){
       case 'howl': alive(B).forEach(x => x.st.fury = (x.st.fury || 0) + 1); B.log = 'The wolves howl, and their eyes go bright.'; break;
-      case 'shield': case 'rime': case 'brood': f.st.block = m.blk; B.log = `${f.name} ${m.t}.`; break;
+      case 'shield': case 'rime': case 'brood': case 'grind': f.st.block = m.blk; B.log = `${f.name} ${m.t}.`; break;
       case 'windup': B.log = 'The Grinder raises his club high. Brace yourself.'; break;
       case 'douse': { const d = strike(m.dmg); if(d >= 0){ me.st.soak = 2; me.heat = Math.max(0, me.heat - 1); B.log = `${f.name} douses you in ice water (${d}). Your fire sputters.`; } break; }
+      case 'tithe': { const d = strike(m.dmg); if(d >= 0){ me.heat = Math.max(0, me.heat - 2); B.log = `${f.name} takes a tithe of your fire (${d}). You lose 2 heat.`; } break; }
+      case 'audit': { const d = strike(m.dmg); if(d >= 0){ me.heat = 0; B.log = `The Auditor reads your debts aloud (${d}). Your fire goes out.`; } break; }
       case 'chill': case 'coldfire': { const d = strike(m.dmg); if(d >= 0){ me.st.chill = 2; B.log = `Frost creeps over your scales (${d}). You feel slow.`; } break; }
       case 'chain': case 'net': case 'vchains': { const d = strike(m.dmg); if(d >= 0){ me.st.stun = 1; B.log = `Iron chains snap around your wings (${d}). You lose your next turn.`; } break; }
       case 'mend': { const w = alive(B).filter(x => x !== f).sort((a, b) => a.hp / a.max - b.hp / b.max)[0]; if(w){ w.hp = Math.min(w.max, w.hp + 10); fx('heal', w, '+10'); B.log = `${f.name} mends ${w.name}.`; } break; }
@@ -1245,7 +1521,7 @@ async function enemyPhase(B){
   });
   ['chill','soak'].forEach(k => { if(me.st[k]){ me.st[k]--; if(!me.st[k]) delete me.st[k]; } });
   delete me.st.thorns;
-  const regen = 2 - (me.st.chill ? 1 : 0) + (me.st.heatNext || 0); delete me.st.heatNext;
+  const regen = 2 + (perk('furnace') ? 1 : 0) - (me.st.chill ? 1 : 0) + (me.st.heatNext || 0); delete me.st.heatNext;
   me.heat = Math.min(10, me.heat + regen);
   me.st.block = 0;
   B.turn++;
@@ -1297,7 +1573,7 @@ function fxChips(list){ return list && list.length ? `<div class="fx">${list.map
 /* ── top bar ── */
 function topbar(){
   if(!S.name) return '';
-  const se = SEASONS[Math.min(S.season, 3)], fl = se.flights;
+  const se = SEAS()[Math.min(S.season, SEAS().length - 1)], fl = se.flights;
   const pips = Array.from({ length: fl }, (_, i) => `<i class="${i < S.flights ? 'on' : ''}"></i>`).join('');
   return `<div class="bar">
     <div class="bar-top"><span class="bar-name">${esc(S.name)} · ${STAGES[S.stage]}</span><span class="bar-season">${se.name}<span class="pips" title="Flights left">${pips}</span></span></div>
@@ -1317,7 +1593,7 @@ function vTitle(){
       <button class="btn ghost" data-a="feats">Feats ${Object.keys(META.ach).length}/${ACH.length}</button>
     </div>
     ${UI.feats ? `<div class="stack" style="text-align:left">${ACH.map(a => `<div class="line ${META.ach[a.id] ? 'good' : ''}"><span><b style="font-family:var(--f-d)">${a.t}</b><br><span class="muted small">${a.d}</span></span><b>${META.ach[a.id] ? '✓' : ''}</b></div>`).join('')}</div>` : ''}
-    <p class="note">Chapters one and two · early preview<br><a href="../" style="color:var(--dim)">Play the original saga</a></p>
+    <p class="note">Three chapters · early preview<br><a href="../" style="color:var(--dim)">Play the original saga</a></p>
   </div>`;
 }
 
@@ -1348,7 +1624,7 @@ function vScene(){
     <h2>${tx(R(sc.title))}</h2>
     ${fxChips(pend)}
     <div class="prose">${text.map(p => `<p class="${p.startsWith('"') ? 'say' : ''}">${tx(p)}</p>`).join('')}</div>
-    <div class="choices">${sc.choices.map((c, i) => {
+    <div class="choices">${R(sc.choices).map((c, i) => {
       const locked = c.req && !c.req(S);
       return `<button class="choice ${c.fight ? 'fight' : ''} ${locked ? 'locked' : ''}" data-a="choose" data-i="${i}" ${locked ? 'disabled' : ''}><span class="t">${tx(c.t)}</span>${c.h ? `<span class="h">${tx(c.h)}</span>` : ''}</button>`;
     }).join('')}</div>
@@ -1375,22 +1651,22 @@ const MAP_SVG = `<svg class="base" viewBox="0 0 300 200" preserveAspectRatio="no
 <path d="M0 30 C60 24 120 20 180 22 C230 24 270 18 300 14" fill="none" stroke="#cfe3ef" stroke-opacity=".15" stroke-width="1" stroke-dasharray="3 4"/>
 </svg>`;
 function vMap(){
-  const sel = S.sel || 'kettle', P = PLACES[sel];
-  const pins = Object.entries(PLACES).filter(([id, p]) => !p.ch || p.ch <= (S.chapter || 1)).map(([id, p]) => {
+  const PLs = PL(); const sel = PLs[S.sel] ? S.sel : Object.keys(PLs)[1], P = PLs[sel]; const ch3 = (S.chapter || 1) >= 3;
+  const pins = Object.entries(PLs).filter(([id, p]) => !p.ch || p.ch <= (S.chapter || 1)).map(([id, p]) => {
     const st = placeState(id), ev = eventAt(id);
-    const cls = [id === 'lair' ? 'lair' : '', st === 'warm' || st === 'kindled' || st === 'saved' ? 'warm' : '', st === 'lost' ? 'lost' : '', st === 'locked' ? 'locked' : '', ev && S.flights > 0 ? 'event' : '', id === sel ? 'sel' : ''].join(' ');
+    const cls = [p.kind === 'lair' ? 'lair' : '', ['warm','kindled','saved','free','ally','reclaimed','fallen'].includes(st) ? 'warm' : '', st === 'lost' ? 'lost' : '', st === 'locked' ? 'locked' : '', ev && S.flights > 0 ? 'event' : '', id === sel ? 'sel' : ''].join(' ');
     return `<button class="pin ${cls}" style="left:${p.x}%;top:${p.y}%" data-a="sel" data-v="${id}" aria-label="${esc(p.name)}"><span class="dot">${p.icon}</span><span class="nm">${esc(p.name)}</span>${ev && S.flights > 0 ? '<span class="ex"></span>' : ''}</button>`;
   }).join('');
   const st = placeState(sel), ev = eventAt(sel);
-  const tagTxt = { warm:'Warm', kindled:'Kindled', saved:'Saved', frozen:'Frozen', lost:'Lost', locked:'Chapter 2' }[st];
-  const tagCls = { warm:'warm', kindled:'warm', saved:'warm', frozen:'frozen', lost:'lost', locked:'frozen' }[st];
+  const tagTxt = { warm: ch3 ? 'Yours' : 'Warm', kindled:'Kindled', saved:'Saved', frozen:'Frozen', lost:'Lost', locked:'Chapter 2', sealed:'Sealed vault', reclaimed:'Reclaimed', free:'Free', indebted:'In debt', ally:'Allies', site:'Open', ledger:'The Ledger', fallen:'Fallen' }[st] || st;
+  const tagCls = { warm:'warm', kindled:'warm', saved:'warm', frozen:'frozen', lost:'lost', locked:'frozen', reclaimed:'warm', free:'ally', ally:'ally', fallen:'warm' }[st] || 'frozen';
   let extra = '';
   if(sel === 'warren' && S.flags.goblins) extra = `<span class="tag ally">${{ allied:'Allies', vassal:'Vassals', terrified:'Terrified' }[S.flags.goblins]}</span>`;
   let info;
-  if(sel === 'lair'){
-    info = `<p class="muted small">Your hoard is your hearth. The more gold you sleep on, the further your warmth reaches. Warmth range is ${glowLevel()} now.</p><button class="btn primary" data-a="lair">Enter your lair</button>`;
+  if(P.kind === 'lair'){
+    info = `<p class="muted small">${ch3 ? 'Your new lair. Rest, build and listen to the gold.' : `Your hoard is your hearth. The more gold you sleep on, the further your warmth reaches. Warmth range is ${glowLevel()} now.`}</p><button class="btn primary" data-a="lair">Enter your lair</button>`;
   } else {
-    const d = Math.round(dist(P, LAIR));
+    const d = Math.round(dist(P, ch3 ? LAIR3 : LAIR));
     info = `<p class="muted small">${esc(P.blurb || '')}</p>
       ${P.kind === 'village' && st === 'frozen' ? `<p class="small" style="color:var(--frost)">Outside your warmth (distance ${d}, your range ${glowLevel()}). Kindle it, or grow your hoard, before winter.</p>` : ''}
       <p class="small" style="color:${ev ? 'var(--gold-hi)' : 'var(--faint)'}">${ev ? '✦ ' + esc(ev.label) : 'Nothing calls you here this season.'}</p>
@@ -1398,17 +1674,18 @@ function vMap(){
   }
   const m = (label, v, col) => `<div class="meter"><span class="label">${label}</span><b>${v}</b><span class="mv"><i style="width:${v}%;background:${col}"></i></span></div>`;
   return `<div class="mapview fade-in">
-    <div class="vis"><div class="mapbox" id="mapbox">${MAP_SVG}<img class="base" src="${ART.bg('A2')}" alt="" onerror="this.remove()" style="object-fit:cover"><canvas id="frost"></canvas>${pins}</div></div><div class="col">
+    <div class="vis"><div class="mapbox" id="mapbox">${MAP_SVG}<img class="base" src="${ART.bg(ch3 ? 'A12' : 'A2')}" alt="" onerror="this.remove()" style="object-fit:cover"><canvas id="frost"></canvas>${pins}</div></div><div class="col">
     <div class="mapinfo"><h3>${esc(P.name)}<span style="display:flex;gap:6px">${extra}<span class="tag ${tagCls}">${tagTxt}</span></span></h3>${info}</div>
-    <div class="meters">${m('Hope', S.hope, 'var(--hope)')}${m('Dread', S.dread, 'var(--dread)')}${m('Wildness', S.wild, 'var(--wild)')}</div>
+    <div class="meters">${m('Hope', S.hope, 'var(--hope)')}${m('Dread', S.dread, 'var(--dread)')}${ch3 ? m('Greed', S.c3.greed, 'var(--gold-hi)') : m('Wildness', S.wild, 'var(--wild)')}</div>
     <button class="btn ghost" data-a="endseason">${UI.confirmEnd ? 'Tap again: let the season turn' : S.flights > 0 ? `Let the season turn (${S.flights} flight${S.flights > 1 ? 's' : ''} unused)` : 'Let the season turn'}</button>
-    ${(S.chapter || 1) >= 2 ? `<p class="hint">${S.season < 2 ? `${2 - S.season} season${2 - S.season > 1 ? 's' : ''} until the Grey Hold opens.` : 'The Grey Hold is open. The bell is ringing.'}</p>` : S.season < 3 ? `<p class="hint">${3 - S.season} season${3 - S.season > 1 ? 's' : ''} until winter. Villages outside your warmth when it comes will be lost.</p>` : ''}
+    ${ch3 ? `<p class="hint">${S.season < 2 ? `${2 - S.season} season${2 - S.season > 1 ? 's' : ''} until the Great Vault.` : 'The Great Vault is waiting under Ledgerhall.'} Bounty on your head: ${100 + S.c3.bounty * 5} crowns.</p>` : (S.chapter || 1) >= 2 ? `<p class="hint">${S.season < 2 ? `${2 - S.season} season${2 - S.season > 1 ? 's' : ''} until the Grey Hold opens.` : 'The Grey Hold is open. The bell is ringing.'}</p>` : S.season < 3 ? `<p class="hint">${3 - S.season} season${3 - S.season > 1 ? 's' : ''} until winter. Villages outside your warmth when it comes will be lost.</p>` : ''}
   </div></div>`;
 }
 
 let frostTex = null, shownR = null;
 function drawFrost(){
   const box = document.getElementById('mapbox'), cv = document.getElementById('frost'); if(!box || !cv) return;
+  if((S.chapter || 1) >= 3){ cv.width = 1; cv.height = 1; return; }
   const W = box.clientWidth, H = box.clientHeight, dpr = Math.min(2, devicePixelRatio || 1);
   cv.width = W * dpr; cv.height = H * dpr;
   const x = cv.getContext('2d'); x.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -1441,12 +1718,13 @@ function drawFrost(){
 }
 
 function vLair(){
+  const ch3 = (S.chapter || 1) >= 3;
   const restHeal = S.upgrades.pool ? S.maxHp - S.hp : Math.min(S.maxHp - S.hp, Math.round(S.maxHp * .5));
   return `<div class="lair fade-in">
-    <div class="vis">${plate('A3', null, 'Your lair')}
-    <div class="hoardbox"><div class="big g"><div class="label">Hoard</div><div class="n">◆ ${S.gold}</div></div><div class="big w"><div class="label">Warmth range</div><div class="n">☀ ${glowLevel()}</div></div></div></div><div class="col">
-    <p class="muted small" style="margin:0">Every 12 gold in your hoard pushes your warmth one step further (up to 16). Upgrades cost gold, but their warmth is permanent.</p>
-    ${UPGRADES.map(u => {
+    <div class="vis">${plate(ch3 ? 'A16' : 'A3', null, ch3 ? 'The Hollow Crown' : 'Your lair')}
+    <div class="hoardbox"><div class="big g"><div class="label">Hoard</div><div class="n">◆ ${S.gold}</div></div>${ch3 ? `<div class="big w"><div class="label">Memories</div><div class="n">✧ ${S.c3.perks.length}</div></div>` : `<div class="big w"><div class="label">Warmth range</div><div class="n">☀ ${glowLevel()}</div></div>`}</div></div><div class="col">
+    ${ch3 ? (S.c3.perks.length ? `<div class="stack">${S.c3.perks.map(k => `<div class="ach"><b>${PERKS[k].t}</b><span class="muted small">${PERKS[k].d}</span></div>`).join('')}</div>` : '<p class="muted small" style="margin:0">Reclaim dragon gold from the Ledger\'s vaults and listen to it. Each hoard gives back one ancestral memory.</p>') : '<p class="muted small" style="margin:0">Every 12 gold in your hoard pushes your warmth one step further (up to 16). Upgrades cost gold, but their warmth is permanent.</p>'}
+    ${UPGRADES.filter(u => !(ch3 && u.id === 'vents')).map(u => {
       const lvl = S.upgrades[u.id], maxed = lvl >= u.max, cost = u.cost[lvl], ok = !maxed && S.gold >= cost && (!u.req || u.req(S));
       return `<div class="upg"><h4>${u.name} ${u.max > 1 ? `<span class="lvl">${lvl}/${u.max}</span>` : ''}</h4><p>${esc(u.d(lvl))}${u.req && !u.req(S) ? `<br><i>${u.reqText}</i>` : ''}</p><button class="buy" data-a="buy" data-v="${u.id}" ${ok ? '' : 'disabled'}>${maxed ? 'Built' : `◆ ${cost}`}</button></div>`;
     }).join('')}
@@ -1492,16 +1770,23 @@ function vReport(){
     <h2>${r.villages.length ? 'The frost returns' : 'The season turns'}</h2>
     ${r.villages.length ? `<div class="lines">${r.villages.map(v => `<div class="line ${v.ok ? 'good' : 'bad'}"><span>${PLACES[v.v].name}</span><b>${v.ok ? 'Survives the winter' : 'Lost to the frost'}</b></div>`).join('')}</div>` : ''}
     <div class="lines">${r.lines.map(l => `<div class="line ${l.good ? 'good' : 'bad'}"><span>${esc(l.t)}</span><b>${esc(l.v)}</b></div>`).join('') || '<div class="line"><span>A quiet season.</span><b></b></div>'}</div>
-    <button class="btn primary" data-a="nextseason">${SEASONS[S.season] ? SEASONS[S.season].name : 'Continue'}</button>
+    <button class="btn primary" data-a="nextseason">${SEAS()[S.season] ? SEAS()[S.season].name : 'Continue'}</button>
   </div>`;
 }
 
 function vEnd(){
-  const ch2 = (S.chapter || 1) >= 2;
+  const ch3 = (S.chapter || 1) >= 3, ch2 = (S.chapter || 1) === 2;
   const saved = VILLAGES.filter(v => S.places[v] === 'saved' || S.places[v] === 'kindled');
   const got = ACH.filter(a => META.ach[a.id]);
   const line = (k, v, good) => `<div class="line ${good ? 'good' : ''}"><span>${k}</span><b>${v}</b></div>`;
-  const lines = ch2 ? [
+  const lines = ch3 ? [
+    line('The Last Hoard', { returned:'Given back to the people', burned:'The books burned', kept:'Kept. All of it.' }[S.flags.last] || 'Unknown', S.flags.last === 'returned'),
+    line('Vexar', S.flags.vexar === 'freed' ? 'At your side' : 'Gone', S.flags.vexar === 'freed'),
+    line('Memories', S.c3.perks.map(k => PERKS[k].t).join(', ') || 'None'),
+    line('Greed', S.c3.greed),
+    line('Hoard', `◆ ${S.gold}`),
+    line('Hope · Dread', `${S.hope} · ${S.dread}`),
+  ] : ch2 ? [
     line('Vexar', { freed:'Freed, your brother', fled:'Fled north, still chained' }[S.flags.vexar] || 'Unknown', S.flags.vexar === 'freed'),
     line('Ysolde Marr', { spared:'Spared', exiled:'Exiled north', burned:'Burned with her tower' }[S.flags.ysolde] || 'Unknown'),
     line('Lord Harrow', { pact:'Took his gold', burned:'Burned his ice', warned:'Warned him' }[S.flags.harrow] || 'Never met'),
@@ -1516,14 +1801,17 @@ function vEnd(){
     line('Aurelia', { free:'Walked free', held:'Your guest' }[S.flags.aurelia] || 'Never met'),
   ];
   return `<div class="summary fade-in">
-    ${plate('A7', ch2 && S.flags.vexar === 'freed' ? 'V5' : null, ch2 ? 'End of chapter two' : 'End of chapter one')}
-    <div class="label">The Last Warmth · Chapter ${ch2 ? 'two' : 'one'}</div>
-    <h2>${esc(S.name)}, ${ch2 ? 'who silenced the bell' : STAGES[S.stage].toLowerCase() + ' of the Spring'}</h2>
+    ${plate(ch3 ? 'A13' : 'A7', (ch2 || ch3) && S.flags.vexar === 'freed' ? 'V5' : null, ch3 ? 'End of chapter three' : ch2 ? 'End of chapter two' : 'End of chapter one')}
+    <div class="label">Eternal Hoard · Chapter ${ch3 ? 'three' : ch2 ? 'two' : 'one'}</div>
+    <h2>${esc(S.name)}, ${ch3 ? { returned:'who gave the gold back', burned:'who burned the debts', kept:'the Eternal Hoard' }[S.flags.last] || 'of the south' : ch2 ? 'who silenced the bell' : STAGES[S.stage].toLowerCase() + ' of the Spring'}</h2>
     <div class="lines">${lines.join('')}</div>
     <div class="label">Feats unlocked · ${got.length}/${ACH.length}</div>
     <div class="stack">${got.map(a => `<div class="ach"><b>${a.t}</b><span class="muted small">${a.d}</span></div>`).join('')}</div>
-    ${ch2 ? `<p class="muted">The next campaign, <i>The Gilded Debt</i>, takes you south to Veyrmark and the Ledger that paid for the Quench. It is being written.</p>
+    ${ch3 ? `<p class="muted">The tablet in the vault says <i>Covenant</i>. The last campaign, <i>The Hundredth Year</i>, goes back three hundred years, to the peace that broke and started all of this. It is being written.</p>
       <button class="btn primary" data-a="new">Start a new saga</button>`
+    : ch2 ? `<p class="muted">The Ledger's coins lead south, to Veyrmark. Everything you did comes with you.</p>
+      <button class="btn primary" data-a="ch3">Continue to chapter three</button>
+      <button class="btn" data-a="new">Start a new saga</button>`
     : `<p class="muted">Your choices carry over: the villages you saved, the goblins, Aurelia, Mirelle and the scale.</p>
       <button class="btn primary" data-a="ch2">Continue to chapter two</button>
       <button class="btn" data-a="new">Play chapter one again</button>`}
@@ -1580,9 +1868,9 @@ function navigate(go){
   goMap();
 }
 function choose(i){
-  const sc = SCENES[S.scene], c = sc.choices[i]; if(!c || (c.req && !c.req(S))) return;
-  if(c.fight){ startBattle(c.fight.enc, c.fight.win, c.fight.lose); render(); return scrollTo(0, 0); }
-  if(c.refund) S.flights = Math.min(SEASONS[S.season].flights, S.flights + 1);
+  const sc = SCENES[S.scene], c = R(sc.choices)[i]; if(!c || (c.req && !c.req(S))) return;
+  if(c.fight){ if(c.fx) applyFx(c.fx); startBattle(c.fight.enc, c.fight.win, c.fight.lose); render(); return scrollTo(0, 0); }
+  if(c.refund) S.flights = Math.min(SEAS()[S.season].flights, S.flights + 1);
   const shown = applyFx(c.fx);
   if(c.out){ S.out = { text:c.out, fx:shown, go:c.go }; S.screen = 'out'; render(); return scrollTo(0, 0); }
   if(shown.length && (!c.go || c.go === 'map')) setTimeout(() => toastText(shown.map(x => x.t).join(' · ')), 50);
@@ -1590,14 +1878,17 @@ function choose(i){
   navigate(c.go);
 }
 function goMap(){
-  if((S.chapter || 1) >= 2){
+  if((S.chapter || 1) >= 3){
+    if(S.season === 1 && !S.done.bounty && S.c3.bounty >= 10 && S.flights <= 2){ S.done.bounty = true; S.flights = Math.max(0, S.flights - 1); return openScene('bounty'); }
+  } else if((S.chapter || 1) >= 2){
     if(S.season === 1 && !S.done.siege && S.flights <= 2){ S.done.siege = true; S.flights = Math.max(0, S.flights - 1); return openScene('siege'); }
   } else if(S.season === 2 && !S.done.raid && S.flights <= 2){ S.done.raid = true; S.flights = Math.max(0, S.flights - 1); return openScene('raid'); }
   if(S.flights <= 0) return turnSeason();
   S.screen = 'map'; UI.confirmEnd = false; render();
 }
 function turnSeason(){
-  if((S.chapter || 1) >= 2 && S.season >= 2) return openScene(S.done.hold ? 'ch2end' : 'holdApproach');
+  if((S.chapter || 1) >= 3 && S.season >= 2) return openScene(S.done.great ? 'ch3end' : 'greatVault');
+  if((S.chapter || 1) === 2 && S.season >= 2) return openScene(S.done.hold ? 'ch2end' : 'holdApproach');
   if(S.season >= 3) return openScene(S.done.grinder ? 'ending' : 'grinderAttack');
   S.report = endSeason(); S.screen = 'report'; render(); scrollTo(0, 0);
 }
@@ -1612,6 +1903,7 @@ document.addEventListener('click', (e) => {
   if(a !== 'endseason') UI.confirmEnd = false;
   switch(a){
     case 'ch2': startChapter2(); scrollTo(0, 0); break;
+    case 'ch3': startChapter3(); scrollTo(0, 0); break;
     case 'new': S = freshState(); UI.nameDraft = ''; S.screen = 'scene'; openScene('egg'); break;
     case 'continue': { const l = load(); if(l){ S = l; if(S.screen === 'battle' && !S.battle) S.screen = 'map'; if(S.battle) S.battle.busy = false; render(); } break; }
     case 'title': S.screen = 'title'; render(); break;
@@ -1633,7 +1925,7 @@ document.addEventListener('click', (e) => {
     case 'buy': { const u = UPGRADES.find(x => x.id === v), l = S.upgrades[v], c = u.cost[l]; if(l < u.max && S.gold >= c && (!u.req || u.req(S))){ S.gold -= c; S.upgrades[v]++; if(v === 'pool'){ S.maxHp += 15; S.hp += 15; } toastText(`${u.name} built`); render(); } break; }
     case 'rest': if(S.flights > 0){ S.flights--; S.hp = S.upgrades.pool ? S.maxHp : Math.min(S.maxHp, S.hp + Math.round(S.maxHp * .5)); toastText('You sleep on your hoard.'); if(S.flights <= 0) goMap(); else render(); } break;
     case 'endseason': if(!UI.confirmEnd){ UI.confirmEnd = true; render(); } else { UI.confirmEnd = false; S.flights = 0; goMap(); } break;
-    case 'nextseason': S.report = null; openScene(((S.chapter || 1) >= 2 ? SEASON_OPEN_2 : { 1:'summer', 2:'ashfall', 3:'winter' })[S.season] || 'ending'); break;
+    case 'nextseason': S.report = null; openScene(((S.chapter || 1) >= 3 ? SEASON_OPEN_3 : (S.chapter || 1) >= 2 ? SEASON_OPEN_2 : { 1:'summer', 2:'ashfall', 3:'winter' })[S.season] || 'ending'); break;
     case 'tgt': if(S.battle && !S.battle.busy){ S.battle.tgt = +el.dataset.i; render(); } break;
     case 'act': if(v === 'struggle') playerAct('struggle'); else playerAct(v); break;
   }
