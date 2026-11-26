@@ -6,12 +6,12 @@ function pow(){ return STAGE_POW[S.stage] * (1 + S.wild / 200); }
 function startBattle(encId, win, lose){
   if(encId === '__pines') encId = S.season >= 2 ? 'pack' : 'wolves';
   const enc = ENCOUNTERS[encId];
-  const hpScale = 1 + S.season * 0.12;
+  const hpScale = 1 + S.season * 0.12 + ((S.chapter || 1) >= 2 ? .3 : 0);
   const foes = enc.foes.map((k, i) => {
     const e = ENEMIES[k]; const max = Math.round(e.hp * (e.tags.includes('boss') ? 1 : hpScale));
     return { i, key:k, name:e.name, art:e.art, sil:e.sil, hp:max, max, tags:e.tags, moves:e.moves, mi:(i % e.moves.length), intent:null, st:{} };
   });
-  const B = { enc:encId, bg:enc.bg, flee:enc.flee, foes, tgt:0, turn:1, win, lose, busy:false, log:'', dawn:enc.dawn || 0,
+  const B = { enc:encId, breakAt:enc.breakAt || 0, redeem:!!enc.redeem, bg:enc.bg, flee:enc.flee, foes, tgt:0, turn:1, win, lose, busy:false, log:'', dawn:enc.dawn || 0,
     me:{ heat:4, st:{} } };
   if(S.flags.ward) B.me.st.block = 8;
   foes.forEach(f => {
@@ -31,6 +31,8 @@ function pickIntents(B){
     if(m === 'howl' && alive(B).filter(x => x.key === f.key || x.key === 'pup' || x.key === 'wolf').length < 2) m = 'bite';
     if(m === 'mend' && !alive(B).some(x => x !== f && x.hp < x.max)) m = 'bolt';
     if(m === 'chain' && B.me.st.stun) m = 'chill';
+    if(m === 'vchains' && B.me.st.stun) m = 'coldfire';
+    if(m === 'net' && B.me.st.stun) m = 'spear';
     f.intent = m;
   });
 }
@@ -59,6 +61,7 @@ function actions(B){
     { id:'guard',  name:GUARD[L.hide].name, d:GUARD[L.hide].d, cost:1 },
     { id:'roar',   name:'Roar',  d:'Enemies hit 30% softer for 2 turns', cost:1 },
   ];
+  if(B.redeem && t && t.hp > 0 && t.hp <= t.max * .5 && canRedeem()) list.unshift({ id:'offer', name:'Offer your fire', d:'Breathe warmth into his chains, not into him', cost:4, cls:'breath' });
   if(canDevour) list.push({ id:'devour', name:'Devour', d:'Finish it. Heal 10.', cost:0 });
   else if(B.flee) list.push({ id:'flee', name:'Fly away', d:'Leave the fight', cost:0 });
   return list;
@@ -118,10 +121,12 @@ async function playerAct(id){
       if(t.tags.includes('human')){ S.dread = clamp(S.dread + 4, 0, 100); S.hope = clamp(S.hope - 2, 0, 100); }
       fx('heal', 'me', '+10'); B.log = `You finish ${t.name} the old way.`; break; }
     case 'flee': B.busy = false; return endBattle(B, 'fled');
+    case 'offer': S.flags.vexarFreed = true; B.log = 'You breathe on the chains. Not on him. On the chains.'; anim('breath', t); render(); await sleep(900); return endBattle(B, 'win');
   }
   render();
   await sleep(420);
   if(!alive(B).length) return endBattle(B, 'win');
+  if(B.breakAt && B.foes.some(f => f.hp > 0 && f.hp <= f.max * B.breakAt)) return endBattle(B, 'win');
   if(B.tgt >= 0 && B.foes[B.tgt].hp <= 0){ B.tgt = B.foes.findIndex(f => f.hp > 0); }
   return enemyPhase(B);
 }
@@ -145,11 +150,11 @@ async function enemyPhase(B){
     };
     switch(f.intent){
       case 'howl': alive(B).forEach(x => x.st.fury = (x.st.fury || 0) + 1); B.log = 'The wolves howl, and their eyes go bright.'; break;
-      case 'shield': case 'rime': f.st.block = m.blk; B.log = `${f.name} ${m.t}.`; break;
+      case 'shield': case 'rime': case 'brood': f.st.block = m.blk; B.log = `${f.name} ${m.t}.`; break;
       case 'windup': B.log = 'The Grinder raises his club high. Brace yourself.'; break;
       case 'douse': { const d = strike(m.dmg); if(d >= 0){ me.st.soak = 2; me.heat = Math.max(0, me.heat - 1); B.log = `${f.name} douses you in ice water (${d}). Your fire sputters.`; } break; }
-      case 'chill': { const d = strike(m.dmg); if(d >= 0){ me.st.chill = 2; B.log = `Frost creeps over your scales (${d}). You feel slow.`; } break; }
-      case 'chain': { const d = strike(m.dmg); if(d >= 0){ me.st.stun = 1; B.log = `Iron chains snap around your wings (${d}). You lose your next turn.`; } break; }
+      case 'chill': case 'coldfire': { const d = strike(m.dmg); if(d >= 0){ me.st.chill = 2; B.log = `Frost creeps over your scales (${d}). You feel slow.`; } break; }
+      case 'chain': case 'net': case 'vchains': { const d = strike(m.dmg); if(d >= 0){ me.st.stun = 1; B.log = `Iron chains snap around your wings (${d}). You lose your next turn.`; } break; }
       case 'mend': { const w = alive(B).filter(x => x !== f).sort((a, b) => a.hp / a.max - b.hp / b.max)[0]; if(w){ w.hp = Math.min(w.max, w.hp + 10); fx('heal', w, '+10'); B.log = `${f.name} mends ${w.name}.`; } break; }
       case 'grab': { const d = strike(m.dmg); if(d >= 0){ f.hp = Math.min(f.max, f.hp + m.heal); B.log = `The Grinder grabs and chews (${d}). He looks pleased.`; } break; }
       default: { const d = strike(m.dmg); if(d >= 0) B.log = `${f.name} ${m.t}: ${d} damage.`; }

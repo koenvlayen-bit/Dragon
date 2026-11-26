@@ -41,7 +41,7 @@ function vTitle(){
       <button class="btn ghost" data-a="feats">Feats ${Object.keys(META.ach).length}/${ACH.length}</button>
     </div>
     ${UI.feats ? `<div class="stack" style="text-align:left">${ACH.map(a => `<div class="line ${META.ach[a.id] ? 'good' : ''}"><span><b style="font-family:var(--f-d)">${a.t}</b><br><span class="muted small">${a.d}</span></span><b>${META.ach[a.id] ? '✓' : ''}</b></div>`).join('')}</div>` : ''}
-    <p class="note">Chapter one · early preview<br><a href="../" style="color:var(--dim)">Play the original saga</a></p>
+    <p class="note">Chapters one and two · early preview<br><a href="../" style="color:var(--dim)">Play the original saga</a></p>
   </div>`;
 }
 
@@ -69,7 +69,7 @@ function vScene(){
   const pend = S.pendingFx; S.pendingFx = null;
   return `<div class="scene fade-in">
     ${plate(sc.bg, sc.who, sc.place)}
-    <h2>${tx(sc.title)}</h2>
+    <h2>${tx(R(sc.title))}</h2>
     ${fxChips(pend)}
     <div class="prose">${text.map(p => `<p class="${p.startsWith('"') ? 'say' : ''}">${tx(p)}</p>`).join('')}</div>
     <div class="choices">${sc.choices.map((c, i) => {
@@ -82,7 +82,7 @@ function vOut(){
   const sc = SCENES[S.scene], o = S.out;
   return `<div class="scene fade-in">
     ${plate(sc.bg, sc.who, sc.place)}
-    <h2>${tx(sc.title)}</h2>
+    <h2>${tx(R(sc.title))}</h2>
     <div class="prose">${o.text.map(p => `<p class="${p.startsWith('"') ? 'say' : ''}">${tx(p)}</p>`).join('')}</div>
     ${fxChips(o.fx)}
     <button class="btn primary" data-a="outnext">Continue</button>
@@ -100,7 +100,7 @@ const MAP_SVG = `<svg class="base" viewBox="0 0 300 200" preserveAspectRatio="no
 </svg>`;
 function vMap(){
   const sel = S.sel || 'kettle', P = PLACES[sel];
-  const pins = Object.entries(PLACES).map(([id, p]) => {
+  const pins = Object.entries(PLACES).filter(([id, p]) => !p.ch || p.ch <= (S.chapter || 1)).map(([id, p]) => {
     const st = placeState(id), ev = eventAt(id);
     const cls = [id === 'lair' ? 'lair' : '', st === 'warm' || st === 'kindled' || st === 'saved' ? 'warm' : '', st === 'lost' ? 'lost' : '', st === 'locked' ? 'locked' : '', ev && S.flights > 0 ? 'event' : '', id === sel ? 'sel' : ''].join(' ');
     return `<button class="pin ${cls}" style="left:${p.x}%;top:${p.y}%" data-a="sel" data-v="${id}" aria-label="${esc(p.name)}"><span class="dot">${p.icon}</span><span class="nm">${esc(p.name)}</span>${ev && S.flights > 0 ? '<span class="ex"></span>' : ''}</button>`;
@@ -126,7 +126,7 @@ function vMap(){
     <div class="mapinfo"><h3>${esc(P.name)}<span style="display:flex;gap:6px">${extra}<span class="tag ${tagCls}">${tagTxt}</span></span></h3>${info}</div>
     <div class="meters">${m('Hope', S.hope, 'var(--hope)')}${m('Dread', S.dread, 'var(--dread)')}${m('Wildness', S.wild, 'var(--wild)')}</div>
     <button class="btn ghost" data-a="endseason">${UI.confirmEnd ? 'Tap again: let the season turn' : S.flights > 0 ? `Let the season turn (${S.flights} flight${S.flights > 1 ? 's' : ''} unused)` : 'Let the season turn'}</button>
-    ${S.season < 3 ? `<p class="hint">${3 - S.season} season${3 - S.season > 1 ? 's' : ''} until winter. Villages outside your warmth when it comes will be lost.</p>` : ''}
+    ${(S.chapter || 1) >= 2 ? `<p class="hint">${S.season < 2 ? `${2 - S.season} season${2 - S.season > 1 ? 's' : ''} until the Grey Hold opens.` : 'The Grey Hold is open. The bell is ringing.'}</p>` : S.season < 3 ? `<p class="hint">${3 - S.season} season${3 - S.season > 1 ? 's' : ''} until winter. Villages outside your warmth when it comes will be lost.</p>` : ''}
   </div>`;
 }
 
@@ -221,23 +221,36 @@ function vReport(){
 }
 
 function vEnd(){
+  const ch2 = (S.chapter || 1) >= 2;
   const saved = VILLAGES.filter(v => S.places[v] === 'saved' || S.places[v] === 'kindled');
   const got = ACH.filter(a => META.ach[a.id]);
+  const line = (k, v, good) => `<div class="line ${good ? 'good' : ''}"><span>${k}</span><b>${v}</b></div>`;
+  const lines = ch2 ? [
+    line('Vexar', { freed:'Freed, your brother', fled:'Fled north, still chained' }[S.flags.vexar] || 'Unknown', S.flags.vexar === 'freed'),
+    line('Ysolde Marr', { spared:'Spared', exiled:'Exiled north', burned:'Burned with her tower' }[S.flags.ysolde] || 'Unknown'),
+    line('Lord Harrow', { pact:'Took his gold', burned:'Burned his ice', warned:'Warned him' }[S.flags.harrow] || 'Never met'),
+    line('Villages warm', `${saved.length}/3`, saved.length === 3),
+    line('Hoard', `◆ ${S.gold}`),
+    line('Hope · Dread · Wildness', `${S.hope} · ${S.dread} · ${S.wild}`),
+  ] : [
+    line('Villages saved', `${saved.length}/3 ${saved.length ? '· ' + saved.map(v => PLACES[v].name).join(', ') : ''}`, saved.length === 3),
+    line('Hoard', `◆ ${S.gold}`),
+    line('Hope · Dread · Wildness', `${S.hope} · ${S.dread} · ${S.wild}`),
+    line('The Grinder', S.flags.dawned ? 'Turned to stone' : S.done.grinder ? 'Defeated' : 'Survived'),
+    line('Aurelia', { free:'Walked free', held:'Your guest' }[S.flags.aurelia] || 'Never met'),
+  ];
   return `<div class="summary fade-in">
-    ${plate('A7', null, 'End of chapter one')}
-    <div class="label">The Last Warmth · Chapter one</div>
-    <h2>${esc(S.name)}, ${STAGES[S.stage].toLowerCase()} of the Spring</h2>
-    <div class="lines">
-      <div class="line ${saved.length === 3 ? 'good' : ''}"><span>Villages saved</span><b>${saved.length}/3 ${saved.length ? '· ' + saved.map(v => PLACES[v].name).join(', ') : ''}</b></div>
-      <div class="line"><span>Hoard</span><b>◆ ${S.gold}</b></div>
-      <div class="line"><span>Hope · Dread · Wildness</span><b>${S.hope} · ${S.dread} · ${S.wild}</b></div>
-      <div class="line"><span>The Grinder</span><b>${S.flags.dawned ? 'Turned to stone' : S.done.grinder ? 'Defeated' : 'Survived'}</b></div>
-      <div class="line"><span>Aurelia</span><b>${{ free:'Walked free', held:'Your guest' }[S.flags.aurelia] || 'Never met'}</b></div>
-    </div>
+    ${plate('A7', ch2 && S.flags.vexar === 'freed' ? 'V5' : null, ch2 ? 'End of chapter two' : 'End of chapter one')}
+    <div class="label">The Last Warmth · Chapter ${ch2 ? 'two' : 'one'}</div>
+    <h2>${esc(S.name)}, ${ch2 ? 'who silenced the bell' : STAGES[S.stage].toLowerCase() + ' of the Spring'}</h2>
+    <div class="lines">${lines.join('')}</div>
     <div class="label">Feats unlocked · ${got.length}/${ACH.length}</div>
     <div class="stack">${got.map(a => `<div class="ach"><b>${a.t}</b><span class="muted small">${a.d}</span></div>`).join('')}</div>
-    <p class="muted">Chapter two, <i>The Grey Hold</i>, is being written. Your choices here will carry over.</p>
-    <button class="btn primary" data-a="new">Play chapter one again</button>
+    ${ch2 ? `<p class="muted">The next campaign, <i>The Gilded Debt</i>, takes you south to Veyrmark and the Ledger that paid for the Quench. It is being written.</p>
+      <button class="btn primary" data-a="new">Start a new saga</button>`
+    : `<p class="muted">Your choices carry over: the villages you saved, the goblins, Aurelia, Mirelle and the scale.</p>
+      <button class="btn primary" data-a="ch2">Continue to chapter two</button>
+      <button class="btn" data-a="new">Play chapter one again</button>`}
     <button class="btn ghost" data-a="title">Title screen</button>
   </div>`;
 }
@@ -301,11 +314,14 @@ function choose(i){
   navigate(c.go);
 }
 function goMap(){
-  if(S.season === 2 && !S.done.raid && S.flights <= 2){ S.done.raid = true; S.flights = Math.max(0, S.flights - 1); return openScene('raid'); }
+  if((S.chapter || 1) >= 2){
+    if(S.season === 1 && !S.done.siege && S.flights <= 2){ S.done.siege = true; S.flights = Math.max(0, S.flights - 1); return openScene('siege'); }
+  } else if(S.season === 2 && !S.done.raid && S.flights <= 2){ S.done.raid = true; S.flights = Math.max(0, S.flights - 1); return openScene('raid'); }
   if(S.flights <= 0) return turnSeason();
   S.screen = 'map'; UI.confirmEnd = false; render();
 }
 function turnSeason(){
+  if((S.chapter || 1) >= 2 && S.season >= 2) return openScene(S.done.hold ? 'ch2end' : 'holdApproach');
   if(S.season >= 3) return openScene(S.done.grinder ? 'ending' : 'grinderAttack');
   S.report = endSeason(); S.screen = 'report'; render(); scrollTo(0, 0);
 }
@@ -319,6 +335,7 @@ document.addEventListener('click', (e) => {
   const a = el.dataset.a, v = el.dataset.v;
   if(a !== 'endseason') UI.confirmEnd = false;
   switch(a){
+    case 'ch2': startChapter2(); scrollTo(0, 0); break;
     case 'new': S = freshState(); UI.nameDraft = ''; S.screen = 'scene'; openScene('egg'); break;
     case 'continue': { const l = load(); if(l){ S = l; if(S.screen === 'battle' && !S.battle) S.screen = 'map'; if(S.battle) S.battle.busy = false; render(); } break; }
     case 'title': S.screen = 'title'; render(); break;
@@ -340,7 +357,7 @@ document.addEventListener('click', (e) => {
     case 'buy': { const u = UPGRADES.find(x => x.id === v), l = S.upgrades[v], c = u.cost[l]; if(l < u.max && S.gold >= c && (!u.req || u.req(S))){ S.gold -= c; S.upgrades[v]++; if(v === 'pool'){ S.maxHp += 15; S.hp += 15; } toastText(`${u.name} built`); render(); } break; }
     case 'rest': if(S.flights > 0){ S.flights--; S.hp = S.upgrades.pool ? S.maxHp : Math.min(S.maxHp, S.hp + Math.round(S.maxHp * .5)); toastText('You sleep on your hoard.'); if(S.flights <= 0) goMap(); else render(); } break;
     case 'endseason': if(!UI.confirmEnd){ UI.confirmEnd = true; render(); } else { UI.confirmEnd = false; S.flights = 0; goMap(); } break;
-    case 'nextseason': S.report = null; openScene({ 1:'summer', 2:'ashfall', 3:'winter' }[S.season] || 'ending'); break;
+    case 'nextseason': S.report = null; openScene(((S.chapter || 1) >= 2 ? SEASON_OPEN_2 : { 1:'summer', 2:'ashfall', 3:'winter' })[S.season] || 'ending'); break;
     case 'tgt': if(S.battle && !S.battle.busy){ S.battle.tgt = +el.dataset.i; render(); } break;
     case 'act': if(v === 'struggle') playerAct('struggle'); else playerAct(v); break;
   }

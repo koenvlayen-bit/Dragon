@@ -43,7 +43,7 @@ function placeState(id, s = S){
     if(st === 'saved') return 'saved';
     return warmAt(id, s) ? 'warm' : 'frozen';
   }
-  if(PLACES[id].kind === 'locked') return 'locked';
+  if(PLACES[id].kind === 'locked' && (s.chapter || 1) < 2) return 'locked';
   return warmAt(id, s) ? 'warm' : 'frozen';
 }
 function glowLevel(s = S){ return Math.round(radius(s)); }
@@ -93,14 +93,15 @@ function endSeason(s = S){
   const heal = Math.min(s.maxHp - s.hp, Math.round(s.maxHp * .25 + s.hope / 5));
   if(heal > 0){ s.hp += heal; rep.lines.push({ t:'You sleep on your hoard', v:`+${heal} health`, good:true }); }
   // growth
-  const grow = { 0:1, 2:2 }[s.season];
+  const ch1 = (s.chapter || 1) < 2;
+  const grow = ch1 ? { 0:1, 2:2 }[s.season] : undefined;
   if(grow !== undefined && s.stage < grow){
     s.stage = grow; const add = STAGE_HP[grow] - STAGE_HP[grow - 1]; s.maxHp += add; s.hp += add;
     rep.lines.push({ t:`You grow into a ${STAGES[grow].toLowerCase()}`, v:`+${add} max health`, good:true });
   }
   s.season++;
   // winter arrives: the frost judges every village
-  if(s.season === 3){
+  if(ch1 && s.season === 3){
     VILLAGES.forEach(v => {
       const st = placeState(v, s);
       if(st === 'frozen'){ s.places[v] = 'lost'; s.hope = clamp(s.hope - 8, 0, 100); rep.villages.push({ v, ok:false }); }
@@ -115,6 +116,7 @@ function endSeason(s = S){
 
 /* ── What waits at each place ── */
 function eventAt(id, s = S){
+  if((s.chapter || 1) >= 2) return eventAt2(id, s);
   const f = s.flags, d = s.done, se = s.season;
   switch(id){
     case 'warren':

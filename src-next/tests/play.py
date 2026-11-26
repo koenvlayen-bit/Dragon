@@ -16,7 +16,7 @@ with sync_playwright() as p:
     shot('00_title')
     pg.click('[data-a=new]'); pg.wait_for_timeout(200)
     steps=0; seen=set(); battles=0
-    while steps<600:
+    while steps<1200:
         steps+=1
         st=pg.evaluate("({screen:S.screen, scene:S.scene, season:S.season, flights:S.flights, hp:S.hp})")
         scr=st['screen']
@@ -78,9 +78,12 @@ with sync_playwright() as p:
             if shots: shot('report_%d'%st['season'])
             pg.click('[data-a=nextseason]'); pg.wait_for_timeout(60)
         elif scr=='end':
-            shot('zz_end'); break
+            ch=pg.evaluate("S.chapter||1")
+            shot('zz_end%d'%ch)
+            if ch==1 and '--ch2' in sys.argv: pg.click('[data-a=ch2]'); pg.wait_for_timeout(100); continue
+            break
         else:
             log.append('unknown '+scr); break
-    final=pg.evaluate("({screen:S.screen, hope:S.hope, dread:S.dread, wild:S.wild, gold:S.gold, places:S.places, stage:S.stage, hp:S.hp, max:S.maxHp, flags:S.flags, done:Object.keys(S.done)})")
+    final=pg.evaluate("({chapter:S.chapter, vexar:S.flags.vexar, ysolde:S.flags.ysolde, screen:S.screen, hope:S.hope, dread:S.dread, wild:S.wild, gold:S.gold, places:S.places, stage:S.stage, hp:S.hp, max:S.maxHp, flags:S.flags, done:Object.keys(S.done)})")
     b.close()
 print(json.dumps({'seed':seed,'steps':steps,'battles':battles,'final':final,'errors':errors[:5],'log':log}))
