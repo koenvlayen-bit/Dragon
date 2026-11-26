@@ -47,7 +47,7 @@ function vTitle(){
 
 function vCreate(){
   const L = S.look, O = LOOK_OPTS;
-  const grp = (key, label, render) => `<div class="opt-group"><div class="label">${label}</div><div class="opts">${O[key].map(o => `<button class="opt ${L[key] === o.id ? 'on' : ''}" data-a="look" data-k="${key}" data-v="${o.id}">${render(o)}</button>`).join('')}</div></div>`;
+  const grp = (key, label, render) => `<div class="opt-group" data-g="${key}"><div class="label">${label}</div><div class="opts">${O[key].map(o => `<button class="opt ${L[key] === o.id ? 'on' : ''}" data-a="look" data-k="${key}" data-v="${o.id}">${render(o)}</button>`).join('')}</div></div>`;
   return `<div class="create fade-in">
     <h2 style="color:var(--gold-hi);text-align:center;margin-top:8px">What hatches?</h2>
     <div class="hero"><img src="${ART.dragon(L)}" alt=""></div>
@@ -57,7 +57,7 @@ function vCreate(){
     ${grp('tail', 'Tail · your strike', o => `${o.name}<small>${o.d}</small>`)}
     ${grp('element', 'Breath', o => `${o.name}<small>${o.d}</small>`)}
     <div class="kit"><div><b>${BREATH[L.element].name}</b>${BREATH[L.element].d}</div><div><b>${TAIL[L.tail].name}</b>${TAIL[L.tail].d}</div><div><b>${GUARD[L.hide].name}</b>${GUARD[L.hide].d}</div><div><b>Claw · Roar</b>Always yours</div></div>
-    <div class="opt-group"><div class="label">Name</div><input id="name-in" class="name-in" maxlength="20" placeholder="Your dragon's name" value="${esc(UI.nameDraft || '')}" autocomplete="off"></div>
+    <div class="opt-group" data-g="name"><div class="label">Name</div><input id="name-in" class="name-in" maxlength="20" placeholder="Your dragon's name" value="${esc(UI.nameDraft || '')}" autocomplete="off"></div>
     <div class="presets">${NAME_PRESETS.map(n => `<button data-a="preset" data-v="${n}">${n}</button>`).join('')}</div>
     <button class="btn primary" data-a="hatch">Hatch</button>
   </div>`;
@@ -323,7 +323,12 @@ document.addEventListener('click', (e) => {
     case 'continue': { const l = load(); if(l){ S = l; if(S.screen === 'battle' && !S.battle) S.screen = 'map'; if(S.battle) S.battle.busy = false; render(); } break; }
     case 'title': S.screen = 'title'; render(); break;
     case 'feats': UI.feats = !UI.feats; render(); break;
-    case 'look': S.look[el.dataset.k] = v; UI.nameDraft = (document.getElementById('name-in') || {}).value || UI.nameDraft; render(); break;
+    case 'look': {
+      S.look[el.dataset.k] = v; UI.nameDraft = (document.getElementById('name-in') || {}).value || UI.nameDraft; render();
+      const order = ['color','horns','hide','tail','element','name'], nx = order[order.indexOf(el.dataset.k) + 1];
+      const g = nx && document.querySelector(`[data-g="${nx}"]`);
+      if(g) setTimeout(() => g.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block:'start' }), 60);
+      break; }
     case 'preset': { const i = document.getElementById('name-in'); if(i){ i.value = v; UI.nameDraft = v; } break; }
     case 'hatch': { const n = ((document.getElementById('name-in') || {}).value || '').trim() || NAME_PRESETS[Math.floor(Math.random() * NAME_PRESETS.length)]; S.name = n.slice(0, 20); S.hp = S.maxHp = STAGE_HP[0]; openScene('firstWarmth'); break; }
     case 'choose': choose(+el.dataset.i); break;

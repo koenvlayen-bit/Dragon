@@ -84,7 +84,9 @@ h1,h2,h3{font-family:var(--f-d);margin:0;letter-spacing:.02em}
 
 /* creation */
 .create{display:grid;gap:16px;padding-top:14px}
-.create .hero{position:relative;aspect-ratio:1000/780;margin:0 -6px}
+.create .hero{position:sticky;top:0;z-index:5;margin:0 -14px;padding:6px 0 4px;background:linear-gradient(180deg,var(--void) 82%,transparent);display:flex;justify-content:center}
+.create .hero img{width:auto!important;max-width:100%;height:min(34vh,300px)!important}
+.opt-group{scroll-margin-top:min(36vh,316px)}
 .create .hero img{width:100%;height:auto;display:block;filter:drop-shadow(0 16px 26px rgba(0,0,0,.6))}
 .create .hero::before{content:"";position:absolute;inset:14% 10% 6%;background:radial-gradient(closest-side,rgba(228,104,47,.25),transparent);}
 .opt-group{display:grid;gap:8px}
