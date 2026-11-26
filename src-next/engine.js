@@ -84,6 +84,7 @@ function tribute(s = S){
   VILLAGES.forEach(v => { const st = placeState(v, s); if(st === 'kindled' || st === 'warm' || st === 'saved'){ const t = 6 + Math.floor(s.hope / 10); g += t; lines.push([`${PLACES[v].name} sends tribute`, `+${t}`]); } });
   const gob = { allied:10, vassal:14, terrified:8 }[s.flags.goblins];
   if(gob){ g += gob; lines.push(['The goblins dig gold', `+${gob}`]); }
+  if(s.flags.harrow === 'pact' && !s.flags.betrayed){ g += 10; lines.push(['Lord Harrow pays for peace', '+10']); }
   return { g, lines };
 }
 /* Ends the current season: returns a report for the summary screen */

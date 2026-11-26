@@ -239,7 +239,7 @@ const SIL = {
     <path d="M126 106 L174 22" stroke="#f4f8ff" stroke-width="5" stroke-linecap="round" class="cs-glint" style="filter:drop-shadow(0 0 6px #cfe2ff)"/><path d="M118 114 L136 96" stroke="#c9a227" stroke-width="6" stroke-linecap="round"/></svg>`,
 };
 /* ═══════════ DATA: options, art, enemies, places ═══════════ */
-const ART_V = '2';
+const ART_V = '3';
 const ART = {
   // backgrounds and portraits arrive as art/<code>.webp; missing files fall back gracefully
   bg: (k) => `art/${k}.webp?v=${ART_V}`,
@@ -464,6 +464,7 @@ function tribute(s = S){
   VILLAGES.forEach(v => { const st = placeState(v, s); if(st === 'kindled' || st === 'warm' || st === 'saved'){ const t = 6 + Math.floor(s.hope / 10); g += t; lines.push([`${PLACES[v].name} sends tribute`, `+${t}`]); } });
   const gob = { allied:10, vassal:14, terrified:8 }[s.flags.goblins];
   if(gob){ g += gob; lines.push(['The goblins dig gold', `+${gob}`]); }
+  if(s.flags.harrow === 'pact' && !s.flags.betrayed){ g += 10; lines.push(['Lord Harrow pays for peace', '+10']); }
   return { g, lines };
 }
 /* Ends the current season: returns a report for the summary screen */
