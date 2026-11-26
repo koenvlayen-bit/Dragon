@@ -166,7 +166,7 @@ hollin: { bg:'A4', place:'Hollin', title:'Fewer Chimneys Every Week',
 summer: { bg:'A3', who:'P2', place:'The Spring', title:'Six Weeks of Summer',
   text: (s) => [
     `Summer lasts six weeks in Emberveld. This year it lasts a little longer around your spring, and everybody notices.`,
-    s.flags.goblins ? `Snikkit comes up from the warren with news, read from a ledger: "Two villages beyond your warmth. Hollin, far to the west. Ashby, at the ford. Riders in grey asking questions at Ashby. And a light in the western woods, where there has been no light for as long as there have been goblins."` : `The goblins leave a note at your cave, written in charcoal on a door: "VILAGES. HOLLIN WEST. ASHBY FORD. GRAY RIDERS. ALSO A LITE IN THE WEST WOODS."`,
+    s.flags.goblins ? `Snikkit comes up from the warren with news, read from a ledger: "Two villages beyond your warmth. Hollin, far to the north-east. Ashby, at the ford. Riders in grey asking questions at Ashby. And a light in the western woods, where there has been no light for as long as there have been goblins."` : `The goblins leave a note at your cave, written in charcoal on a door: "VILAGES. HOLIN NORTH-EAST. ASHBY FORD. GRAY RIDERS. ALSO A LITE IN THE WEST WOODS."`,
     `Winter is two seasons away. Whatever is outside your warmth when it comes will not see the spring.`,
   ],
   choices:[ { t:'Fly', go:'map' } ] },

@@ -27,7 +27,7 @@ const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const R = (v, s = S) => typeof v === 'function' ? v(s) : v;
 
 /* ── Warmth ── */
-function radius(s = S){ return 11 + Math.min(16, s.gold / 12) + 7 * s.upgrades.vents + (s.flags.ember ? 5 : 0); }
+function radius(s = S){ return 14 + Math.min(16, s.gold / 12) + 7 * s.upgrades.vents + (s.flags.ember ? 5 : 0); }
 function dist(a, b){ const dx = a.x - b.x, dy = (a.y - b.y) * (2/3); return Math.sqrt(dx*dx + dy*dy); }
 function warmAt(id, s = S){
   const p = PLACES[id]; if(!p) return false;

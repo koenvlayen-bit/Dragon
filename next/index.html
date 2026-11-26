@@ -214,6 +214,8 @@ h1,h2,h3{font-family:var(--f-d);margin:0;letter-spacing:.02em}
 .foe .fig{position:relative}
 .foe .fig > div{position:absolute;inset:0}
 .foe .fig > img{max-height:100%;width:auto}
+.foe .fig{display:flex;align-items:center;justify-content:center}
+.foe .fig > img{height:100%;width:auto;max-width:100%;object-fit:contain}
 </style></head><body><div id="app"></div><script>
 const SIL = {
   troll: `<svg viewBox="0 0 220 230" class="cs-svg sil"><defs><linearGradient id="trg" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a4234"/><stop offset=".5" stop-color="#191d16"/><stop offset="1" stop-color="#0b0d0a"/></linearGradient></defs>
@@ -235,7 +237,7 @@ const SIL = {
     <path d="M126 106 L174 22" stroke="#f4f8ff" stroke-width="5" stroke-linecap="round" class="cs-glint" style="filter:drop-shadow(0 0 6px #cfe2ff)"/><path d="M118 114 L136 96" stroke="#c9a227" stroke-width="6" stroke-linecap="round"/></svg>`,
 };
 /* ═══════════ DATA: options, art, enemies, places ═══════════ */
-const ART_V = '1';
+const ART_V = '2';
 const ART = {
   // backgrounds and portraits arrive as art/<code>.webp; missing files fall back gracefully
   bg: (k) => `art/${k}.webp?v=${ART_V}`,
@@ -254,7 +256,7 @@ const BG_FALLBACK = {
 };
 const PEOPLE = {
   P1:{ name:'Old Gnash', mono:'G' }, P2:{ name:'Snikkit', mono:'S' }, P3:{ name:'Mirelle', mono:'M' },
-  P4:{ name:'Aurelia', mono:'A' }, P5:{ name:'Ysolde Marr', mono:'Y' }, V5:{ name:'Vexar', mono:'V' },
+  P4:{ name:'Aurelia', mono:'A' }, P5:{ name:'Ysolde Marr', mono:'Y' }, V5:{ name:'Vexar', mono:'V', img:'V5p' },
 };
 
 const LOOK_OPTS = {
@@ -342,17 +344,17 @@ const ENCOUNTERS = {
 };
 
 /* ── Map ── */
-const LAIR = { x:50, y:66 };
+const LAIR = { x:55, y:70 };
 const PLACES = {
-  lair:   { name:'The Spring',     x:50, y:66, icon:'♨', kind:'lair' },
-  kettle: { name:'Kettle',         x:34, y:78, icon:'⌂', kind:'village', blurb:'Low stone huts around one frozen well. Forty people, give or take the ones who did not wake up.' },
-  warren: { name:'The Warren',     x:61, y:47, icon:'◒', kind:'site',    blurb:'Goblin tunnels under the mountain, warmed by the last of its dying heart.' },
-  pines:  { name:'Wolf Pines',     x:29, y:30, icon:'✶', kind:'site',    blurb:'Black pines and white wolves. They have smelled your warmth.' },
-  ashby:  { name:'Ashby',          x:73, y:86, icon:'⌂', kind:'village', blurb:'A ferry village at a frozen ford. The ferry has not moved in nine years.' },
-  hollin: { name:'Hollin',         x:13, y:45, icon:'⌂', kind:'village', blurb:'Far to the west. Smoke rises from fewer chimneys every week.' },
-  hut:    { name:"Mirelle's Hut",  x:10, y:83, icon:'✧', kind:'site',    blurb:'A single warm window in the western woods, where no warm window should be.' },
-  pass:   { name:"Grinder's Pass", x:83, y:30, icon:'▲', kind:'site',    blurb:'The only road east. Something huge has been walking it at night.' },
-  hold:   { name:'The Grey Hold',  x:40, y:7,  icon:'♜', kind:'locked',  blurb:'Fortress of the Quench. Its bells have rung for three hundred years. Chapter 2.' },
+  lair:   { name:'The Spring',     x:55, y:70, icon:'♨', kind:'lair' },
+  kettle: { name:'Kettle',         x:78, y:69, icon:'⌂', kind:'village', blurb:'Low stone huts around one frozen well, east of your mountain. Forty people, give or take the ones who did not wake up.' },
+  warren: { name:'The Warren',     x:64, y:47, icon:'◒', kind:'site',    blurb:'Goblin tunnels under the mountains, warmed by the last of their dying heart.' },
+  pines:  { name:'Wolf Pines',     x:38, y:58, icon:'✶', kind:'site',    blurb:'Black pines and white wolves. They have smelled your warmth.' },
+  ashby:  { name:'Ashby',          x:34, y:38, icon:'⌂', kind:'village', blurb:'A ferry village at the frozen ford. The ferry has not moved in nine years.' },
+  hollin: { name:'Hollin',         x:88, y:24, icon:'⌂', kind:'village', blurb:'Far to the north-east, under the high peaks. Smoke rises from fewer chimneys every week.' },
+  hut:    { name:"Mirelle's Hut",  x:10, y:64, icon:'✧', kind:'site',    blurb:'A single warm window at the edge of the western woods, where no warm window should be.' },
+  pass:   { name:"Grinder's Pass", x:91, y:47, icon:'▲', kind:'site',    blurb:'The only road east. Something huge has been walking it at night.' },
+  hold:   { name:'The Grey Hold',  x:61, y:9,  icon:'♜', kind:'locked',  blurb:'Fortress of the Quench. Its bells have rung for three hundred years. Chapter 2.' },
 };
 const VILLAGES = ['kettle','ashby','hollin'];
 
@@ -403,7 +405,7 @@ const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const R = (v, s = S) => typeof v === 'function' ? v(s) : v;
 
 /* ── Warmth ── */
-function radius(s = S){ return 11 + Math.min(16, s.gold / 12) + 7 * s.upgrades.vents + (s.flags.ember ? 5 : 0); }
+function radius(s = S){ return 14 + Math.min(16, s.gold / 12) + 7 * s.upgrades.vents + (s.flags.ember ? 5 : 0); }
 function dist(a, b){ const dx = a.x - b.x, dy = (a.y - b.y) * (2/3); return Math.sqrt(dx*dx + dy*dy); }
 function warmAt(id, s = S){
   const p = PLACES[id]; if(!p) return false;
@@ -693,7 +695,7 @@ hollin: { bg:'A4', place:'Hollin', title:'Fewer Chimneys Every Week',
 summer: { bg:'A3', who:'P2', place:'The Spring', title:'Six Weeks of Summer',
   text: (s) => [
     `Summer lasts six weeks in Emberveld. This year it lasts a little longer around your spring, and everybody notices.`,
-    s.flags.goblins ? `Snikkit comes up from the warren with news, read from a ledger: "Two villages beyond your warmth. Hollin, far to the west. Ashby, at the ford. Riders in grey asking questions at Ashby. And a light in the western woods, where there has been no light for as long as there have been goblins."` : `The goblins leave a note at your cave, written in charcoal on a door: "VILAGES. HOLLIN WEST. ASHBY FORD. GRAY RIDERS. ALSO A LITE IN THE WEST WOODS."`,
+    s.flags.goblins ? `Snikkit comes up from the warren with news, read from a ledger: "Two villages beyond your warmth. Hollin, far to the north-east. Ashby, at the ford. Riders in grey asking questions at Ashby. And a light in the western woods, where there has been no light for as long as there have been goblins."` : `The goblins leave a note at your cave, written in charcoal on a door: "VILAGES. HOLIN NORTH-EAST. ASHBY FORD. GRAY RIDERS. ALSO A LITE IN THE WEST WOODS."`,
     `Winter is two seasons away. Whatever is outside your warmth when it comes will not see the spring.`,
   ],
   choices:[ { t:'Fly', go:'map' } ] },
@@ -1000,7 +1002,7 @@ function silFor(k){ return SIL2[k] || SIL[k] || SIL.knight; }
 
 function portrait(code){
   const p = PEOPLE[code]; if(!p) return '';
-  return `<div class="who"><div class="portrait" style="position:relative"><span>${p.mono}</span><img src="${ART.bg(code)}" alt="" style="position:absolute;inset:0" onerror="this.remove()"></div><div class="who-name">${esc(p.name)}</div></div>`;
+  return `<div class="who"><div class="portrait" style="position:relative"><span>${p.mono}</span><img src="${ART.bg(p.img || code)}" alt="" style="position:absolute;inset:0" onerror="this.remove()"></div><div class="who-name">${esc(p.name)}</div></div>`;
 }
 function plate(bg, who, place, cls = 'plate'){
   return `<div class="${cls}"><div class="bg" style="background:${BG_FALLBACK[bg] || BG_FALLBACK.A3}"></div><img class="bgimg" src="${ART.bg(bg)}" alt="" onerror="this.remove()">${who ? portrait(who) : ''}${place ? `<div class="place">${esc(place)}</div>` : ''}</div>`;
@@ -1128,8 +1130,8 @@ function drawFrost(){
   if(!frostTex){
     frostTex = document.createElement('canvas'); frostTex.width = 256; frostTex.height = 256;
     const t = frostTex.getContext('2d');
-    t.fillStyle = 'rgba(214,236,250,.34)'; t.fillRect(0, 0, 256, 256);
-    for(let i = 0; i < 900; i++){ t.fillStyle = `rgba(240,250,255,${Math.random() * .35})`; const r = Math.random() * 1.6; t.beginPath(); t.arc(Math.random() * 256, Math.random() * 256, r, 0, 7); t.fill(); }
+    t.fillStyle = 'rgba(40,70,96,.46)'; t.fillRect(0, 0, 256, 256);
+    for(let i = 0; i < 900; i++){ t.fillStyle = `rgba(225,242,255,${Math.random() * .4})`; const r = Math.random() * 1.6; t.beginPath(); t.arc(Math.random() * 256, Math.random() * 256, r, 0, 7); t.fill(); }
     t.strokeStyle = 'rgba(240,250,255,.18)'; t.lineWidth = .7;
     for(let i = 0; i < 40; i++){ const cx = Math.random() * 256, cy = Math.random() * 256; for(let k = 0; k < 6; k++){ const a = k * Math.PI / 3; t.beginPath(); t.moveTo(cx, cy); t.lineTo(cx + Math.cos(a) * 6, cy + Math.sin(a) * 6); t.stroke(); } }
   }
@@ -1145,7 +1147,7 @@ function drawFrost(){
     hole(PLACES.warren.x / 100 * W, PLACES.warren.y / 100 * H, 6 / 100 * W);
     x.globalCompositeOperation = 'source-over';
     const g = x.createRadialGradient(LAIR.x / 100 * W, LAIR.y / 100 * H, 0, LAIR.x / 100 * W, LAIR.y / 100 * H, r / 100 * W);
-    g.addColorStop(0, 'rgba(228,104,47,.22)'); g.addColorStop(1, 'rgba(228,104,47,0)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+    g.addColorStop(0, 'rgba(228,104,47,.30)'); g.addColorStop(1, 'rgba(228,104,47,0)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
   };
   if(Math.abs(shownR - target) < .3 || matchMedia('(prefers-reduced-motion: reduce)').matches){ shownR = target; paint(target); return; }
   const from = shownR, t0 = performance.now();

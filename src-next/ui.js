@@ -11,7 +11,7 @@ function silFor(k){ return SIL2[k] || SIL[k] || SIL.knight; }
 
 function portrait(code){
   const p = PEOPLE[code]; if(!p) return '';
-  return `<div class="who"><div class="portrait" style="position:relative"><span>${p.mono}</span><img src="${ART.bg(code)}" alt="" style="position:absolute;inset:0" onerror="this.remove()"></div><div class="who-name">${esc(p.name)}</div></div>`;
+  return `<div class="who"><div class="portrait" style="position:relative"><span>${p.mono}</span><img src="${ART.bg(p.img || code)}" alt="" style="position:absolute;inset:0" onerror="this.remove()"></div><div class="who-name">${esc(p.name)}</div></div>`;
 }
 function plate(bg, who, place, cls = 'plate'){
   return `<div class="${cls}"><div class="bg" style="background:${BG_FALLBACK[bg] || BG_FALLBACK.A3}"></div><img class="bgimg" src="${ART.bg(bg)}" alt="" onerror="this.remove()">${who ? portrait(who) : ''}${place ? `<div class="place">${esc(place)}</div>` : ''}</div>`;
@@ -139,8 +139,8 @@ function drawFrost(){
   if(!frostTex){
     frostTex = document.createElement('canvas'); frostTex.width = 256; frostTex.height = 256;
     const t = frostTex.getContext('2d');
-    t.fillStyle = 'rgba(214,236,250,.34)'; t.fillRect(0, 0, 256, 256);
-    for(let i = 0; i < 900; i++){ t.fillStyle = `rgba(240,250,255,${Math.random() * .35})`; const r = Math.random() * 1.6; t.beginPath(); t.arc(Math.random() * 256, Math.random() * 256, r, 0, 7); t.fill(); }
+    t.fillStyle = 'rgba(40,70,96,.46)'; t.fillRect(0, 0, 256, 256);
+    for(let i = 0; i < 900; i++){ t.fillStyle = `rgba(225,242,255,${Math.random() * .4})`; const r = Math.random() * 1.6; t.beginPath(); t.arc(Math.random() * 256, Math.random() * 256, r, 0, 7); t.fill(); }
     t.strokeStyle = 'rgba(240,250,255,.18)'; t.lineWidth = .7;
     for(let i = 0; i < 40; i++){ const cx = Math.random() * 256, cy = Math.random() * 256; for(let k = 0; k < 6; k++){ const a = k * Math.PI / 3; t.beginPath(); t.moveTo(cx, cy); t.lineTo(cx + Math.cos(a) * 6, cy + Math.sin(a) * 6); t.stroke(); } }
   }
@@ -156,7 +156,7 @@ function drawFrost(){
     hole(PLACES.warren.x / 100 * W, PLACES.warren.y / 100 * H, 6 / 100 * W);
     x.globalCompositeOperation = 'source-over';
     const g = x.createRadialGradient(LAIR.x / 100 * W, LAIR.y / 100 * H, 0, LAIR.x / 100 * W, LAIR.y / 100 * H, r / 100 * W);
-    g.addColorStop(0, 'rgba(228,104,47,.22)'); g.addColorStop(1, 'rgba(228,104,47,0)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+    g.addColorStop(0, 'rgba(228,104,47,.30)'); g.addColorStop(1, 'rgba(228,104,47,0)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
   };
   if(Math.abs(shownR - target) < .3 || matchMedia('(prefers-reduced-motion: reduce)').matches){ shownR = target; paint(target); return; }
   const from = shownR, t0 = performance.now();

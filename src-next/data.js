@@ -1,5 +1,5 @@
 /* ═══════════ DATA: options, art, enemies, places ═══════════ */
-const ART_V = '1';
+const ART_V = '2';
 const ART = {
   // backgrounds and portraits arrive as art/<code>.webp; missing files fall back gracefully
   bg: (k) => `art/${k}.webp?v=${ART_V}`,
@@ -18,7 +18,7 @@ const BG_FALLBACK = {
 };
 const PEOPLE = {
   P1:{ name:'Old Gnash', mono:'G' }, P2:{ name:'Snikkit', mono:'S' }, P3:{ name:'Mirelle', mono:'M' },
-  P4:{ name:'Aurelia', mono:'A' }, P5:{ name:'Ysolde Marr', mono:'Y' }, V5:{ name:'Vexar', mono:'V' },
+  P4:{ name:'Aurelia', mono:'A' }, P5:{ name:'Ysolde Marr', mono:'Y' }, V5:{ name:'Vexar', mono:'V', img:'V5p' },
 };
 
 const LOOK_OPTS = {
@@ -106,17 +106,17 @@ const ENCOUNTERS = {
 };
 
 /* ── Map ── */
-const LAIR = { x:50, y:66 };
+const LAIR = { x:55, y:70 };
 const PLACES = {
-  lair:   { name:'The Spring',     x:50, y:66, icon:'♨', kind:'lair' },
-  kettle: { name:'Kettle',         x:34, y:78, icon:'⌂', kind:'village', blurb:'Low stone huts around one frozen well. Forty people, give or take the ones who did not wake up.' },
-  warren: { name:'The Warren',     x:61, y:47, icon:'◒', kind:'site',    blurb:'Goblin tunnels under the mountain, warmed by the last of its dying heart.' },
-  pines:  { name:'Wolf Pines',     x:29, y:30, icon:'✶', kind:'site',    blurb:'Black pines and white wolves. They have smelled your warmth.' },
-  ashby:  { name:'Ashby',          x:73, y:86, icon:'⌂', kind:'village', blurb:'A ferry village at a frozen ford. The ferry has not moved in nine years.' },
-  hollin: { name:'Hollin',         x:13, y:45, icon:'⌂', kind:'village', blurb:'Far to the west. Smoke rises from fewer chimneys every week.' },
-  hut:    { name:"Mirelle's Hut",  x:10, y:83, icon:'✧', kind:'site',    blurb:'A single warm window in the western woods, where no warm window should be.' },
-  pass:   { name:"Grinder's Pass", x:83, y:30, icon:'▲', kind:'site',    blurb:'The only road east. Something huge has been walking it at night.' },
-  hold:   { name:'The Grey Hold',  x:40, y:7,  icon:'♜', kind:'locked',  blurb:'Fortress of the Quench. Its bells have rung for three hundred years. Chapter 2.' },
+  lair:   { name:'The Spring',     x:55, y:70, icon:'♨', kind:'lair' },
+  kettle: { name:'Kettle',         x:78, y:69, icon:'⌂', kind:'village', blurb:'Low stone huts around one frozen well, east of your mountain. Forty people, give or take the ones who did not wake up.' },
+  warren: { name:'The Warren',     x:64, y:47, icon:'◒', kind:'site',    blurb:'Goblin tunnels under the mountains, warmed by the last of their dying heart.' },
+  pines:  { name:'Wolf Pines',     x:38, y:58, icon:'✶', kind:'site',    blurb:'Black pines and white wolves. They have smelled your warmth.' },
+  ashby:  { name:'Ashby',          x:34, y:38, icon:'⌂', kind:'village', blurb:'A ferry village at the frozen ford. The ferry has not moved in nine years.' },
+  hollin: { name:'Hollin',         x:88, y:24, icon:'⌂', kind:'village', blurb:'Far to the north-east, under the high peaks. Smoke rises from fewer chimneys every week.' },
+  hut:    { name:"Mirelle's Hut",  x:10, y:64, icon:'✧', kind:'site',    blurb:'A single warm window at the edge of the western woods, where no warm window should be.' },
+  pass:   { name:"Grinder's Pass", x:91, y:47, icon:'▲', kind:'site',    blurb:'The only road east. Something huge has been walking it at night.' },
+  hold:   { name:'The Grey Hold',  x:61, y:9,  icon:'♜', kind:'locked',  blurb:'Fortress of the Quench. Its bells have rung for three hundred years. Chapter 2.' },
 };
 const VILLAGES = ['kettle','ashby','hollin'];
 
