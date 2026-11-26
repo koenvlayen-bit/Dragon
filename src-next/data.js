@@ -1,5 +1,5 @@
 /* ═══════════ DATA: options, art, enemies, places ═══════════ */
-const ART_V = '3';
+const ART_V = '4';
 const ART = {
   // backgrounds and portraits arrive as art/<code>.webp; missing files fall back gracefully
   bg: (k) => `art/${k}.webp?v=${ART_V}`,

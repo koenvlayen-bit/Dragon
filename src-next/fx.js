@@ -1,13 +1,13 @@
 /* ═══════════ VISUALS: art fallbacks, ambient motion, video ═══════════ */
 // New scene art falls back to the nearest existing painting until it is uploaded
-const ART_FALLBACK = { C01:'A1',C02:'A1',C03:'A1',C04:'A8',C05:'A1',C06:'A5',C08:'A5',C09:'A5',C10:'A4',C11:'A4',C12:'A4',C13:'A4',C14:'A8',C15:'A8',C16:'A6',C17:'A7',C18:'A9',C19:'A9',C20:'A9',C21:'A4',C22:'A4',C23:'A7',C24:'A4',C25:'A3',C26:'A3',C27:'A4',C28:'A8',C29:'A8',C30:'A8',C31:'A7' };
+const ART_FALLBACK = { C01:'A1',C01b:'A1',C02:'A1',C03:'A1',C04:'A8',C05:'A1',C06:'A5',C08:'A5',C09:'A5',C10:'A4',C11:'A4',C12:'A4',C13:'A4',C14:'A8',C15:'A8',C16:'A6',C17:'A7',C18:'A9',C19:'A9',C20:'A9',C21:'A4',C22:'A4',C23:'A7',C24:'A4',C25:'A3',C26:'A3',C27:'A4',C28:'A8',C29:'A8',C30:'A8',C31:'A7' };
 // Codes that have a looping video clip (art/<code>.mp4)
-const ART_VIDEO = new Set([]);
+const ART_VIDEO = new Set(['C01','C01b']);
 // Ambient motion per painting
 const AMBIENT = {
   A1:'steam embers', A2:'', A3:'embers glow', A4:'snow', A5:'embers', A6:'snow', A7:'snow', A8:'snow', A9:'mist', A10:'snow embers', A11:'snow',
   A12:'', A13:'dust', A14:'dust', A15:'dust glow', A16:'dust', A17:'mist',
-  C01:'embers steam glow', C02:'steam snow', C03:'snow', C04:'snow', C05:'steam', C06:'snow embers', C08:'embers glow', C09:'snow', C10:'snow',
+  C01:'', C01b:'', C02:'steam snow', C03:'snow', C04:'snow', C05:'steam', C06:'snow embers', C08:'embers glow', C09:'snow', C10:'snow',
   C11:'snow', C12:'fire', C13:'snow', C14:'snow', C15:'snow', C16:'embers glow', C17:'ash', C18:'snow', C19:'steam', C20:'mist', C21:'snow',
   C22:'embers', C23:'snow', C24:'steam', C25:'', C26:'ash', C27:'snow', C28:'snow', C29:'glow', C30:'', C31:'snow',
 };

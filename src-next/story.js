@@ -12,7 +12,7 @@ egg: { place:'The Spring', title:'The Last Egg',
       'The egg has been cooling for three hundred years. It has forgotten it was ever an egg.',
       'Then a hot spring shifts under the mountain. A stone cracks. Light comes in through the crack, orange and impossible, and something inside remembers how to burn.',
     ], next:'Push' },
-    { bg:'C01', text:[
+    { bg:'C01b', text:[
       'You push. The shell pushes back.',
       'You push again, with your whole body, which is mostly head, and the world splits open in a burst of steam.',
       'Air. Cold air. You have never felt cold before. You decide at once that you do not like it.',
