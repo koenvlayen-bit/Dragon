@@ -49,8 +49,8 @@ function vCreate(){
   const L = S.look, O = LOOK_OPTS;
   const grp = (key, label, render) => `<div class="opt-group" data-g="${key}"><div class="label">${label}</div><div class="opts">${O[key].map(o => `<button class="opt ${L[key] === o.id ? 'on' : ''}" data-a="look" data-k="${key}" data-v="${o.id}">${render(o)}</button>`).join('')}</div></div>`;
   return `<div class="create fade-in">
-    <h2 style="color:var(--gold-hi);text-align:center;margin-top:8px">What hatches?</h2>
-    <div class="hero"><img src="${ART.dragon(L)}" alt=""></div>
+    <div class="vis"><h2 style="color:var(--gold-hi);text-align:center;margin-top:8px">What hatches?</h2>
+    <div class="hero"><img src="${ART.dragon(L)}" alt=""></div></div><div class="col">
     ${grp('color', 'Scales', o => `<div class="sw" style="background:${o.sw}"></div>${o.name}`)}
     ${grp('horns', 'Horns', o => o.name)}
     ${grp('hide', 'Hide · your guard', o => `${o.name}<small>${o.d}</small>`)}
@@ -60,7 +60,7 @@ function vCreate(){
     <div class="opt-group" data-g="name"><div class="label">Name</div><input id="name-in" class="name-in" maxlength="20" placeholder="Your dragon's name" value="${esc(UI.nameDraft || '')}" autocomplete="off"></div>
     <div class="presets">${NAME_PRESETS.map(n => `<button data-a="preset" data-v="${n}">${n}</button>`).join('')}</div>
     <button class="btn primary" data-a="hatch">Hatch</button>
-  </div>`;
+  </div></div>`;
 }
 
 function vScene(){
@@ -68,7 +68,7 @@ function vScene(){
   const text = R(sc.text);
   const pend = S.pendingFx; S.pendingFx = null;
   return `<div class="scene fade-in">
-    ${plate(sc.bg, sc.who, sc.place)}
+    <div class="vis">${plate(sc.bg, sc.who, sc.place)}</div><div class="col">
     <h2>${tx(R(sc.title))}</h2>
     ${fxChips(pend)}
     <div class="prose">${text.map(p => `<p class="${p.startsWith('"') ? 'say' : ''}">${tx(p)}</p>`).join('')}</div>
@@ -76,17 +76,17 @@ function vScene(){
       const locked = c.req && !c.req(S);
       return `<button class="choice ${c.fight ? 'fight' : ''} ${locked ? 'locked' : ''}" data-a="choose" data-i="${i}" ${locked ? 'disabled' : ''}><span class="t">${tx(c.t)}</span>${c.h ? `<span class="h">${tx(c.h)}</span>` : ''}</button>`;
     }).join('')}</div>
-  </div>`;
+  </div></div>`;
 }
 function vOut(){
   const sc = SCENES[S.scene], o = S.out;
   return `<div class="scene fade-in">
-    ${plate(sc.bg, sc.who, sc.place)}
+    <div class="vis">${plate(sc.bg, sc.who, sc.place)}</div><div class="col">
     <h2>${tx(R(sc.title))}</h2>
     <div class="prose">${o.text.map(p => `<p class="${p.startsWith('"') ? 'say' : ''}">${tx(p)}</p>`).join('')}</div>
     ${fxChips(o.fx)}
     <button class="btn primary" data-a="outnext">Continue</button>
-  </div>`;
+  </div></div>`;
 }
 
 /* map */
@@ -122,12 +122,12 @@ function vMap(){
   }
   const m = (label, v, col) => `<div class="meter"><span class="label">${label}</span><b>${v}</b><span class="mv"><i style="width:${v}%;background:${col}"></i></span></div>`;
   return `<div class="mapview fade-in">
-    <div class="mapbox" id="mapbox">${MAP_SVG}<img class="base" src="${ART.bg('A2')}" alt="" onerror="this.remove()" style="object-fit:cover"><canvas id="frost"></canvas>${pins}</div>
+    <div class="vis"><div class="mapbox" id="mapbox">${MAP_SVG}<img class="base" src="${ART.bg('A2')}" alt="" onerror="this.remove()" style="object-fit:cover"><canvas id="frost"></canvas>${pins}</div></div><div class="col">
     <div class="mapinfo"><h3>${esc(P.name)}<span style="display:flex;gap:6px">${extra}<span class="tag ${tagCls}">${tagTxt}</span></span></h3>${info}</div>
     <div class="meters">${m('Hope', S.hope, 'var(--hope)')}${m('Dread', S.dread, 'var(--dread)')}${m('Wildness', S.wild, 'var(--wild)')}</div>
     <button class="btn ghost" data-a="endseason">${UI.confirmEnd ? 'Tap again: let the season turn' : S.flights > 0 ? `Let the season turn (${S.flights} flight${S.flights > 1 ? 's' : ''} unused)` : 'Let the season turn'}</button>
     ${(S.chapter || 1) >= 2 ? `<p class="hint">${S.season < 2 ? `${2 - S.season} season${2 - S.season > 1 ? 's' : ''} until the Grey Hold opens.` : 'The Grey Hold is open. The bell is ringing.'}</p>` : S.season < 3 ? `<p class="hint">${3 - S.season} season${3 - S.season > 1 ? 's' : ''} until winter. Villages outside your warmth when it comes will be lost.</p>` : ''}
-  </div>`;
+  </div></div>`;
 }
 
 let frostTex = null, shownR = null;
@@ -167,8 +167,8 @@ function drawFrost(){
 function vLair(){
   const restHeal = S.upgrades.pool ? S.maxHp - S.hp : Math.min(S.maxHp - S.hp, Math.round(S.maxHp * .5));
   return `<div class="lair fade-in">
-    ${plate('A3', null, 'Your lair')}
-    <div class="hoardbox"><div class="big g"><div class="label">Hoard</div><div class="n">◆ ${S.gold}</div></div><div class="big w"><div class="label">Warmth range</div><div class="n">☀ ${glowLevel()}</div></div></div>
+    <div class="vis">${plate('A3', null, 'Your lair')}
+    <div class="hoardbox"><div class="big g"><div class="label">Hoard</div><div class="n">◆ ${S.gold}</div></div><div class="big w"><div class="label">Warmth range</div><div class="n">☀ ${glowLevel()}</div></div></div></div><div class="col">
     <p class="muted small" style="margin:0">Every 12 gold in your hoard pushes your warmth one step further (up to 16). Upgrades cost gold, but their warmth is permanent.</p>
     ${UPGRADES.map(u => {
       const lvl = S.upgrades[u.id], maxed = lvl >= u.max, cost = u.cost[lvl], ok = !maxed && S.gold >= cost && (!u.req || u.req(S));
@@ -176,7 +176,7 @@ function vLair(){
     }).join('')}
     <button class="btn frost" data-a="rest" ${S.flights > 0 && S.hp < S.maxHp ? '' : 'disabled'}>Sleep on your hoard · ${restHeal > 0 ? `+${restHeal} health · ` : ''}1 flight</button>
     <button class="btn" data-a="map">Back to the map</button>
-  </div>`;
+  </div></div>`;
 }
 
 function vBattle(){
@@ -195,18 +195,18 @@ function vBattle(){
   const mchips = Object.entries(me.st).filter(([k, v]) => v).map(([k, v]) => `<span class="chip ${k}">${{ block:'⛨ ', chill:'❄ Chilled ', soak:'💧 Soaked ', stun:'⛓ Chained', evade:'≋ Dodge', thorns:'✶ Thorns ', heatNext:'+heat ' }[k] || k}${k === 'stun' || k === 'evade' ? '' : v}</span>`).join('');
   const acts = actions(B);
   return `<div class="battle">
-    <div class="arena" id="arena"><div style="position:absolute;inset:0;background:${BG_FALLBACK[B.bg]}"></div><img class="bgimg" src="${ART.bg(B.bg)}" alt="" onerror="this.remove()">
+    <div class="vis"><div class="arena" id="arena"><div style="position:absolute;inset:0;background:${BG_FALLBACK[B.bg]}"></div><img class="bgimg" src="${ART.bg(B.bg)}" alt="" onerror="this.remove()">
       ${B.dawn ? `<div class="dawn">☀ Dawn in ${B.dawn} turn${B.dawn > 1 ? 's' : ''}</div>` : ''}
       <div class="me" id="me"><img src="${ART.dragon(S.look)}" alt=""></div>
       <div class="foes n${B.foes.length}">${foes}</div>
-    </div>
+    </div></div><div class="col">
     <div class="mestat"><div class="row1"><span class="hpbar"><i style="width:${S.hp / S.maxHp * 100}%"></i></span><span class="stat"><b>${S.hp}</b>/${S.maxHp}</span></div>
       <div class="row1"><span class="label">Heat</span><span class="heat">${Array.from({ length:10 }, (_, i) => `<i class="${i < me.heat ? 'on' : ''}"></i>`).join('')}</span><span class="chips" style="justify-content:flex-start">${mchips}</span></div></div>
     <div class="blog">${esc(B.log)}</div>
     ${me.st.stun ? `<button class="btn frost" data-a="act" data-v="struggle" ${B.busy ? 'disabled' : ''}>Struggle against the chains</button>` :
     `<div class="acts">${acts.map(a => `<button class="act ${a.cls || ''}" data-a="act" data-v="${a.id}" ${B.busy || me.heat < a.cost ? 'disabled' : ''}><span class="an">${esc(a.name)}</span><span class="ad">${esc(a.d)}</span>${a.cost ? `<span class="cost">🔥${a.cost}</span>` : ''}</button>`).join('')}</div>`}
     ${B.foes.length > 1 ? '<p class="hint">Tap an enemy to target it.</p>' : ''}
-  </div>`;
+  </div></div>`;
 }
 
 function vReport(){
