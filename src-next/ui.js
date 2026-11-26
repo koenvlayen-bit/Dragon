@@ -14,7 +14,7 @@ function portrait(code){
   return `<div class="who"><div class="portrait" style="position:relative"><span>${p.mono}</span><img src="${ART.bg(p.img || code)}" alt="" style="position:absolute;inset:0" onerror="this.remove()"></div><div class="who-name">${esc(p.name)}</div></div>`;
 }
 function plate(bg, who, place, cls = 'plate'){
-  return `<div class="${cls}"><div class="bg" style="background:${BG_FALLBACK[bg] || BG_FALLBACK.A3}"></div><img class="bgimg" src="${ART.bg(bg)}" alt="" onerror="this.remove()">${who ? portrait(who) : ''}${place ? `<div class="place">${esc(place)}</div>` : ''}</div>`;
+  return `<div class="${cls}" data-fx="${AMBIENT[bg] || ''}"><div class="bg" style="background:${BG_FALLBACK[bg] || BG_FALLBACK[ART_FALLBACK[bg]] || BG_FALLBACK.A3}"></div>${artImg(bg, 'bgimg kb')}${who ? portrait(who) : ''}${place ? `<div class="place">${esc(place)}</div>` : ''}</div>`;
 }
 function fxChips(list){ return list && list.length ? `<div class="fx">${list.map(f => `<span class="${f.c}">${esc(f.t)}</span>`).join('')}</div>` : ''; }
 
@@ -65,23 +65,35 @@ function vCreate(){
 
 function vScene(){
   const sc = SCENES[S.scene]; if(!sc) return '<p>Missing scene.</p>';
-  const text = R(sc.text);
+  const pages = sc.pages ? R(sc.pages) : null;
+  const pi = pages ? Math.min(S.page || 0, pages.length - 1) : 0, pg = pages ? pages[pi] : null;
+  const last = !pages || pi === pages.length - 1;
+  const bg = (last && S.ovr) || (pg && pg.bg) || R(sc.bg), who = pg && ('who' in pg) ? pg.who : sc.who, place = (pg && pg.place) || sc.place;
+  const text = (pg ? R(pg.text) : R(sc.text)).filter(Boolean);
   const pend = S.pendingFx; S.pendingFx = null;
-  return `<div class="scene fade-in">
-    <div class="vis">${plate(sc.bg, sc.who, sc.place)}</div><div class="col">
-    <h2>${tx(R(sc.title))}</h2>
+  const para = (p) => `<p class="${p.startsWith('"') ? 'say' : ''}">${tx(p)}</p>`;
+  const talk = last ? (S.talk || []).map(t => `<div class="talk"><p class="ask">${tx(t.q)}</p>${t.a.map(para).join('')}</div>`).join('') : '';
+  const dots = pages && pages.length > 1 ? `<div class="pagebar">${pages.map((_, k) => `<i class="${k <= pi ? 'on' : ''}"></i>`).join('')}</div>` : '';
+  const asked = S.asked || {};
+  const choices = last ? R(sc.choices).map((c, i) => {
+    if(c.ask && asked[i]) return '';
+    if(c.hide && c.hide(S)) return '';
+    const locked = c.req && !c.req(S);
+    return `<button class="choice ${c.fight ? 'fight' : ''} ${c.ask ? 'ask' : ''} ${locked ? 'locked' : ''}" data-a="choose" data-i="${i}" ${locked ? 'disabled' : ''}><span class="t">${tx(c.t)}</span>${c.h ? `<span class="h">${tx(c.h)}</span>` : ''}</button>`;
+  }).join('') : `<button class="btn primary" data-a="page">${esc((pg && pg.next) || 'Continue')}</button>`;
+  return `<div class="scene fade-in" id="scene-${S.scene}-${pi}">
+    <div class="vis">${plate(bg, who, place)}${dots}</div><div class="col">
+    <h2>${tx(R((pg && pg.title) || sc.title))}</h2>
     ${fxChips(pend)}
-    <div class="prose">${text.map(p => `<p class="${p.startsWith('"') ? 'say' : ''}">${tx(p)}</p>`).join('')}</div>
-    <div class="choices">${R(sc.choices).map((c, i) => {
-      const locked = c.req && !c.req(S);
-      return `<button class="choice ${c.fight ? 'fight' : ''} ${locked ? 'locked' : ''}" data-a="choose" data-i="${i}" ${locked ? 'disabled' : ''}><span class="t">${tx(c.t)}</span>${c.h ? `<span class="h">${tx(c.h)}</span>` : ''}</button>`;
-    }).join('')}</div>
+    <div class="prose">${text.map(para).join('')}</div>
+    ${talk}
+    <div class="choices">${choices}</div>
   </div></div>`;
 }
 function vOut(){
   const sc = SCENES[S.scene], o = S.out;
   return `<div class="scene fade-in">
-    <div class="vis">${plate(sc.bg, sc.who, sc.place)}</div><div class="col">
+    <div class="vis">${plate(o.img || R(sc.bg), o.who !== undefined ? o.who : sc.who, sc.place)}</div><div class="col">
     <h2>${tx(R(sc.title))}</h2>
     <div class="prose">${o.text.map(p => `<p class="${p.startsWith('"') ? 'say' : ''}">${tx(p)}</p>`).join('')}</div>
     ${fxChips(o.fx)}
@@ -186,7 +198,10 @@ function vBattle(){
   const foes = B.foes.map((f, i) => {
     const iv = f.hp > 0 ? intentView(f) : null;
     const chips = Object.entries(f.st).filter(([k, v]) => v && k !== 'stunImmune').map(([k, v]) => `<span class="chip ${k}">${{ burn:'🔥', poison:'☠', blind:'◌', fear:'✖', stun:'✷', block:'⛨', fury:'▲' }[k] || ''}${v}</span>`).join('');
-    return `<div class="foe ${i === B.tgt ? 'tgt' : ''} ${f.hp <= 0 ? 'dead' : ''}" id="foe-${i}" data-a="tgt" data-i="${i}">
+    if(f.hp <= 0 && !f.diedAt) f.diedAt = Date.now();
+    const el = f.diedAt ? Date.now() - f.diedAt : 0, dying = f.hp <= 0 && el < 900;
+    const dcls = f.hp <= 0 ? (dying ? `dying ${f.tags.includes('beast') ? 'beast' : 'fall'}` : 'dead') : '';
+    return `<div class="foe ${i === B.tgt && f.hp > 0 ? 'tgt' : ''} ${dcls}" ${dying ? `style="animation-delay:-${el}ms"` : ''} id="foe-${i}" data-a="tgt" data-i="${i}">
       ${iv ? `<span class="intent ${iv.c}">${iv.t}</span>` : ''}
       <div class="fig"><img src="${ART.bg(f.art)}" alt="" onerror="this.nextElementSibling.style.display='block';this.remove()"><div style="display:none;width:100%;height:100%">${silFor(f.sil)}</div></div>
       <span class="fname">${esc(f.name)} · ${f.hp}/${f.max}</span>
@@ -197,7 +212,7 @@ function vBattle(){
   const mchips = Object.entries(me.st).filter(([k, v]) => v).map(([k, v]) => `<span class="chip ${k}">${{ block:'⛨ ', chill:'❄ Chilled ', soak:'💧 Soaked ', stun:'⛓ Chained', evade:'≋ Dodge', thorns:'✶ Thorns ', heatNext:'+heat ' }[k] || k}${k === 'stun' || k === 'evade' ? '' : v}</span>`).join('');
   const acts = actions(B);
   return `<div class="battle">
-    <div class="vis"><div class="arena" id="arena"><div style="position:absolute;inset:0;background:${BG_FALLBACK[B.bg]}"></div><img class="bgimg" src="${ART.bg(B.bg)}" alt="" onerror="this.remove()">
+    <div class="vis"><div class="arena" id="arena" data-fx="${AMBIENT[B.bg] || ''}"><div style="position:absolute;inset:0;background:${BG_FALLBACK[B.bg]}"></div>${artImg(B.bg, 'bgimg')}
       ${B.dawn ? `<div class="dawn">☀ Dawn in ${B.dawn} turn${B.dawn > 1 ? 's' : ''}</div>` : ''}
       <div class="me" id="me"><img src="${ART.dragon(S.look)}" alt=""></div>
       <div class="foes n${B.foes.length}">${foes}</div>
@@ -274,6 +289,7 @@ function render(){
   const showBar = !['title','create','end'].includes(S.screen);
   $app().innerHTML = (showBar ? topbar() : '') + v();
   if(S.screen === 'map') drawFrost();
+  startAmbient();
   if(S.screen !== 'title') save();
   flushToasts();
 }
@@ -292,6 +308,7 @@ function fx(type, target, text){
   document.body.appendChild(f); setTimeout(() => f.remove(), 950);
 }
 function anim(kind, target){
+  if(kind === 'breath') beam(target);
   const arena = document.getElementById('arena'); if(!arena) return;
   const col = { fire:'rgba(255,140,50,.85)', shadow:'rgba(120,70,180,.85)', gold:'rgba(255,210,90,.85)', fluid:'rgba(200,235,255,.85)' }[S.look.element];
   const b = document.createElement('div'); b.className = 'burst';
@@ -306,7 +323,7 @@ function anim(kind, target){
 function shake(who){ setTimeout(() => { const el = document.getElementById(who === 'me' ? 'me' : 'foe-' + who.i); if(el){ el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); } }, 0); }
 
 /* ── flow ── */
-function openScene(id){ S.scene = id; S.out = null; S.screen = 'scene'; render(); scrollTo(0, 0); }
+function openScene(id){ S.scene = id; S.out = null; S.page = 0; S.talk = []; S.asked = {}; S.ovr = null; S.screen = 'scene'; render(); scrollTo(0, 0); }
 function navigate(go){
   if(!go || go === 'map') return goMap();
   if(go === 'create'){ S.screen = 'create'; render(); return scrollTo(0, 0); }
@@ -318,9 +335,10 @@ function navigate(go){
 function choose(i){
   const sc = SCENES[S.scene], c = R(sc.choices)[i]; if(!c || (c.req && !c.req(S))) return;
   if(c.fight){ if(c.fx) applyFx(c.fx); startBattle(c.fight.enc, c.fight.win, c.fight.lose); render(); return scrollTo(0, 0); }
+  if(c.ask){ if(c.img) S.ovr = c.img; S.asked = S.asked || {}; S.asked[i] = true; S.talk = (S.talk || []).concat([{ q:c.t, a:R(c.reply) }]); const sh = applyFx(c.fx); if(sh.length) setTimeout(() => toastText(sh.map(x => x.t).join(' · ')), 50); render(); const ts = document.querySelectorAll('.talk'); if(ts.length) ts[ts.length - 1].scrollIntoView({ behavior:'smooth', block:'nearest' }); return; }
   if(c.refund) S.flights = Math.min(SEAS()[S.season].flights, S.flights + 1);
   const shown = applyFx(c.fx);
-  if(c.out){ S.out = { text:c.out, fx:shown, go:c.go }; S.screen = 'out'; render(); return scrollTo(0, 0); }
+  if(c.out){ S.out = { text:R(c.out), fx:shown, go:c.go, img:c.img, who:c.who }; S.screen = 'out'; render(); return scrollTo(0, 0); }
   if(shown.length && (!c.go || c.go === 'map')) setTimeout(() => toastText(shown.map(x => x.t).join(' · ')), 50);
   else if(shown.length) S.pendingFx = shown;
   navigate(c.go);
@@ -365,6 +383,7 @@ document.addEventListener('click', (e) => {
     case 'preset': { const i = document.getElementById('name-in'); if(i){ i.value = v; UI.nameDraft = v; } break; }
     case 'hatch': { const n = ((document.getElementById('name-in') || {}).value || '').trim() || NAME_PRESETS[Math.floor(Math.random() * NAME_PRESETS.length)]; S.name = n.slice(0, 20); S.hp = S.maxHp = STAGE_HP[0]; openScene('firstWarmth'); break; }
     case 'choose': choose(+el.dataset.i); break;
+    case 'page': S.page = (S.page || 0) + 1; render(); if(innerWidth < 960) scrollTo(0, 0); break;
     case 'outnext': navigate(S.out && S.out.go); break;
     case 'sel': S.sel = v; render(); break;
     case 'fly': fly(v); break;

@@ -27,6 +27,8 @@ with sync_playwright() as p:
             if st['scene'] not in seen:
                 seen.add(st['scene']); 
                 if shots: shot('sc_'+st['scene'])
+            if pg.locator('[data-a=page]').count():
+                pg.click('[data-a=page]'); pg.wait_for_timeout(40); continue
             ch=pg.locator('.choice:not([disabled])'); k=ch.count()
             # prefer non-refund options
             idx=rnd.randrange(k)

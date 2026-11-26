@@ -150,7 +150,7 @@ async function enemyPhase(B){
       if(me.st.block){ const a = Math.min(me.st.block, d); me.st.block -= a; d -= a; }
       S.hp = Math.max(0, S.hp - d);
       if(me.st.thorns){ f.hp = Math.max(0, f.hp - me.st.thorns); fx('dmg', f, `-${me.st.thorns}`); }
-      fx('dmg', 'me', d ? `-${d}` : '⛨'); shake('me');
+      fx('dmg', 'me', d ? `-${d}` : '⛨'); shake('me'); if(d >= 14) flash();
       return d;
     };
     switch(f.intent){

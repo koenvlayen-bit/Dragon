@@ -138,3 +138,4 @@ const ACH = [
   { id:'beloved',  t:'Hearth of the North',     d:'Reach 60 hope.' },
   { id:'free',     t:'An Unlikely Friend',      d:'Let Aurelia go free.' },
 ];
+Object.assign(PEOPLE, { P9:{ name:'Edda', mono:'E' }, P10:{ name:'Ser Aldric', mono:'A' } });
